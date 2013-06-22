@@ -25,4 +25,55 @@ models for the basket, addresses, customers, and surcharges.
 
 I am completing the part that first registers a transaction with SagePay.
 
+## Usage ##
 
+Very roughly, registering a [payment] transaction request will look like this:
+
+    // Create the registration object.
+    $register = new Academe\SagePay\Register();
+    
+    // Create the storage object.
+    // A basic PDO storage is provided, but just extent and use your own.
+    $register->setTransactionModel(new Academe\SagePay\Model\TransactionPdo())
+        ->setDatabase('mysql:host=localhost;dbname=foobar', 'myuser', 'mypassword');
+        
+    // Set the main mandatory details for the transaction.
+    $register->setMain('PAYMENT', 'vendorx', '99.99', 'GBP', 'Store purchase', 'http://example.com/mycallback');
+    
+    // Set the addresses.
+    // You can just set one (e.g. billing) and the other will automatically mirror it. Or set both.
+    $billing = new Academe\SagePay\Model\Address();
+    $billing->setField('Surname', 'Judge');
+    $billing->setField('Firstnames', 'Jason');
+    $billing->setField('Address1', 'Some Address');
+    // etc.
+    $register->setBillingAddress($billing);
+    
+    // Set option stuff, including customer details, surcharges, basket.
+    // Here is an example for the basket. This is a very simple example, as SagePay 3.0
+    // can support many more structured data items and properties in the basket.
+    $basket = new Academe\SagePay\Model\Basket();
+    $basket->setDelivery(32.50, 5);
+    $basket->addSimpleLine('Widget', 4.00, 3, 0.75, 3.75);
+    $register->setBasketModel($basket);
+    
+    // Send the request to SagePay, get the response, The request and response will also
+    // be saved in whatever storage you are using.
+    $response = $register->sendRegistration();
+
+The response will provide details of what to do next: it may be a fail, or give a SagePay URL to jump to, or
+just a simple data validation error to correct.
+
+Somewhere above you need to tell the registration which platform you want to sent to (test or live).
+
+SagePay is very strict on data validatin. If a postcode is too long, or an address has an invalid character
+in, then it will reject the registration, but will not be very clear exactly why it was rejected, and
+certainly not in a form that can be used to keep the end user informed. For this reason, do not just
+throw an address at this library, but make sure you validate it according to SagePay validation rules, 
+and provide a pre-submit form for the user to make corrections (e.g. to remove an invalid character from
+an address field - something that may be perfectly valid in the framework that the address came from,
+and may be perfectly valid in other payement gateways). Just get used to it - this is the Sage way - always
+a little bit clunky in some unexpected ways.
+
+    
+    
