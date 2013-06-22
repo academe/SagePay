@@ -33,7 +33,7 @@ Very roughly, registering a [payment] transaction request will look like this:
     $register = new Academe\SagePay\Register();
     
     // Create the storage object.
-    // A basic PDO storage is provided, but just extent and use your own.
+    // A basic PDO storage is provided, but just extend Model\Transaction and use your own.
     $register->setTransactionModel(new Academe\SagePay\Model\TransactionPdo())
         ->setDatabase('mysql:host=localhost;dbname=foobar', 'myuser', 'mypassword');
         
