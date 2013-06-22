@@ -29,6 +29,10 @@ I am completing the part that first registers a transaction with SagePay.
 
 Very roughly, registering a [payment] transaction request will look like this:
 
+    // Note: this just half the process. This registers a payment request with the gateway.
+    // The other half is handling the callback from SageWay with the results of the payment attempt,
+    // and is not yet coded or documented.
+    
     // Create the registration object.
     $register = new Academe\SagePay\Register();
     
