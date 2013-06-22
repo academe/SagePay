@@ -4,6 +4,12 @@
  * Models a basket of products, with an XML output.
  * A basket can have quite a complex structure of elements. Much of the options
  * will not be supported in the first phase.
+ * Note: all gross amounts (including the shipping cost) in the basket MUST add up
+ * to the total amount of the transaction. SagePay will reject the basket if they
+ * do not.
+ * Note also that most optional basket fields have a minimum length of one character.
+ * The basket will be rejected if any of these fields are zero length. They must instead
+ * be left out competely.
  */
 
 namespace Academe\SagePay\Model;
@@ -36,7 +42,7 @@ abstract class BasketAbstract extends XmlAbstract
 
     /**
      * Set delivery details.
-     * All numbes will be formatted to 2dp.
+     * All amounts will be formatted to 2dp.
      */
 
     public function setDelivery($net, $tax = 0, $gross = null)
@@ -56,15 +62,24 @@ abstract class BasketAbstract extends XmlAbstract
 
     /**
      * Set shipping details.
+     * SagePay will reject empty fields as invalid. Only include fields that have data.
+     * Thos rule will apply to the man additional fields this XML basket introduces but
+     * afre not supported in this library yet.
      */
 
-    public function setShipping($ship_id, $shipping_method = '', $shipping_fax_no = '')
+    public function setShipping($shipId, $shippingMethod = null, $shippingFaxNo = null)
     {
-        $this->shipping = array(
-            'shipId' => $ship_id,
-            'shippingMethod' => $shipping_method,
-            'shippingFaxNo' => $shipping_fax_no,
-        );
+        $shipping = array();
+
+        foreach(array('shipId', 'shippingMethod', 'shippingFaxNo') as $param) {
+            if (isset($$param) && $$param != '') {
+                $shipping[$param] = $$param;
+            }
+        }
+
+        if ( !empty($shipping)) {
+            $this->shipping = $shipping;
+        }
 
         return $this;
     }

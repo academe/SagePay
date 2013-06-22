@@ -230,11 +230,18 @@ abstract class TransactionAbstract
         // The status returned from the transaction registration POST.
         // Max 14 characters.
         // Values are: OK, MALFORMED, INVALID or ERROR.
-        'RegistrationStatus' => null,
+        // Also set by the callback function, which has additional statuses:
+        // Values are: OK, NOTAUTHED, ABORT, REJECTED, AUTHENTICATED, REGISTERED, PENDING, ERROR.
+        'Status' => null,
 
         // The status detail returned from the transaction registration POST.
         // Max 255 characters.
-        'RegistrationStatusDetail' => null,
+        // A list of status details can be found here, and may be parsable, so we could at
+        // least have a list of some detail messages that can be presented to the end user:
+        // http://www.sagepay.com/help/systemmessageindex
+        // However, that list is not complete. I have already encountered:
+        // "3021 : The Basket format is invalid."
+        'StatusDetail' => null,
 
         // The SagePay transaction ID returned from the transaction registration POST.
         // Alphnumeric 38 characters.
@@ -247,15 +254,6 @@ abstract class TransactionAbstract
         // Alphanumeric 10 characters.
         // Only present if Status is 'OK'.
         'SecurityKey' => null,
-
-        // The status sent by the notification POST.
-        // Max 20 characters.
-        // Values are: OK, NOTAUTHED, ABOFRT, REJECTED, AUTHENTICATED, REGISTERED, PENDING, ERROR.
-        'NotificationStatus' => null,
-
-        // The status detail sent with the notification POST.
-        // Max 255 characters.
-        'NotificationStatusDetail' => null,
 
         // SagePay unique authorisation code for a successful authorisation.
         // Sent with the notification POST.

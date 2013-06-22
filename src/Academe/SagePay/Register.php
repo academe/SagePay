@@ -288,6 +288,7 @@ class Register extends Model\XmlAbstract
             'VendorTxCode',
             'Amount',
             'Currency',
+            'Description',
             'NotificationURL',
 
             'BillingSurname',
@@ -466,9 +467,9 @@ class Register extends Model\XmlAbstract
             // Save the status as PENDING, to indicate we are waing for a response from SagePay.
             // CHECKME: should we use one status field, shared by the registration and the
             // notification actions?
-            $this->setField('RegistrationStatus', 'PENDING');
+            $this->setField('Status', 'PENDING');
 
-            $this->setField('RegistrationStatusDetail', $output['StatusDetail']);
+            $this->setField('StatusDetail', $output['StatusDetail']);
 
             // CHECKME: Does the next URL need to go into the model? I expect not.
             $this->setField('NextURL', $output['NextURL']);
@@ -482,8 +483,8 @@ class Register extends Model\XmlAbstract
             // vendor tx code is saved in the session, even after a failure, then each total
             // failure will result in a new record being writtem to storage, which will give us an
             // audit trail. Perhaps make it an option.
-            $this->setField('RegistrationStatus', $output['Status']);
-            $this->setField('StatusReason', $output['StatusDetail']);
+            $this->setField('Status', $output['Status']);
+            $this->setField('StatusDetail', $output['StatusDetail']);
         }
     }
 }
