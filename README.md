@@ -38,6 +38,7 @@ Very roughly, registering a [payment] transaction request will look like this:
     
     // Create the storage object.
     // A basic PDO storage is provided, but just extend Model\Transaction and use your own.
+    // Your framework may have active record model, or you may want to use WordPress post types, for example.
     $register->setTransactionModel(new Academe\SagePay\Model\TransactionPdo())
         ->setDatabase('mysql:host=localhost;dbname=foobar', 'myuser', 'mypassword');
         
