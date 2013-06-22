@@ -385,7 +385,7 @@ class Register extends Model\XmlAbstract
      * Returns key/value pairs
      */
 
-    public function queryData()
+    public function queryData($format_as_querystring = true)
     {
         // Make sure all the models are expanded into the main transaction data model.
         $this->expandModels();
@@ -477,7 +477,117 @@ class Register extends Model\XmlAbstract
             }
         }
 
-        return $query;
+        if ($format_as_querystring) {
+            // Return the query string
+            return http_build_query($query, '', '&');
+        } else {
+            // Just return the data as an array.
+            // This may be more useful for some transport packages.
+            return $query;
+        }
+    }
+
+    /**
+     * Handle the POST to SagePay and collect the result.
+     */
+
+    public function postSagePay($sagepay_url, $query_string, $timeout = 30)
+    {
+        $curlSession = curl_init();
+
+        // Set the URL
+        curl_setopt ($curlSession, CURLOPT_URL, $sagepay_url);
+
+        // No headers.
+        curl_setopt ($curlSession, CURLOPT_HEADER, 0);
+
+        // It's a POST request
+        curl_setopt ($curlSession, CURLOPT_POST, 1);
+
+        // Set the fields for the POST
+        curl_setopt ($curlSession, CURLOPT_POSTFIELDS, $query_string);
+
+        // Return it direct, don't print it out
+        curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
+
+        // This connection will timeout in 30 seconds
+        curl_setopt($curlSession, CURLOPT_TIMEOUT, $timeout);
+
+        // The next two lines must be present for the kit to work with newer version of cURL
+        curl_setopt($curlSession, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 1);
+
+        // Send the request and store the result in an array
+        $rawresponse = curl_exec($curlSession);
+
+        // Split response into name=value pairs
+        // The documentation states "CRLF" divides the lines. We will use the regex match \R to 
+        // catch any platform-specific version of line endings that the future may throw at us.
+        $response = preg_split('/$\R?^/m', $rawresponse);
+
+        $output = array();
+
+        // Check that a connection was made
+        if (curl_error($curlSession))
+        {
+            // If it wasn't...
+            $output['Status'] = 'FAIL';
+            $output['StatusDetail'] = trim(curl_error($curlSession));
+        }
+
+        // Close the cURL session
+        curl_close($curlSession);
+
+        // Tokenise the response
+        // Note: sometimes the response cannot be tokenised
+        foreach($response as $value) {
+            if (strpos($value, '=') !== false) {
+                list($k, $v) = explode('=', $value, 2);
+                $output[trim($k)] = trim($v);
+            } else {
+                $output[] = trim($value);
+            }
+        }
+
+        return $output;
+    }
+
+    /**
+     * Send the registration to SagePay and save the reply.
+     */
+
+    public function sendRegistration()
+    {
+        // TOOD: where do these values come from?
+        $output = $this->postSagePay($sagepay_url, $query_string, $timeout);
+
+        // TODO: set the local transation model.
+        // If successful, save the returned data to the model, save it, then return the model.
+        if ($output['Status'] == 'OK') {
+            // Checkme: perhaps just store all matching returned fields as they come in.
+            $transaction->VPSTxId = $output['VPSTxId'];
+            $transaction->SecurityKey = $output['SecurityKey'];
+            
+            // Save the status as PENDING, to indicate we are waing for a response from SagePay.
+            $transaction->Status = 'PENDING';
+
+            $transaction->_StatusDetail = $output['StatusDetail'];
+            $transaction->_NextURL = $output['NextURL'];
+
+            // TODO: check for exception Orm\ValidationFailed to catch final validation issues.
+            // If we have been able to send the transactino to SagePay, then there should be
+            // no reason why saving it will fail.
+            try {
+                $transaction->save();
+            } catch (Orm\ValidationFailed $e) {
+                echo $e->getMessage();
+            }
+        } else {
+            // SagePay has rejected what we have sent.
+            $transaction['Status'] = $output['Status'];
+            $transaction['StatusReason'] = $output['StatusDetail'];
+        }
+
     }
 }
 
