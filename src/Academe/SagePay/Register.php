@@ -401,8 +401,8 @@ class Register extends Model\XmlAbstract
         curl_setopt($curlSession, CURLOPT_TIMEOUT, $timeout);
 
         // The next two lines must be present for the kit to work with newer version of cURL
-        curl_setopt($curlSession, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 1);
+        curl_setopt($curlSession, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 2);
 
         // Send the request and store the result in an array
         $rawresponse = curl_exec($curlSession);
@@ -452,7 +452,7 @@ class Register extends Model\XmlAbstract
         // The URL will vary depending on:
         // a) the simulator/test/live instance being accessed.
         // b) the transaction type being requesed.
-        $sagepay_url = 'http://';
+        $sagepay_url = 'https://test.sagepay.com/gateway/service/vspserver-register.vsp';
 
         // Post the request to SagePay
         $output = $this->postSagePay($sagepay_url, $query_string, $this->timeout);
@@ -483,7 +483,7 @@ class Register extends Model\XmlAbstract
             // failure will result in a new record being writtem to storage, which will give us an
             // audit trail. Perhaps make it an option.
             $this->setField('RegistrationStatus', $output['Status']);
-            $this('StatusReason', $output['StatusDetail']);
+            $this->setField('StatusReason', $output['StatusDetail']);
         }
     }
 }
