@@ -17,6 +17,12 @@ class Register extends Model\XmlAbstract
     protected $tx_model = null;
 
     /**
+     * The timeout, in seconds, waiting fot SagePay to respond to a registration request.
+     */
+
+    protected $timeout = 30;
+
+    /**
      * The input characterset.
      * SagePay works only with ISO-8859-1, so conversion may be necessary.
      */
@@ -122,7 +128,7 @@ class Register extends Model\XmlAbstract
 
     public function vendorTxCode()
     {
-        return $this->tx_model->getField('VendorTxCode');
+        return $this->getField('VendorTxCode');
     }
 
     /**
@@ -132,7 +138,7 @@ class Register extends Model\XmlAbstract
 
     public function setTxType($tx_type)
     {
-        $this->tx_model->setField('TxType', strtoupper($tx_type));
+        $this->setField('TxType', strtoupper($tx_type));
         return $this;
     }
 
@@ -142,7 +148,7 @@ class Register extends Model\XmlAbstract
 
     public function setVendor($vendor)
     {
-        $this->tx_model->setField('Vendor', $vendor);
+        $this->setField('Vendor', $vendor);
         return $this;
     }
 
@@ -152,28 +158,8 @@ class Register extends Model\XmlAbstract
 
     public function setAmount($amount, $currency = 'GBP')
     {
-        $this->tx_model->setField('Amount', $this->formatAmount($amount));
-        $this->tx_model->setField('Currency', $currency);
-        return $this;
-    }
-
-    /**
-     * Set the description.
-     */
-
-    public function setDescription($description)
-    {
-        $this->tx_model->setField('Description', $description);
-        return $this;
-    }
-
-    /**
-     * Set the notification URL.
-     */
-
-    public function setUrl($url)
-    {
-        $this->tx_model->setField('NotificationURL', $url);
+        $this->setField('Amount', $this->formatAmount($amount));
+        $this->setField('Currency', $currency);
         return $this;
     }
 
@@ -183,132 +169,31 @@ class Register extends Model\XmlAbstract
 
     public function setMain($tx_type, $vendor, $amount, $currency, $description, $url)
     {
-        $this->setTxType($tx_type);
-        $this->setVendor($vendor);
+        $this->setField('TxType', $tx_type);
+        $this->setField('Vendor', $vendor);
         $this->setAmount($amount, $currency);
-        $this->setDescription($description);
-        $this->setUrl($url);
+        $this->setField('Description', $description);
+        $this->setField('NotificationURL', $url);
         return $this;
     }
 
     /**
-     * The customer email.
+     * Set the value of a field in the transaction model.
      */
 
-    public function setCustomerEMail($email)
+    public function setField($name, $value)
     {
-        $this->tx_model->setField('CustomerEMail', $email);
+        $this->tx_model->setField($name, $value);
         return $this;
     }
 
     /**
-     * Set the Gift Aid flag.
+     * Get the value of a field in the transaction model.
      */
 
-    public function setAllowGiftAid($flag)
+    public function getField($name)
     {
-        $this->tx_model->setField('AllowGiftAid', $flag);
-        return $this;
-    }
-
-    /**
-     * Set the Apply AVS/CV2 flag.
-     */
-
-    public function setApplyAVSCV2($flag)
-    {
-        $this->tx_model->setField('ApplyAVSCV2', $flag);
-        return $this;
-    }
-
-    /**
-     * Set the Apply 3DSecure flag.
-     */
-
-    public function setApply3DSecure($flag)
-    {
-        $this->tx_model->setField('Apply3DSecure', $flag);
-        return $this;
-    }
-
-    /**
-     * Set the display profile.
-     */
-
-    public function setProfile($flag)
-    {
-        $this->tx_model->setField('Profile', $flag);
-        return $this;
-    }
-
-    /**
-     * Set the Billing Agreement flag.
-     */
-
-    public function setBillingAgreement($flag)
-    {
-        $this->tx_model->setField('BillingAgreement', $flag);
-        return $this;
-    }
-
-    /**
-     * Set the Account Type flag.
-     */
-
-    public function setAccountType($flag)
-    {
-        $this->tx_model->setField('AccountType', $flag);
-        return $this;
-    }
-
-    /**
-     * Set the Create Token flag.
-     */
-
-    public function setCreateToken($flag)
-    {
-        $this->tx_model->setField('CreateToken', $flag);
-        return $this;
-    }
-
-    /**
-     * Set the Vendor Data.
-     */
-
-    public function setVendorData($data)
-    {
-        $this->tx_model->setField('VendorData', $data);
-        return $this;
-    }
-
-    /**
-     * Set the Referrer ID.
-     */
-
-    public function setReferrerID($id)
-    {
-        $this->tx_model->setField('ReferrerID', $id);
-        return $this;
-    }
-
-    /**
-     * Set the Language.
-     */
-
-    public function setLanguage($lang)
-    {
-        $this->tx_model->setField('Language', $lang);
-        return $this;
-    }
-
-    /**
-     * Set the referring Website.
-     */
-
-    public function setWebsite($website)
-    {
-        $this->tx_model->setField('Website', $website);
-        return $this;
+        return $this->tx_model->getField($name);
     }
 
     /**
@@ -318,6 +203,7 @@ class Register extends Model\XmlAbstract
     public function setBillingAddress(Model\AddressAbstract $address)
     {
         $this->billing_address = $address;
+        $this->expandModels();
 
         return $this->billing_address;
     }
@@ -329,6 +215,7 @@ class Register extends Model\XmlAbstract
     public function setDeliveryAddress(Model\AddressAbstract $address)
     {
         $this->delivery_address = $address;
+        $this->expandModels();
 
         return $this->delivery_address;
     }
@@ -558,36 +445,46 @@ class Register extends Model\XmlAbstract
 
     public function sendRegistration()
     {
-        // TOOD: where do these values come from?
-        $output = $this->postSagePay($sagepay_url, $query_string, $timeout);
+        // Construct the query string from data in the model.
+        $query_string = $this->queryData();
 
-        // TODO: set the local transation model.
+        // TODO: where from?
+        // The URL will vary depending on:
+        // a) the simulator/test/live instance being accessed.
+        // b) the transaction type being requesed.
+        $sagepay_url = 'http://';
+
+        // Post the request to SagePay
+        $output = $this->postSagePay($sagepay_url, $query_string, $this->timeout);
+
         // If successful, save the returned data to the model, save it, then return the model.
+        // TODO: include all extra fields that the V3 protocol introduces.
         if ($output['Status'] == 'OK') {
-            // Checkme: perhaps just store all matching returned fields as they come in.
-            $transaction->VPSTxId = $output['VPSTxId'];
-            $transaction->SecurityKey = $output['SecurityKey'];
-            
+            $this->setField('VPSTxId', $output['VPSTxId']);
+            $this->setField('SecurityKey', $output['SecurityKey']);
+
             // Save the status as PENDING, to indicate we are waing for a response from SagePay.
-            $transaction->Status = 'PENDING';
+            // CHECKME: should we use one status field, shared by the registration and the
+            // notification actions?
+            $this->setField('RegistrationStatus', 'PENDING');
 
-            $transaction->_StatusDetail = $output['StatusDetail'];
-            $transaction->_NextURL = $output['NextURL'];
+            $this->setField('RegistrationStatusDetail', $output['StatusDetail']);
 
-            // TODO: check for exception Orm\ValidationFailed to catch final validation issues.
-            // If we have been able to send the transactino to SagePay, then there should be
-            // no reason why saving it will fail.
-            try {
-                $transaction->save();
-            } catch (Orm\ValidationFailed $e) {
-                echo $e->getMessage();
-            }
+            // CHECKME: Does the next URL need to go into the model? I expect not.
+            $this->setField('NextURL', $output['NextURL']);
+
+            // Save the transaction to storage.
+            // TODO: catch failures.
+            $this->save();
         } else {
             // SagePay has rejected what we have sent.
-            $transaction['Status'] = $output['Status'];
-            $transaction['StatusReason'] = $output['StatusDetail'];
+            // TODO: do we save the transaction at this point? It kind of makes sense. Unless the
+            // vendor tx code is saved in the session, even after a failure, then each total
+            // failure will result in a new record being writtem to storage, which will give us an
+            // audit trail. Perhaps make it an option.
+            $this->setField('RegistrationStatus', $output['Status']);
+            $this('StatusReason', $output['StatusDetail']);
         }
-
     }
 }
 
