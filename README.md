@@ -75,5 +75,6 @@ an address field - something that may be perfectly valid in the framework that t
 and may be perfectly valid in other payement gateways). Just get used to it - this is the Sage way - always
 a little bit clunky in some unexpected ways.
 
-    
-    
+I intend to include field metadata in this library, that provides information on the validation rules.
+The library should validate everything before it goes to SagePay, but also those rules should be available
+to feed into the framework that the end user interacts with.
