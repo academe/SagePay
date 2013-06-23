@@ -226,6 +226,8 @@ class TransactionPdo extends TransactionAbstract
 
             // Create the table.
             // TxAuthNo is returned as a long integer, but we will store it as a VARCHAR.
+            // TODO: this table creation statement can be generated entirely from the
+            // field metadata. It should work like that to keep consistency.
 
             $sql = <<<ENDSQL
                 CREATE TABLE IF NOT EXISTS $this->transaction_table_name (
@@ -235,7 +237,7 @@ class TransactionPdo extends TransactionAbstract
                     Vendor VARCHAR(80),
                     Amount VARCHAR(20) NOT NULL,
                     Currency VARCHAR(10) NOT NULL,
-                    Description VARCHAR(100),
+                    Description VARCHAR(100) NOT NULL,
 
                     BillingSurname VARCHAR(20),
                     BillingFirstnames VARCHAR(20),
@@ -271,13 +273,10 @@ class TransactionPdo extends TransactionAbstract
                     SurchargeXML VARCHAR(800),
                     VendorData VARCHAR(200),
 
-                    RegistrationStatus VARCHAR(14),
-                    RegistrationStatusDetail VARCHAR(255),
+                    Status VARCHAR(14),
+                    StatusDetail VARCHAR(255),
                     VPSTxId VARCHAR(38),
                     SecurityKey VARCHAR(10),
-
-                    NotificationStatus VARCHAR(20),
-                    NotificationStatusDetail VARCHAR(255),
 
                     TxAuthNo VARCHAR(20),
                     AVSCV2 VARCHAR(50),
