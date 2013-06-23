@@ -2,11 +2,16 @@
 
 /**
  * Metadata for the SagePay data fields.
+ * This is pure data, and no functionality that uses this data.
+ * Functionality could include:
+ *  - creating a database table
+ *  - validating data
+ *  - cleaning data (e.g. removing invalid characters from a product line descriptio).
  */
 
-namespace Academe\SagePay;
+namespace Academe\SagePay\Metadata;
 
-class Metadata
+class Fields
 {
     /**
      * Allowable characters are:
@@ -63,12 +68,11 @@ class Metadata
             "TxType": {
                 "required": true,
                 "type": "enum",
-                "values": ["PAYMENT", "DEFERRED", "AUTHENTICATE"],
+                "values": ["PAYMENT", "DEFERRED", "AUTHENTICATE", "RELEASE", "ABORT", "REFUND", "REPEAT", "REPEATDEFERRED", "VOID", "MANUAL", "DIRECTREFUND", "AUTHORISE", "CANCEL"],
                 "min": 1,
                 "max": 15,
                 "default": "PAYMENT",
                 "source": "registration",
-                "notes": "Other values shared with Direct protocol are allowed",
                 "store": true
             },
             "Vendor": {
@@ -476,9 +480,20 @@ class Metadata
         }
 ENDDATA;
 
-    public static function get()
+    /**
+     * Return the data.
+     * Format is "object" (default), "json" or "array".
+     */
+
+    public static function get($format = 'object')
     {
-        return json_decode(static::$data_json);
+        if ($format == 'json') {
+            return trim(static::$data_json);
+        } elseif ($format == 'array') {
+            return json_decode(trim(static::$data_json), true); // CHECKME true or false?
+        } else {
+            return json_decode(trim(static::$data_json));
+        }
     }
 }
 

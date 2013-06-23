@@ -23,6 +23,55 @@ class Register extends Model\XmlAbstract
     protected $timeout = 30;
 
     /**
+     * All SagePay URL parts.
+     */
+
+    protected $sagepay_url_base = array(
+        'simulator' => 'https://test.sagepay.com/Simulator/VSPServerGateway?service={service}',
+        'test' => 'https://test.sagepay.com/gateway/service/{service}',
+        'live' => 'https://live.sagepay.com/gateway/service/{service}',
+    );
+
+    /**
+     * Mapping of the transaction type to URL service name.
+     * Note some services are not supported by the simulator.
+     *
+     * A list of services for transaction types:
+     *  vspserver-register.vsp for PAYMENT, DEFERRED and AUTHENTICATE.
+     *  release.vsp for RELEASE (to release a DEFERRED or REPEATDEFERRED Payment)
+     *  abort.vsp for ABORT
+     *  refund.vsp for REFUND
+     *  repeat.vsp for REPEAT and REPEATDEFERRED
+     *  void.vsp for VOID
+     *  manualpayment.vsp for MANUAL
+     *  directrefund.vsp for DIRECTREFUND
+     *  authorise.vsp for AUTHORISE
+     *  cancel.vsp for CANCEL
+     */
+
+    protected $sagepay_url_service = array(
+        'PAYMENT' => array('test' => 'vspserver-register.vsp', 'live' => 'vspserver-register.vsp', 'simulator' => null),
+        'DEFERRED' => array('test' => 'vspserver-register.vsp', 'live' => 'vspserver-register.vsp', 'simulator' => null),
+        'AUTHENTICATE' => array('test' => 'vspserver-register.vsp', 'live' => 'vspserver-register.vsp', 'simulator' => null),
+        'RELEASE' => array('test' => 'release.vsp', 'live' => 'release.vsp', 'simulator' => 'VendorReleaseTx'),
+        'ABORT' => array('test' => 'abort.vsp', 'live' => 'abort.vsp', 'simulator' => 'VendorAbortTx'),
+        'REFUND' => array('test' => 'refund.vsp', 'live' => 'refund.vsp', 'simulator' => 'VendorRefundTx'),
+        'REPEAT' => array('test' => 'repeat.vsp', 'live' => 'repeat.vsp', 'simulator' => 'VendorRepeatTx'),
+        'REPEATDEFERRED' => array('test' => 'repeat.vsp', 'live' => 'repeat.vsp', 'simulator' => 'VendorRepeatTx'),
+        'VOID' => array('test' => 'void.vsp', 'live' => 'void.vsp', 'simulator' => 'VendorVoidTx'),
+        'MANUAL' => array('test' => 'manualpayment.vsp', 'live' => 'manualpayment.vsp', 'simulator' => null),
+        'DIRECTREFUND' => array('test' => 'directrefund.vsp', 'live' => 'directrefund.vsp', 'simulator' => 'VendorDirectrefundTx'),
+        'AUTHORISE' => array('test' => 'authorise.vsp', 'live' => 'authorise.vsp', 'simulator' => 'VendorAuthoriseTx'),
+        'CANCEL' => array('test' => 'cancel.vsp', 'live' => 'cancel.vsp', 'simulator' => 'VendorCancelTx'),
+    );
+
+    /**
+     * The SagePay platform we will connect to - 'test' or 'live'.
+     */
+
+     protected $sagepay_platform = 'test';
+
+    /**
      * The input characterset.
      * SagePay works only with ISO-8859-1, so conversion may be necessary.
      */
@@ -177,6 +226,40 @@ class Register extends Model\XmlAbstract
         return $this;
     }
 
+    /**
+     * Set the platform we are going to use.
+     * Platforms are 'test' or 'live' (there is no simulator for V3 protocol).
+     */
+
+    public function setPlatform($platform)
+    {
+        if (isset($this->sagepay_platform[strtolower($platform)])) {
+            $this->sagepay_platform = strtolower($platform);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get the URL for the platform and service selected.
+     */
+
+    public function getUrl()
+    {
+        $sub = '{service}';
+
+        $url_base = $this->sagepay_url_base[$this->sagepay_platform];
+        $service = $this->sagepay_url_service[$this->getField('TxType')][$this->sagepay_platform];
+
+        if (!isset($service)) {
+            // No URL - this platform/service is not supported.
+            return null;
+        } else {
+            return str_replace($sub, $service, $url_base);
+        }
+    }
+
+    
     /**
      * Set the value of a field in the transaction model.
      */
@@ -442,6 +525,7 @@ class Register extends Model\XmlAbstract
 
     /**
      * Send the registration to SagePay and save the reply.
+     * TODO: make sure the transactino type is valid (one of three allowed).
      */
 
     public function sendRegistration()
@@ -449,11 +533,8 @@ class Register extends Model\XmlAbstract
         // Construct the query string from data in the model.
         $query_string = $this->queryData();
 
-        // TODO: where from?
-        // The URL will vary depending on:
-        // a) the simulator/test/live instance being accessed.
-        // b) the transaction type being requesed.
-        $sagepay_url = 'https://test.sagepay.com/gateway/service/vspserver-register.vsp';
+        // Get the URL, which is derived from the platform and the 
+        $sagepay_url = $this->getUrl();
 
         // Post the request to SagePay
         $output = $this->postSagePay($sagepay_url, $query_string, $this->timeout);
@@ -465,8 +546,6 @@ class Register extends Model\XmlAbstract
             $this->setField('SecurityKey', $output['SecurityKey']);
 
             // Save the status as PENDING, to indicate we are waing for a response from SagePay.
-            // CHECKME: should we use one status field, shared by the registration and the
-            // notification actions?
             $this->setField('Status', 'PENDING');
 
             $this->setField('StatusDetail', $output['StatusDetail']);
