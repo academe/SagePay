@@ -243,6 +243,9 @@ abstract class TransactionAbstract
         // "3021 : The Basket format is invalid."
         'StatusDetail' => null,
 
+        // The URL the user should be sent to. Provided by SagePay.
+        'NextURL' => null,
+
         // The SagePay transaction ID returned from the transaction registration POST.
         // Alphnumeric 38 characters.
         // Only present if Status is 'OK'.

@@ -10,6 +10,8 @@
 
 namespace Academe\SagePay\Model;
 
+use Academe\SagePay\Metadata as Metadata;
+
 class TransactionPdo extends TransactionAbstract
 {
     /**
@@ -100,8 +102,25 @@ class TransactionPdo extends TransactionAbstract
                 }
             }
 
-            // Insert or update.
+            // Get the field data and the metadata that describes those fields.
             $fields = $this->toArray();
+            $field_meta = Metadata\Fields::get();
+
+            // Make a list of the fields we will be updating in the database.
+            $fields_to_update = array();
+            foreach($fields as $field_name => $field_value) {
+                // Skip null values so we don't update columns we have not set up yet.
+                if (!isset($field_value)) continue;
+
+                // Check the metadata to see if this is a field we want to save.
+                if ( ! isset($field_meta->{$field_name}) || ! $field_meta->{$field_name}->store) {
+                    continue;
+                }
+
+                $fields_to_update[$field_name] = $field_name;
+            }
+
+            // Insert or update.
             if ($new_record) {
                 // Insert.
                 $sql = 'INSERT INTO ' . $this->transaction_table_name . ' (';
@@ -111,6 +130,11 @@ class TransactionPdo extends TransactionAbstract
                     // Skip null values so we don't update columns we have not set up yet.
                     if (!isset($field_value)) continue;
 
+                    // Check the metadata to see if this is a field we want to save.
+                    if ( ! isset($field_meta->{$field_name}) || ! $field_meta->{$field_name}->store) {
+                        continue;
+                    }
+
                     $sql .= $sep . $field_name;
                     $sep = ', ';
                 }
@@ -119,7 +143,8 @@ class TransactionPdo extends TransactionAbstract
 
                 $sep = '';
                 foreach($fields as $field_name => $field_value) {
-                    if (!isset($field_value)) continue;
+                    // Skip fields not listed as ones we want to store.
+                    if ( ! isset($fields_to_update[$field_name])) continue;
 
                     $sql .= $sep . ':' . strtolower($field_name);
                     $sep = ', ';
@@ -129,6 +154,9 @@ class TransactionPdo extends TransactionAbstract
                 $stmt = $pdo->prepare($sql);
 
                 foreach($fields as $field_name => $field_value) {
+                    // Skip fields not listed as ones we want to store.
+                    if ( ! isset($fields_to_update[$field_name])) continue;
+
                     // Note we need to bind a variable, and not just a value.
                     $stmt->bindParam(
                         ':' . strtolower($field_name),
@@ -144,9 +172,11 @@ class TransactionPdo extends TransactionAbstract
 
                 $sep = '';
                 foreach($fields as $field_name => $field_value) {
-                    // Skip null values so we don't update columns we have not set up yet.
-                    if (!isset($field_value)) continue;
+                    // Skip fields not listed as ones we want to store.
+                    if ( ! isset($fields_to_update[$field_name])) continue;
 
+                    // Skip updating the primary key for the update field list.
+                    // We will still bind to it though, for use in the WHERE clause.
                     if ($field_name == 'VendorTxCode') continue;
 
                     $sql .= $sep . $field_name . ' = :' . strtolower($field_name);
@@ -158,6 +188,9 @@ class TransactionPdo extends TransactionAbstract
                 $stmt = $pdo->prepare($sql);
 
                 foreach($fields as $field_name => $field_value) {
+                    // Skip fields not listed as ones we want to store.
+                    if ( ! isset($fields_to_update[$field_name])) continue;
+
                     // Note we need to bind a variable, and not just a value.
                     $stmt->bindParam(
                         ':' . strtolower($field_name),

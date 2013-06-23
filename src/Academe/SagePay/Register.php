@@ -50,19 +50,71 @@ class Register extends Model\XmlAbstract
      */
 
     protected $sagepay_url_service = array(
-        'PAYMENT' => array('test' => 'vspserver-register.vsp', 'live' => 'vspserver-register.vsp', 'simulator' => null),
-        'DEFERRED' => array('test' => 'vspserver-register.vsp', 'live' => 'vspserver-register.vsp', 'simulator' => null),
-        'AUTHENTICATE' => array('test' => 'vspserver-register.vsp', 'live' => 'vspserver-register.vsp', 'simulator' => null),
-        'RELEASE' => array('test' => 'release.vsp', 'live' => 'release.vsp', 'simulator' => 'VendorReleaseTx'),
-        'ABORT' => array('test' => 'abort.vsp', 'live' => 'abort.vsp', 'simulator' => 'VendorAbortTx'),
-        'REFUND' => array('test' => 'refund.vsp', 'live' => 'refund.vsp', 'simulator' => 'VendorRefundTx'),
-        'REPEAT' => array('test' => 'repeat.vsp', 'live' => 'repeat.vsp', 'simulator' => 'VendorRepeatTx'),
-        'REPEATDEFERRED' => array('test' => 'repeat.vsp', 'live' => 'repeat.vsp', 'simulator' => 'VendorRepeatTx'),
-        'VOID' => array('test' => 'void.vsp', 'live' => 'void.vsp', 'simulator' => 'VendorVoidTx'),
-        'MANUAL' => array('test' => 'manualpayment.vsp', 'live' => 'manualpayment.vsp', 'simulator' => null),
-        'DIRECTREFUND' => array('test' => 'directrefund.vsp', 'live' => 'directrefund.vsp', 'simulator' => 'VendorDirectrefundTx'),
-        'AUTHORISE' => array('test' => 'authorise.vsp', 'live' => 'authorise.vsp', 'simulator' => 'VendorAuthoriseTx'),
-        'CANCEL' => array('test' => 'cancel.vsp', 'live' => 'cancel.vsp', 'simulator' => 'VendorCancelTx'),
+        'PAYMENT' => array(
+            'test' => 'vspserver-register.vsp',
+            'live' => 'vspserver-register.vsp',
+            'simulator' => null,
+        ),
+        'DEFERRED' => array(
+            'test' => 'vspserver-register.vsp',
+            'live' => 'vspserver-register.vsp',
+            'simulator' => null,
+        ),
+        'AUTHENTICATE' => array(
+            'test' => 'vspserver-register.vsp',
+            'live' => 'vspserver-register.vsp',
+            'simulator' => null,
+        ),
+        'RELEASE' => array(
+            'test' => 'release.vsp',
+            'live' => 'release.vsp',
+            'simulator' => 'VendorReleaseTx',
+        ),
+        'ABORT' => array(
+            'test' => 'abort.vsp',
+            'live' => 'abort.vsp',
+            'simulator' => 'VendorAbortTx',
+        ),
+        'REFUND' => array(
+            'test' => 'refund.vsp',
+            'live' => 'refund.vsp',
+            'simulator' => 'VendorRefundTx',
+        ),
+        'REPEAT' => array(
+            'test' => 'repeat.vsp',
+            'live' => 'repeat.vsp',
+            'simulator' => 'VendorRepeatTx',
+        ),
+        'REPEATDEFERRED' => array(
+            'test' => 'repeat.vsp',
+            'live' => 'repeat.vsp',
+            'simulator' => 'VendorRepeatTx',
+        ),
+        'VOID' => array(
+            'test' => 'void.vsp',
+            'live' => 'void.vsp',
+            'simulator' => 'VendorVoidTx',
+        ),
+        'MANUAL' => array(
+            'test' => 'manualpayment.vsp',
+            'live' => 'manualpayment.vsp',
+            'simulator' => null,
+        ),
+        'DIRECTREFUND' => array(
+            'test' => 'directrefund.vsp',
+            'live' => 'directrefund.vsp',
+            'simulator' => 'VendorDirectrefundTx',
+        ),
+        'AUTHORISE' => array(
+            'test' => 'authorise.vsp',
+            'live' => 'authorise.vsp',
+            'simulator' => 'VendorAuthoriseTx',
+        ),
+        'CANCEL' => array(
+            'test' => 'cancel.vsp',
+            'live' => 'cancel.vsp',
+            'simulator' => 'VendorCancelTx',
+        ),
     );
 
     /**

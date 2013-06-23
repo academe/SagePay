@@ -275,7 +275,7 @@ class iso3166
 
     public static function get()
     {
-        return $this->counties;
+        return static::$countries;
     }
 }
 
