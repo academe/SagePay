@@ -10,8 +10,9 @@ a REST resource.
 
 ## Limitations ##
 
-The first instance of this library will focus on paying straight transactions. It will
-no deal with repeating transactions for handling DEFERRED or AUTHENTICATE transaction types.
+The first working release of this library will focus on paying PAYMENT transactions. It will
+not deal with repeating transactions for handling DEFERRED or AUTHENTICATE transaction types, or
+the myriad other types. However, they should all be straight-forward to implement.
 
 ## Status ##
 
