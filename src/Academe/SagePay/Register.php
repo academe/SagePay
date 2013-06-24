@@ -8,6 +8,8 @@
 
 namespace Academe\SagePay;
 
+use Academe\SagePay\Metadata as Metadata;
+
 class Register extends Model\XmlAbstract
 {
     /**
@@ -701,10 +703,15 @@ class Register extends Model\XmlAbstract
         // With some of the major checks done, let's dig a little deeper into
         // the transaction.
         if ($success) {
-            // Gather some addtional parameters.
-            // TODO: derive this list from the transaction metadata, with source "notification".
-            foreach(array('VPSSignature', 'StatusDetail', 'TxAuthNo') as $post_name) {
-                $post[$post_name] = (isset($post[$post_name]) ? (string) $post[$post_name] : '');
+            // Gather some additional parameters, making sure they are all set (defaulting to '').
+            // Derive this list from the transaction metadata, with source "notification".
+
+            $field_meta = Metadata\Transaction::get();
+            $fields_to_store = array();
+            foreach($field_meta as $field_name => $field) {
+                if ( ! empty($field->store) && $field->source == 'notification') {
+                    $post[$post_name] = (isset($post[$post_name]) ? (string) $post[$post_name] : '');
+                }
             }
 
             $strMessage = $post['VPSTxId'] . $post['VendorTxCode'] . $Status
@@ -729,6 +736,7 @@ class Register extends Model\XmlAbstract
         if ($success) {
             // If we found a PENDING transaction, then update it.
             if ( ! empty($tx->VendorTxCode) && $tx->getField('Status') == 'Pending') {
+                // SagePay V2 fields
                 $this->setField('Status', $Status);
                 $this->setField('StatusDetail', $StatusDetail);
                 $this->setField('TxAuthNo', $post['TxAuthNo']);
@@ -743,6 +751,7 @@ class Register extends Model\XmlAbstract
                 $this->setField('PayerStatus', $post['PayerStatus']);
                 $this->setField('CardType', $post['CardType']);
                 $this->setField('Last4Digits', $post['Last4Digits']);
+                // SagePay V3.00 fields
                 $this->setField('VPSSignature', $post['VPSSignature']);
                 $this->setField('FraudResponse', $post['FraudResponse']);
                 $this->setField('Surcharge', $post['Surcharge']);
