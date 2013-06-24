@@ -298,7 +298,7 @@ class TransactionPdo extends TransactionAbstract
 
             $max = $field->max;
 
-            // If currency, then take the max value as a string and add 3 (for the dp and 2 dp)
+            // If currency, then take the max value as a string and add 3 (for the dp and 2 dp digits)
             if ($field->type == 'currency') $max = strlen((string)$max) + 3;
 
             // Now here is a nasty hack.

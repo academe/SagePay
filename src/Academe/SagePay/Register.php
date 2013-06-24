@@ -17,6 +17,14 @@ class Register extends Model\XmlAbstract
     protected $tx_model = null;
 
     /**
+     * Flag indicates whether failed transaction registrations should be saved to the transaction log.
+     * Normally they would be logged by SagePay anyway, but discarded by the application, perhaps
+     * presenting the user with the option to try again.
+     */
+
+    protected $save_failed_registrationns = true;
+
+    /**
      * The timeout, in seconds, waiting fot SagePay to respond to a registration request.
      */
 
@@ -164,6 +172,15 @@ class Register extends Model\XmlAbstract
         $this->tx_model = $tx_model;
 
         // Return the transactino model so the caller can continue to set it up.
+        return $this->tx_model;
+    }
+
+    /**
+     * Get the injected model used to store, retrieve and update the transaction.
+     */
+
+    public function getTransactionModel()
+    {
         return $this->tx_model;
     }
 
@@ -414,7 +431,7 @@ class Register extends Model\XmlAbstract
 
         $query = array();
 
-        // TODO: this could perhaps go into a data file.
+        // TODO: this can be derived from the Metadata\Transaction of source "registration".
         // Loop through the fields, both optional and mandatory.
         $fields_to_send = array(
             'VPSProtocol',
@@ -512,6 +529,7 @@ class Register extends Model\XmlAbstract
 
     /**
      * Handle the POST to SagePay and collect the result.
+     * TODO: move to Transport namespace.
      */
 
     public function postSagePay($sagepay_url, $query_string, $timeout = 30)
@@ -597,25 +615,142 @@ class Register extends Model\XmlAbstract
             $this->setField('VPSTxId', $output['VPSTxId']);
             $this->setField('SecurityKey', $output['SecurityKey']);
 
-            // Save the status as PENDING, to indicate we are waing for a response from SagePay.
+            // Move the status as PENDING, to indicate we are waing for a response from SagePay.
             $this->setField('Status', 'PENDING');
 
             $this->setField('StatusDetail', $output['StatusDetail']);
 
-            // CHECKME: Does the next URL need to go into the model? I expect not.
+            // Set the NextURL in the model. Itr won't get saved, but will be accessible to
+            // the calling function to action.
             $this->setField('NextURL', $output['NextURL']);
 
             // Save the transaction to storage.
-            // TODO: catch failures.
+            // TODO: catch save failures.
             $this->save();
         } else {
             // SagePay has rejected what we have sent.
-            // TODO: do we save the transaction at this point? It kind of makes sense. Unless the
-            // vendor tx code is saved in the session, even after a failure, then each total
-            // failure will result in a new record being writtem to storage, which will give us an
-            // audit trail. Perhaps make it an option.
             $this->setField('Status', $output['Status']);
             $this->setField('StatusDetail', $output['StatusDetail']);
+
+            // If the option is set, save the failed registration to the transaction to storage.
+            // The failures are logged by SagePay anyway, and you probably don't want to clog up
+            // storage with the failures, unless you have a specific reason to monitor this.
+            if ($this->save_failed_registrationns) {
+                $this->save();
+            }
+        }
+    }
+
+    /**
+     * The notification callback.
+     * This handles the callback from SagePay in response to a [successful] transaction registration.
+     *
+     * @param $post array POST data sent to the page request.
+     */
+
+    public function notification($post)
+    {
+        // Get the main details that identify the transaction.
+        $Status = (isset($post['Status']) ? (string) $post['Status'] : '');
+        $VendorTxCode = (isset($post['VendorTxCode']) ? (string) $post['VendorTxCode'] : '');
+        $VPSTxId = (isset($post['VPSTxId']) ? (string) $post['VendorTxCode'] : '');
+
+        // true if the notification was successfuly processed.
+        $success = true;
+
+        // If we have no VendorTxCode then we can go no further.
+        if (!isset($VendorTxCode)) {
+            // TODO: return an error to the caller.
+            $success = false;
+            $Status = 'ERROR';
+            $StatusDetail = 'No VendorTxCode sent';
+        }
+
+        // Get the transaction record.
+        // A transaction object should already have been injected to look this up.
+        $tx = $this->getTransactionModel();
+
+        if ( ! isset($tx)) {
+            // Internal error.
+            $success = false;
+            $Status = 'INVALID';
+            $StatusDetail = 'Internal error';
+        }
+
+        $tx->find($VendorTxCode);
+
+        if ( ! empty($tx)) {
+            if ($tx->getField('Status') != 'PENDING') {
+                // Already processed status.
+                $success = false;
+                $Status = 'INVALID';
+                $StatusDetail = 'Transaction has already been processed';
+            } elseif ($VPSTxId != $tx->getField('VPSTxId')) {
+                // Mis-matching VPSTxId values.
+                $success = false;
+                $Status = 'INVALID';
+                $StatusDetail = 'VPSTxId mismatch';
+            }
+        } else {
+            // Return failure to find transaction.
+            $success = false;
+            $Status = 'INVALID';
+            $StatusDetail = 'No transaction found';
+        }
+
+        // With some of the major checks done, let's dig a little deeper into
+        // the transaction.
+        if ($success) {
+            // Gather some addtional parameters.
+            // TODO: derive this list from the transaction metadata, with source "notification".
+            foreach(array('VPSSignature', 'StatusDetail', 'TxAuthNo') as $post_name) {
+                $post[$post_name] = (isset($post[$post_name]) ? (string) $post[$post_name] : '');
+            }
+
+            $strMessage = $post['VPSTxId'] . $post['VendorTxCode'] . $Status
+                . $post['TxAuthNo'] . $post['Vendor']
+                . $post['AVSCV2'] . $this->getField['SecurityKey']
+                . $post['AddressResult'] . $post['PostCodeResult'] . $post['CV2Result']
+                . $post['GiftAid'] . $post['ThreeDSecureStatus']
+                . $post['CAVV'] . $post['AddressStatus'] . $post['PayerStatus']
+                . $post['CardType'] . $post['Last4Digits'];
+
+            $MySignature = strtoupper(md5($strMessage));
+
+            if ($MySignature !== $VPSSignature) {
+                // TODO: message that record has been tampered with.
+                $success = false;
+                $Status = 'ERROR';
+                $StatusDetail = 'Notification has been tampered with';
+            }
+        }
+
+        // If still a success, then all tests have passed.
+        if ($success) {
+            // If we found a PENDING transaction, then update it.
+            if ( ! empty($tx->VendorTxCode) && $tx->getField('Status') == 'Pending') {
+                $this->setField('Status', $Status);
+                $this->setField('StatusDetail', $StatusDetail);
+                $this->setField('TxAuthNo', $post['TxAuthNo']);
+                $this->setField('AVSCV2', $post['AVSCV2']);
+                $this->setField('AddressResult', $post['AddressResult']);
+                $this->setField('PostCodeResult', $post['PostCodeResult']);
+                $this->setField('CV2Result', $post['CV2Result']);
+                $this->setField('GiftAid', $post['GiftAid']);
+                $this->setField('3DSecureStatus', $post['3DSecureStatus']);
+                $this->setField('CAVV', $post['CAVV']);
+                $this->setField('AddressStatus', $post['AddressStatus']);
+                $this->setField('PayerStatus', $post['PayerStatus']);
+                $this->setField('CardType', $post['CardType']);
+                $this->setField('Last4Digits', $post['Last4Digits']);
+                $this->setField('VPSSignature', $post['VPSSignature']);
+                $this->setField('FraudResponse', $post['FraudResponse']);
+                $this->setField('Surcharge', $post['Surcharge']);
+                $this->setField('BankAuthCode', $post['BankAuthCode']);
+                $this->setField('DeclineCode', $post['DeclineCode']);
+                $this->setField('ExpiryDate', $post['ExpiryDate']);
+                $this->setField('Token', $post['Token']);
+            }
         }
     }
 }
