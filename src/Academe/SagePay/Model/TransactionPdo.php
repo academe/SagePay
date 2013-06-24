@@ -104,9 +104,9 @@ class TransactionPdo extends TransactionAbstract
 
             // Get the field data and the metadata that describes those fields.
             $fields = $this->toArray();
-            $field_meta = Metadata\Fields::get();
+            $field_meta = Metadata\Transaction::get();
 
-            // Make a list of the fields we will be updating in the database.
+            // Make a list of the fields we want to set in the database.
             $fields_to_update = array();
             foreach($fields as $field_name => $field_value) {
                 // Skip null values so we don't update columns we have not set up yet.
@@ -120,7 +120,8 @@ class TransactionPdo extends TransactionAbstract
                 $fields_to_update[$field_name] = $field_name;
             }
 
-            // Insert or update.
+            // Insert or update?
+
             if ($new_record) {
                 // Insert.
                 $sql = 'INSERT INTO ' . $this->transaction_table_name . ' (';
@@ -258,84 +259,11 @@ class TransactionPdo extends TransactionAbstract
             $pdo = $this->getConnection();
 
             // Create the table.
-            // TxAuthNo is returned as a long integer, but we will store it as a VARCHAR.
-            // TODO: this table creation statement can be generated entirely from the
-            // field metadata. It should work like that to keep consistency.
 
-            $sql = <<<ENDSQL
-                CREATE TABLE IF NOT EXISTS $this->transaction_table_name (
-                    VendorTxCode VARCHAR(40) NOT NULL,
-                    VPSProtocol VARCHAR(10) NOT NULL,
-                    TxType VARCHAR(20) NOT NULL,
-                    Vendor VARCHAR(80),
-                    Amount VARCHAR(20) NOT NULL,
-                    Currency VARCHAR(10) NOT NULL,
-                    Description VARCHAR(100) NOT NULL,
+            $sql = 'CREATE TABLE IF NOT EXISTS ' . $this->transaction_table_name . " (\n";
+            $sql .= $this->createColumnsDdl();
+            $sql .= ', PRIMARY KEY pk_' . $this->transaction_table_name . ' (VendorTxCode) )';
 
-                    BillingSurname VARCHAR(20),
-                    BillingFirstnames VARCHAR(20),
-                    BillingAddress1 VARCHAR(100),
-                    BillingAddress2 VARCHAR(100),
-                    BillingCity VARCHAR(40),
-                    BillingPostCode VARCHAR(10),
-                    BillingCountry VARCHAR(2),
-                    BillingState VARCHAR(2),
-                    BillingPhone VARCHAR(20),
-
-                    DeliverySurname VARCHAR(20),
-                    DeliveryFirstnames VARCHAR(20),
-                    DeliveryAddress1 VARCHAR(100),
-                    DeliveryAddress2 VARCHAR(100),
-                    DeliveryCity VARCHAR(40),
-                    DeliveryPostCode VARCHAR(10),
-                    DeliveryCountry VARCHAR(2),
-                    DeliveryState VARCHAR(2),
-                    DeliveryPhone VARCHAR(20),
-
-                    CustomerEMail VARCHAR(255),
-
-                    AllowGiftAid VARCHAR(1),
-                    ApplyAVSCV2 VARCHAR(1),
-                    Apply3DSecure VARCHAR(1),
-                    BillingAgreement VARCHAR(1),
-                    AccountType VARCHAR(1),
-                    CreateToken VARCHAR(1),
-
-                    BasketXML TEXT,
-                    CustomerXML VARCHAR(2000),
-                    SurchargeXML VARCHAR(800),
-                    VendorData VARCHAR(200),
-
-                    Status VARCHAR(14),
-                    StatusDetail VARCHAR(255),
-                    VPSTxId VARCHAR(38),
-                    SecurityKey VARCHAR(10),
-
-                    TxAuthNo VARCHAR(20),
-                    AVSCV2 VARCHAR(50),
-                    AddressResult VARCHAR(20),
-                    PostCodeResult VARCHAR(20),
-                    CV2Result VARCHAR(20),
-                    GiftAid VARCHAR(1),
-                    3DSecureStatus VARCHAR(50),
-                    CAVV VARCHAR(30),
-                    AddressStatus VARCHAR(20),
-                    PayerStatus VARCHAR(20),
-                    CardType VARCHAR(15),
-                    Last4Digits VARCHAR(4),
-
-                    VPSSignature VARCHAR(100),
-                    FraudResponse VARCHAR(10),
-                    Surcharge VARCHAR(20),
-
-                    BankAuthCode VARCHAR(6),
-                    DeclineCode VARCHAR(2),
-                    ExpiryDate VARCHAR(4),
-                    Token VARCHAR(38),
-
-                    PRIMARY KEY vendor_tx_code (VendorTxCode)
-                )
-ENDSQL;
 
             // TOOD: check the result.
             $success = $pdo->exec($sql);
@@ -346,6 +274,64 @@ ENDSQL;
         }
 
         return true;
+    }
+
+    /**
+     * Generate the database column creation statements from the Transaction metadata.
+     */
+
+    public function createColumnsDdl()
+    {
+        // NOTE: the column lengths are to support unicode (UTF-8) characters, and not ASCII bytes.
+        // If the database is not set up with a unicode charset, then we need to add a percentage 
+        // to the lengths of all columns.
+        $field_meta = Metadata\Transaction::get();
+
+        $columns = array();
+
+        foreach($field_meta as $name => $field) {
+            if ( ! $field->store ) continue;
+
+            $column = $name . ' ';
+
+            if (!isset($field->max)) continue;
+
+            $max = $field->max;
+
+            // If currency, then take the max value as a string and add 3 (for the dp and 2 dp)
+            if ($field->type == 'currency') $max = strlen((string)$max) + 3;
+
+            // Now here is a nasty hack.
+            // Columns that can accept UTF-8 data need to have their length multiplied by
+            // four to guarantee a full UTF-8 string can fit in. There are probably ways around
+            // this, but the documentation is (and always has been) veru confused, mixing up the
+            // storage of charactersets, the searching of charactersets and the automatic
+            // conversion between the two. This is nasty, nasty, but should work everywhere.
+            if (
+                (isset($field->chars) && in_array('^', $field->chars))
+                || $field->type == 'rfc532n'
+                || $field->type == 'html'
+                || $field->type == 'xml'
+            ) {
+                $max = $max * 4;
+            }
+
+            // VARCHAR for most columns, apart from the really long ones.
+            $datatype = 'VARCHAR';
+            if ($max > 2048) {
+                $datatype = 'TEXT';
+                $max = null;
+            }
+
+            $column .= $datatype;
+            if (isset($max)) $column .= '(' . $max . ')';
+
+            if (!empty($field->required)) $column .= ' NOT NULL';
+
+            $columns[] = $column;
+        }
+
+        return implode(",\n", $columns);
     }
 
     /**
