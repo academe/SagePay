@@ -351,6 +351,15 @@ class Register extends Model\XmlAbstract
     }
 
     /**
+     * Get a transaction by its VendorTxCode.
+     */
+
+    public function findTransaction($VendorTxCode)
+    {
+        return $this->tx_model->find($VendorTxCode);
+    }
+
+    /**
      * Set the billing address.
      */
 
@@ -673,37 +682,40 @@ class Register extends Model\XmlAbstract
         // Get the main details that identify the transaction.
         $Status = (isset($post['Status']) ? (string) $post['Status'] : '');
         $VendorTxCode = (isset($post['VendorTxCode']) ? (string) $post['VendorTxCode'] : '');
-        $VPSTxId = (isset($post['VPSTxId']) ? (string) $post['VendorTxCode'] : '');
+        $VPSTxId = (isset($post['VPSTxId']) ? (string) $post['VPSTxId'] : '');
+        $VPSSignature = (isset($post['VPSSignature']) ? (string) $post['VPSSignature'] : '');
 
         // Assume this process will be successful.
         $retStatus = 'OK';
         $retStatusDetail = '';
 
         // If we have no VendorTxCode then we can go no further.
-        if ( ! isset($VendorTxCode)) {
-            // TODO: return an error to the caller.
+        if (empty($VendorTxCode)) {
+            // Return an appropriate error to the caller.
             $retStatus = 'ERROR';
             $retStatusDetail = 'No VendorTxCode sent';
         }
 
-        // Get the transaction record.
-        // A transaction object should already have been injected to look this up.
-        $tx = $this->getTransactionModel();
+        if ($retStatus == 'OK') {
+            // Get the transaction record.
+            // A transaction object should already have been injected to look this up.
 
-        if ( $retStatus == 'OK' && ! isset($tx)) {
-            // Internal error.
-            $retStatus = 'INVALID';
-            $retStatusDetail = 'Internal error (missing transaction object)';
+            if ( $retStatus == 'OK' && $this->getTransactionModel() === null) {
+                // Internal error.
+                $retStatus = 'INVALID';
+                $retStatusDetail = 'Internal error (missing transaction object)';
+            } else {
+                // Fetch the transaction record from storage.
+                $this->findTransaction($VendorTxCode);
+            }
         }
 
-        $tx->find($VendorTxCode);
-
-        if ( ! empty($tx)) {
-            if ($tx->getField('Status') != 'PENDING') {
+        if ($this->getField('VendorTxCode') !== null) {
+            if ($this->getField('Status') != 'PENDING') {
                 // Already processed status.
                 $retStatus = 'INVALID';
                 $retStatusDetail = 'Transaction has already been processed';
-            } elseif ($VPSTxId != $tx->getField('VPSTxId')) {
+            } elseif ($VPSTxId != $this->getField('VPSTxId')) {
                 // Mis-matching VPSTxId values.
                 $retStatus = 'INVALID';
                 $retStatusDetail = 'VPSTxId mismatch';
@@ -721,20 +733,44 @@ class Register extends Model\XmlAbstract
             // Derive this list from the transaction metadata, with source "notification".
 
             $field_meta = Metadata\Transaction::get();
-            $fields_to_store = array();
+
             foreach($field_meta as $field_name => $field) {
-                if ( ! empty($field->store) && $field->source == 'notification') {
-                    $post[$post_name] = (isset($post[$post_name]) ? (string) $post[$post_name] : '');
+                // TODO: use a "tamper" flag instead.
+                if (
+                    ( ! empty($field->store) && $field->source == 'notification')
+                    || $field_name == 'Vendor'
+                ) {
+                    // Make sure a string has been passed in, and default to and empty string.
+                    $post[$field_name] = (isset($post[$field_name]) ? (string) $post[$field_name] : '');
                 }
             }
 
-            $strMessage = $post['VPSTxId'] . $post['VendorTxCode'] . $Status
-                . $post['TxAuthNo'] . $post['Vendor']
-                . $post['AVSCV2'] . $this->getField['SecurityKey']
+            /*
+                From protocol V3 documentation:
+
+                VPSTxId + VendorTxCode + Status 
+                + TxAuthNo + VendorName (aka Vendor)
+                + AVSCV2 + SecurityKey (saved with the request)
+                + AddressResult + PostCodeResult + CV2Result
+                + GiftAid + 3DSecureStatus
+                + CAVV + AddressStatus + PayerStatus
+                + CardType + Last4Digits 
+                + DeclineCode + ExpiryDate
+                + FraudResponse + BankAuthCode
+            */
+            $strMessage = 
+                // V2.23 protocol
+                $post['VPSTxId'] . $post['VendorTxCode'] . $post['Status']
+                . $post['TxAuthNo'] . $this->getField('Vendor')
+                . $post['AVSCV2'] . $this->getField('SecurityKey')
                 . $post['AddressResult'] . $post['PostCodeResult'] . $post['CV2Result']
-                . $post['GiftAid'] . $post['ThreeDSecureStatus']
+                . $post['GiftAid'] . $post['3DSecureStatus']
                 . $post['CAVV'] . $post['AddressStatus'] . $post['PayerStatus']
-                . $post['CardType'] . $post['Last4Digits'];
+                . $post['CardType'] . $post['Last4Digits']
+
+                // New for V3 protocol.
+                . $post['DeclineCode'] . $post['ExpiryDate']
+                . $post['FraudResponse'] . $post['BankAuthCode'];
 
             $MySignature = strtoupper(md5($strMessage));
 
@@ -786,6 +822,28 @@ class Register extends Model\XmlAbstract
         // It is not clear why, but the sample code provided by SagePay does this.
         if ($Status == 'ERROR') {
             $retStatus = 'INVALID';
+        }
+
+        // Replace any tokens in the URL with values from the transaction, if required.
+        // The tokens will be {fieldName} for inserting in a path part of the URL or
+        // {{fieldName}} for inserting into a query parameter of the URL.
+        // e.g. http://example.com/notification_{Status}.php?id={{VendorTxCode}}
+        // although you probably don't want to expose the VendorTxCode.
+
+        $fields = $this->toArray();
+        foreach ($fields as $field => $value) {
+            $token_path = '{' . $field . '}';
+            $token_query = '{' . $token . '}';
+
+            // Query parameters and path parts use different escaping.
+
+            if (strpos($redirect_url, $token_query) !== false) {
+                $redirect_url = str_replace($token_query, urlencode($value), $redirect_url);
+            }
+
+            if (strpos($redirect_url, $token_path) !== false) {
+                $redirect_url = str_replace($token_path, rawurlencode($value), $redirect_url);
+            }
         }
 
         // The return string should be fed out to the caller as the only result.

@@ -213,6 +213,7 @@ class TransactionPdo extends TransactionAbstract
 
     /**
      * Retrieve a record from storage.
+     * Returns true if found, false if not found.
      */
 
     public function find($VendorTxCode)
