@@ -119,6 +119,55 @@ looking something like this:
         'http://example.com/mysite/final.php?status={{Status}}'
     );
     
+    // Other actions can be performed here, based on what we find in `$register->getField('Status')`
+    // For example, you may want to inform an application that an invoice has been paid.
+    // You may also want to send the user an email at this point (to `$register->getField('CustomerEMail')`
+    
     // Return the result to SagePay.
     // Do not output *anything* else on this page. SagePay is expecting the contents of $result *only*.
     echo $result;
+    
+Now, at this point the user will be sent back to mysite/final.php
+
+Here the user needs to be informed about the outcome, and that will depend on the result and contents
+of the transaction. The page will need the VendorTxCode to get hold of the transaction like this:
+
+    // Set up the transaction model, same as when registering. Here is a slightly shorter-hand version.
+    $register = new Academe\SagePay\Register();
+    $register->setTransactionModel(new Academe\SagePay\Model\TransactionPdo())
+        ->setDatabase('mysql:host=localhost;dbname=foobar', 'myuser', 'mypassword');
+
+    // Fetch the transaction from storage.
+    $register->findTransaction($VendorTxCode);
+    
+    // Look at the result and take it from there.
+    $status = $register->getField('Status');
+    
+    if ($status == 'OK' || $status == 'AUTHENTICATED' || $status == 'REGISTERED') {
+        echo "Cool. Your payment was successful.";
+    } elseif ($status == 'PENDING') {
+        echo "Your payment has got delayed while being processed - we will email you when it fimally goes through.";
+    } else {
+        echo "Whoops - something went wrong here. No payment has been taken.";
+    }
+    
+The question is where the VendorTxCode comes from. It could be passed in via the URL by setting the final
+URL in the callback page to `mysite/final.php?txcode={{VendorTxCode}}` However, you may not want that ID
+to be exposed to the user. Also this final page would be permanently active - the transaction code will
+always be there in storage until it is cleared out.
+
+You may save VendorTxCode in the session when the payment registration is first
+made, and then retrieve it (and delete it) on the final page. That way this becomes a once-only access to the
+transaction result. If the user pays for several transactions at the same time, then the result of the
+transaction started first will be lost, but the processing should otherwise work correctly.
+
+The PENDING status is one to watch. For that status, the transaction is neither successful nor failed. It is
+presumably on some queue at some bank somewhere to be processed. When it is processed, the callback page
+will be called up by SagePay with the result. This is important to note, because the user will not be
+around to see that happen. So if the user needs to be notified by email, or the transaction result needs
+to be tied back to some action in the application (e.g. marking an invoice as paid or a membership as renewed)
+then it MUST be done in the callback page. Do *not* rely on this kind of thing to be done in the final.php
+page that the user is sent to.
+
+You can make use of the `CustomerData` field in the transaction for linking the payment to a resource in
+the application to be actioned.
