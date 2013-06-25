@@ -44,7 +44,7 @@ Very roughly, registering a [payment] transaction request will look like this:
     $storage->setDatabase('mysql:host=localhost;dbname=foobar', 'myuser', 'mypassword');
     
     // Inject the storage object.
-    $register->setTransactionModel();
+    $register->setTransactionModel($storage);
     
     // If you want to create a table ("sagepay_transactions" by default) for the PDO storage, do this.
     // The table will be created from the details in Metadata\Transaction and should provide a decent
@@ -52,7 +52,10 @@ Very roughly, registering a [payment] transaction request will look like this:
     $storage->createTable();
         
     // Set the main mandatory details for the transaction.
-    $register->setMain('PAYMENT', 'vendorx', '99.99', 'GBP', 'Store purchase', 'http://example.com/mycallback');
+    $register->setMain('PAYMENT', 'vendorx', '99.99', 'GBP', 'Store purchase', 'http://example.com/mycallback.php');
+    
+    // Indicate which platform you are connecting to - test or live.
+    $register->setPlatform('test');
     
     // Set the addresses.
     // You can just set one (e.g. billing) and the other will automatically mirror it. Or set both.
@@ -73,10 +76,11 @@ Very roughly, registering a [payment] transaction request will look like this:
     
     // Send the request to SagePay, get the response, The request and response will also
     // be saved in whatever storage you are using.
-    $response = $register->sendRegistration();
+    $register->sendRegistration();
 
 The response will provide details of what to do next: it may be a fail, or give a SagePay URL to jump to, or
-just a simple data validation error to correct.
+just a simple data validation error to correct. If `$register->getField('Status')` is "OK" then redirect
+the user to `$register->getField('NextURL')` otherwise handle the error.
 
 Somewhere above you need to tell the registration which platform you want to sent to (test or live).
 
@@ -89,6 +93,32 @@ an address field - something that may be perfectly valid in the framework that t
 and may be perfectly valid in other payement gateways). Just get used to it - this is the Sage way - always
 a little bit clunky in some unexpected ways.
 
-I intend to include field metadata in this library, that provides information on the validation rules.
+The field metadata in this library provides information on the validation rules.
 The library should validate everything before it goes to SagePay, but also those rules should be available
-to feed into the framework that the end user interacts with.
+to feed into the framework that the end user interacts with. Work is still to be done here.
+
+Once a transaction registration is submitted successfuly, and the user is sent to SagePay to enter their
+card details, SagePay will send the result the the callback URL. This is easily handled, with mycallback.php
+looking something like this:
+
+    // Gather the POST data.
+    // For some platforms (e.g. WordPress) you may need to do some decoding of the POST data.
+    $post = $_POST;
+    
+    // Set up the transaction model, same as when registering. Here is a slightly shorter-hand version.
+    $register = new Academe\SagePay\Register();
+    $register->setTransactionModel(new Academe\SagePay\Model\TransactionPdo())
+        ->setDatabase('mysql:host=localhost;dbname=foobar', 'myuser', 'mypassword');
+    
+    // Handle the notification.
+    // The final URL sent back, which is where the user will end up. We are also passing the
+    // status with the URL for convenience, but don't rely on looking at that status to
+    // determine if the payment was successful - a user could fake it.
+    $result = $register->notification(
+        $post, 
+        'http://example.com/mysite/final.php?status={{Status}}'
+    );
+    
+    // Return the result to SagePay.
+    // Do not output *anything* else on this page. SagePay is expecting the contents of $result *only*.
+    echo $result;
