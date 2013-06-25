@@ -728,30 +728,26 @@ class Register extends Model\XmlAbstract
         }
 
         // With some of the major checks done, let's dig a little deeper into
-        // the transaction.
+        // the transaction to see if it has been tampered with. The anit-tamper
+        // checks allows us to used a non-secure connection for the .
         if ($retStatus == 'OK') {
             // Gather some additional parameters, making sure they are all set (defaulting to '').
-            // Derive this list from the transaction metadata, with source "notification".
+            // Derive this list from the transaction metadata, with flag "tamper" set.
 
             $field_meta = Metadata\Transaction::get();
 
             foreach($field_meta as $field_name => $field) {
-                // TODO: use a "tamper" flag instead.
-                if (
-                    ( ! empty($field->store) && $field->source == 'notification')
-                    || $field_name == 'Vendor'
-                ) {
-                    // Make sure a string has been passed in, and default to and empty string.
+                if ( ! empty($field->tamper)) {
+                    // Make sure a string has been passed in, defaulting to an empty string if necessary.
                     $post[$field_name] = (isset($post[$field_name]) ? (string) $post[$field_name] : '');
                 }
             }
 
             /*
                 From protocol V3 documentation:
-
                 VPSTxId + VendorTxCode + Status 
                 + TxAuthNo + VendorName (aka Vendor)
-                + AVSCV2 + SecurityKey (saved with the request)
+                + AVSCV2 + SecurityKey (saved with the transaction registration)
                 + AddressResult + PostCodeResult + CV2Result
                 + GiftAid + 3DSecureStatus
                 + CAVV + AddressStatus + PayerStatus
@@ -759,6 +755,8 @@ class Register extends Model\XmlAbstract
                 + DeclineCode + ExpiryDate
                 + FraudResponse + BankAuthCode
             */
+
+            // Construct a concatenated POST string hash.
             $strMessage = 
                 // V2.23 protocol
                 $post['VPSTxId'] . $post['VendorTxCode'] . $post['Status']
