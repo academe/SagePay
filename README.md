@@ -24,11 +24,27 @@ routing and input validation).
 So far there is a storage model abstract, with an example PDO storage implementation. There are
 models for the basket, addresses, customers, and surcharges.
 
-I am completing the part that first registers a transaction with SagePay.
+This library does not depend on any other composer libraries at present. If using composer, it
+can be installed like this:
+
+    TODO
+
+Or if working on a clone of this repository in in vendor/sagepay:
+
+    {
+        "autoload": {
+            "psr-0": "Academe\\SagePay": "vendor/sagepay/src"
+        }
+    }
 
 ## Usage ##
 
 Very roughly, registering a [payment] transaction request will look like this:
+
+    // In all the code examples here, I will assume a PSR-0 autoloader is configured.
+    // e.g. for composer this may be included like this, taking the path to the vendor
+    // directory into account:
+    require 'vendor/autoload.php';
 
     // Note: this just half the process. This registers a payment request with the gateway.
     // The other half is handling the callback from SageWay with the results of the payment attempt,
