@@ -681,6 +681,7 @@ class Register extends Model\XmlAbstract
 
         // Get the main details that identify the transaction.
         $Status = (isset($post['Status']) ? (string) $post['Status'] : '');
+        $StatusDetail = (isset($post['StatusDetail']) ? (string) $post['StatusDetail'] : '');
         $VendorTxCode = (isset($post['VendorTxCode']) ? (string) $post['VendorTxCode'] : '');
         $VPSTxId = (isset($post['VPSTxId']) ? (string) $post['VPSTxId'] : '');
         $VPSSignature = (isset($post['VPSSignature']) ? (string) $post['VPSSignature'] : '');
@@ -788,7 +789,7 @@ class Register extends Model\XmlAbstract
             // However, we might want to log the errors somewhere else.
 
             // SagePay V2 fields.
-            $this->setField('Status', $retStatus);
+            $this->setField('Status', $Status);
             $this->setField('StatusDetail', $StatusDetail);
             $this->setField('TxAuthNo', $post['TxAuthNo']);
             $this->setField('AVSCV2', $post['AVSCV2']);
