@@ -561,7 +561,8 @@ class Register extends Model\XmlAbstract
         curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 2);
 
         // Send the request and store the result in an array
-        $rawresponse = curl_exec($curlSession);
+        $rawresponse = trim(curl_exec($curlSession));
+        $curl_info = curl_getinfo($curlSession);
 
         // Split response into name=value pairs
         // The documentation states "CRLF" divides the lines. We will use the regex match \R to 
@@ -570,25 +571,27 @@ class Register extends Model\XmlAbstract
 
         $output = array();
 
-        // Check that a connection was made
-        if (curl_error($curlSession))
+        // Check that a connection was made.
+        if (curl_error($curlSession) || $curl_info['http_code'] != 200)
         {
             // If it wasn't...
             $output['Status'] = 'FAIL';
-            $output['StatusDetail'] = trim(curl_error($curlSession));
+            $output['StatusDetail'] = $curl_info['http_code'] . ': ' . trim(curl_error($curlSession));
         }
 
         // Close the cURL session
         curl_close($curlSession);
 
-        // Tokenise the response
-        // Note: sometimes the response cannot be tokenised
-        foreach($response as $value) {
-            if (strpos($value, '=') !== false) {
-                list($k, $v) = explode('=', $value, 2);
-                $output[trim($k)] = trim($v);
-            } else {
-                $output[] = trim($value);
+        // Tokenise the response, if we have not already detected an HTTP error.
+        // In the response should be the Status and StatusDetail, amoungst other fields.
+        if ( ! isset($output['Status']) || $output['Status'] != 'FAIL') {
+            foreach($response as $value) {
+                if (strpos($value, '=') !== false) {
+                    list($k, $v) = explode('=', $value, 2);
+                    $output[trim($k)] = trim($v);
+                } else {
+                    $output[] = trim($value);
+                }
             }
         }
 
@@ -597,7 +600,7 @@ class Register extends Model\XmlAbstract
 
     /**
      * Send the registration to SagePay and save the reply.
-     * TODO: make sure the transactino type is valid (one of three allowed).
+     * TODO: make sure the transaction type is valid (one of three allowed).
      */
 
     public function sendRegistration()
@@ -613,7 +616,7 @@ class Register extends Model\XmlAbstract
 
         // If successful, save the returned data to the model, save it, then return the model.
         // TODO: include all extra fields that the V3 protocol introduces.
-        if ($output['Status'] == 'OK') {
+        if (isset($output['Status']) && $output['Status'] == 'OK') {
             $this->setField('VPSTxId', $output['VPSTxId']);
             $this->setField('SecurityKey', $output['SecurityKey']);
 
@@ -647,36 +650,50 @@ class Register extends Model\XmlAbstract
      * The notification callback.
      * This handles the callback from SagePay in response to a [successful] transaction registration.
      *
+     * The redirect URL should not carray any information that allows an end user to be able to
+     * highjack it and effect a payment. For this reason, SagePay will be sent to the same page
+     * regardless of the status. That page can then inspect the transaction to decide what action
+     * to take. A successful payment will be a status of OK, AUTHENTICATED or REGISTERED. A failed
+     * payment will be ABORT, NOTAUTHED, REJECTED or ERROR. In the middle is PENDIND, where the
+     * transaction is not yet complete (neither paid nor failed) and will take some time to process.
+     *
+     * Before redirecting to SagePay on registering the transaction, the VendorTxId needs to have been
+     * saved to the session. That way the transaction result can be inspected on return to the store,
+     * and appropriate action can be taken.
+     *
      * @param $post array POST data sent to the page request.
+     * @param $redirect_url string The URL SagePay should redirect to, regardless of status.
      */
 
-    public function notification($post)
+    public function notification($post, $redirect_url)
     {
+        // End of line string.
+        $eol = "\r\n";
+
         // Get the main details that identify the transaction.
         $Status = (isset($post['Status']) ? (string) $post['Status'] : '');
         $VendorTxCode = (isset($post['VendorTxCode']) ? (string) $post['VendorTxCode'] : '');
         $VPSTxId = (isset($post['VPSTxId']) ? (string) $post['VendorTxCode'] : '');
 
-        // true if the notification was successfuly processed.
-        $success = true;
+        // Assume this process will be successful.
+        $retStatus = 'OK';
+        $retStatusDetail = '';
 
         // If we have no VendorTxCode then we can go no further.
-        if (!isset($VendorTxCode)) {
+        if ( ! isset($VendorTxCode)) {
             // TODO: return an error to the caller.
-            $success = false;
-            $Status = 'ERROR';
-            $StatusDetail = 'No VendorTxCode sent';
+            $retStatus = 'ERROR';
+            $retStatusDetail = 'No VendorTxCode sent';
         }
 
         // Get the transaction record.
         // A transaction object should already have been injected to look this up.
         $tx = $this->getTransactionModel();
 
-        if ( ! isset($tx)) {
+        if ( $retStatus == 'OK' && ! isset($tx)) {
             // Internal error.
-            $success = false;
-            $Status = 'INVALID';
-            $StatusDetail = 'Internal error';
+            $retStatus = 'INVALID';
+            $retStatusDetail = 'Internal error (missing transaction object)';
         }
 
         $tx->find($VendorTxCode);
@@ -684,25 +701,22 @@ class Register extends Model\XmlAbstract
         if ( ! empty($tx)) {
             if ($tx->getField('Status') != 'PENDING') {
                 // Already processed status.
-                $success = false;
-                $Status = 'INVALID';
-                $StatusDetail = 'Transaction has already been processed';
+                $retStatus = 'INVALID';
+                $retStatusDetail = 'Transaction has already been processed';
             } elseif ($VPSTxId != $tx->getField('VPSTxId')) {
                 // Mis-matching VPSTxId values.
-                $success = false;
-                $Status = 'INVALID';
-                $StatusDetail = 'VPSTxId mismatch';
+                $retStatus = 'INVALID';
+                $retStatusDetail = 'VPSTxId mismatch';
             }
         } else {
             // Return failure to find transaction.
-            $success = false;
-            $Status = 'INVALID';
-            $StatusDetail = 'No transaction found';
+            $retStatus = 'INVALID';
+            $retStatusDetail = 'No transaction found';
         }
 
         // With some of the major checks done, let's dig a little deeper into
         // the transaction.
-        if ($success) {
+        if ($retStatus == 'OK') {
             // Gather some additional parameters, making sure they are all set (defaulting to '').
             // Derive this list from the transaction metadata, with source "notification".
 
@@ -725,42 +739,61 @@ class Register extends Model\XmlAbstract
             $MySignature = strtoupper(md5($strMessage));
 
             if ($MySignature !== $VPSSignature) {
-                // TODO: message that record has been tampered with.
-                $success = false;
-                $Status = 'ERROR';
-                $StatusDetail = 'Notification has been tampered with';
+                // Message that record has been tampered with.
+                $retStatus = 'ERROR';
+                $retStatusDetail = 'Notification has been tampered with';
             }
         }
 
         // If still a success, then all tests have passed.
-        if ($success) {
-            // If we found a PENDING transaction, then update it.
-            if ( ! empty($tx->VendorTxCode) && $tx->getField('Status') == 'Pending') {
-                // SagePay V2 fields
-                $this->setField('Status', $Status);
-                $this->setField('StatusDetail', $StatusDetail);
-                $this->setField('TxAuthNo', $post['TxAuthNo']);
-                $this->setField('AVSCV2', $post['AVSCV2']);
-                $this->setField('AddressResult', $post['AddressResult']);
-                $this->setField('PostCodeResult', $post['PostCodeResult']);
-                $this->setField('CV2Result', $post['CV2Result']);
-                $this->setField('GiftAid', $post['GiftAid']);
-                $this->setField('3DSecureStatus', $post['3DSecureStatus']);
-                $this->setField('CAVV', $post['CAVV']);
-                $this->setField('AddressStatus', $post['AddressStatus']);
-                $this->setField('PayerStatus', $post['PayerStatus']);
-                $this->setField('CardType', $post['CardType']);
-                $this->setField('Last4Digits', $post['Last4Digits']);
-                // SagePay V3.00 fields
-                $this->setField('VPSSignature', $post['VPSSignature']);
-                $this->setField('FraudResponse', $post['FraudResponse']);
-                $this->setField('Surcharge', $post['Surcharge']);
-                $this->setField('BankAuthCode', $post['BankAuthCode']);
-                $this->setField('DeclineCode', $post['DeclineCode']);
-                $this->setField('ExpiryDate', $post['ExpiryDate']);
-                $this->setField('Token', $post['Token']);
-            }
+        if ($retStatus == 'OK') {
+            // We found a PENDING transaction, so update it.
+            // We don't want to be updating the local transaction in any other circumstance.
+            // However, we might want to log the errors somewhere else.
+
+            // SagePay V2 fields.
+            $this->setField('Status', $retStatus);
+            $this->setField('StatusDetail', $StatusDetail);
+            $this->setField('TxAuthNo', $post['TxAuthNo']);
+            $this->setField('AVSCV2', $post['AVSCV2']);
+            $this->setField('AddressResult', $post['AddressResult']);
+            $this->setField('PostCodeResult', $post['PostCodeResult']);
+            $this->setField('CV2Result', $post['CV2Result']);
+            $this->setField('GiftAid', $post['GiftAid']);
+            $this->setField('3DSecureStatus', $post['3DSecureStatus']);
+            $this->setField('CAVV', $post['CAVV']);
+            $this->setField('AddressStatus', $post['AddressStatus']);
+            $this->setField('PayerStatus', $post['PayerStatus']);
+            $this->setField('CardType', $post['CardType']);
+            $this->setField('Last4Digits', $post['Last4Digits']);
+
+            // SagePay V3.00 fields.
+            $this->setField('VPSSignature', $post['VPSSignature']);
+            $this->setField('FraudResponse', $post['FraudResponse']);
+            $this->setField('Surcharge', $post['Surcharge']);
+            $this->setField('BankAuthCode', $post['BankAuthCode']);
+            $this->setField('DeclineCode', $post['DeclineCode']);
+            $this->setField('ExpiryDate', $post['ExpiryDate']);
+            $this->setField('Token', $post['Token']);
+
+            // Save the transaction record to local storage.
+            $this->save();
         }
+
+        // Finally return the result to SagePay, including the relevant redirect URL.
+
+        // If the status sent to us is ERROR, then return INVALID to SagePay.
+        // It is not clear why, but the sample code provided by SagePay does this.
+        if ($Status == 'ERROR') {
+            $retStatus = 'INVALID';
+        }
+
+        // The return string should be fed out to the caller as the only result.
+        // The status we send back is one of OK, INVALID or ERROR.
+
+        return 'Status=' . $retStatus . $eol
+            . 'StatusDetail=' . $retStatusDetail . $eol
+            . 'RedirectURL=' . $redirect_url . $eol;
     }
 }
 
