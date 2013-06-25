@@ -10,8 +10,9 @@ a REST resource.
 
 ## Limitations ##
 
-The first instance of this library will focus on paying straight transactions. It will
-no deal with repeating transactions for handling DEFERRED or AUTHENTICATE transaction types.
+The first working release of this library will focus on paying PAYMENT transactions. It will
+not deal with repeating transactions for handling DEFERRED or AUTHENTICATE transaction types, or
+the myriad other types. However, they should all be straight-forward to implement.
 
 ## Status ##
 
@@ -36,11 +37,19 @@ Very roughly, registering a [payment] transaction request will look like this:
     // Create the registration object.
     $register = new Academe\SagePay\Register();
     
-    // Create the storage object.
+    // Create a storage model object.
     // A basic PDO storage is provided, but just extend Model\Transaction and use your own.
     // Your framework may have active record model, or you may want to use WordPress post types, for example.
-    $register->setTransactionModel(new Academe\SagePay\Model\TransactionPdo())
-        ->setDatabase('mysql:host=localhost;dbname=foobar', 'myuser', 'mypassword');
+    $storage = new Academe\SagePay\Model\TransactionPdo();
+    $storage->setDatabase('mysql:host=localhost;dbname=foobar', 'myuser', 'mypassword');
+    
+    // Inject the storage object.
+    $register->setTransactionModel();
+    
+    // If you want to create a table ("sagepay_transactions" by default) for the PDO storage, do this.
+    // The table will be created from the details in Metadata\Transaction and should provide a decent
+    // out-of-the-box storage to get you up and running.
+    $storage->createTable();
         
     // Set the main mandatory details for the transaction.
     $register->setMain('PAYMENT', 'vendorx', '99.99', 'GBP', 'Store purchase', 'http://example.com/mycallback');
