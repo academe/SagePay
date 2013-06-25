@@ -46,9 +46,7 @@ Very roughly, registering a [payment] transaction request will look like this:
     // directory into account:
     require 'vendor/autoload.php';
 
-    // Note: this just half the process. This registers a payment request with the gateway.
-    // The other half is handling the callback from SageWay with the results of the payment attempt,
-    // and is not yet coded or documented.
+    // This just half the process. This registers a payment request with the gateway.
     
     // Create the registration object.
     $register = new Academe\SagePay\Register();
