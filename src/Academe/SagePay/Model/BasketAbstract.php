@@ -86,11 +86,11 @@ abstract class BasketAbstract extends XmlAbstract
 
     /**
      * Add a simple product line, with values similar to the old (non-XML) basket.
-     * This adds a array-based product line. The more complex lines will involve adding
-     * an object.
+     * This adds a product line array to the lines array. The more complex lines with other details
+     * will involve adding a line as an object. Simple lines and complex lines can be freely mixed.
      */
 
-    public function addSimpleLine($description, $quantity, $unit_net, $unit_tax = 0, $unit_gross = null, $line_gross = NULL)
+    public function addSimpleLine($description, $quantity, $unit_net, $unit_tax = 0, $unit_gross = null, $line_gross = null)
     {
         // Fill in some gaps, if required.
         if ( ! isset($unit_gross)) {
@@ -112,6 +112,15 @@ abstract class BasketAbstract extends XmlAbstract
     }
 
     /**
+     * Add a line object.
+     */
+
+    public function addLine(/*ProductLine*/ $line)
+    {
+        // TODO
+    }
+
+    /**
      * Return the basket as an XML string.
      * There are no attributes in this XML, which makes things a little simpler.
      */
@@ -127,6 +136,10 @@ abstract class BasketAbstract extends XmlAbstract
         foreach($this->lines as $line) {
             if (is_array($line)) {
                 $structure[]['item'] = $line;
+            }
+
+            if (is_object($line)) {
+                $structure[]['item'] = $line->toArray();
             }
         }
 
