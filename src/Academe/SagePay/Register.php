@@ -520,6 +520,9 @@ class Register extends Model\XmlAbstract
             if ( ! in_array($field, $optional_fields) || isset($value)) {
                 // If the input characterset is UTF-8, then convert the string to ISO-8859-1
                 // for transfer to SagePay.
+                // FIXME: catch invalid UTF-8 stream errors. iconv() can easily fail if you
+                // pass it duff data.
+
                 if ($this->input_charset == 'UTF-8') {
                     $value = iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $value);
                 }

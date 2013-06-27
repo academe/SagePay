@@ -12,15 +12,25 @@ abstract class AddressAbstract
      * Fields that constitute an address.
      */
 
-    protected $Surname = '';
-    protected $Firstnames = '';
-    protected $Address1 = '';
-    protected $Address2 = '';
-    protected $City = '';
-    protected $PostCode = '';
-    protected $Country = '';
-    protected $State = '';
-    protected $Phone = '';
+    // Main fields for a simple payment.
+
+    protected $Surname = null;
+    protected $Firstnames = null;
+
+    protected $Address1 = null;
+    protected $Address2 = null;
+    protected $City = null;
+    protected $State = null;
+    protected $PostCode = null;
+    protected $Country = null;
+
+    protected $Phone = null;
+
+    // Additional fields for extending an XML basket line.
+
+    protected $Salutation = null;
+    protected $MiddleName = null;
+    protected $Email = null;
 
     /**
      * Set a field value.

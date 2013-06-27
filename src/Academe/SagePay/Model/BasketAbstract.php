@@ -41,6 +41,13 @@ abstract class BasketAbstract extends XmlAbstract
     protected $shipping = null;
 
     /**
+     * The hotel array, containing mandatory and optional fields, but being
+     * optional as a whole.
+     */
+
+    protected $hotel = null;
+
+    /**
      * Set delivery details.
      * All amounts will be formatted to 2dp.
      */
@@ -85,6 +92,34 @@ abstract class BasketAbstract extends XmlAbstract
     }
 
     /**
+     * Set the main (mandatory) hotel fields.
+     */
+
+    public function setHotel($checkIn, $checkout, $numberInParty, $guestName)
+    {
+        $this->setHotelField('checkIn', $checkIn);
+        $this->setHotelField('checkOut', $checkout);
+        $this->setHotelField('numberInParty', $numberInParty);
+        $this->setHotelField('guestName', $guestName);
+
+        return $this;
+    }
+
+    /**
+     * Set optional hotel fields.
+     */
+
+    public function setHotelField($name, $value)
+    {
+        // If we don't have a hotel record yet, then create one.
+        if ( ! isset($this->hotel)) {
+            $this->hotel = array();
+        }
+
+        $this->hotel[$name] = $value;
+    }
+
+    /**
      * Add a simple product line, with values similar to the old (non-XML) basket.
      * This adds a product line array to the lines array. The more complex lines with other details
      * will involve adding a line as an object. Simple lines and complex lines can be freely mixed.
@@ -115,9 +150,9 @@ abstract class BasketAbstract extends XmlAbstract
      * Add a line object.
      */
 
-    public function addLine(/*ProductLine*/ $line)
+    public function addLine(ProductLineAbstract $line)
     {
-        // TODO
+        $this->lines[] = $line;
     }
 
     /**
@@ -139,7 +174,9 @@ abstract class BasketAbstract extends XmlAbstract
             }
 
             if (is_object($line)) {
-                $structure[]['item'] = $line->toArray();
+                // Get the array format rather than the XML format, so don't
+                // double XML-encode the product line.
+                $structure[] = $line->toArray();
             }
         }
 
@@ -151,6 +188,10 @@ abstract class BasketAbstract extends XmlAbstract
         // Shipping details.
         if (isset($this->shipping)) {
             $structure = array_merge($structure, $this->shipping);
+        }
+
+        if (isset($this->hotel)) {
+            $structure = array_merge($structure, array('hotel' => $this->hotel));
         }
 
         return $this->xmlFragment(array('basket' => $structure));
