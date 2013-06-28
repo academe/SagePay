@@ -1,3 +1,5 @@
-"autoload": {
-    "psr-0": {"Academe\\SagePay": "src/"}
+{
+    "autoload": {
+        "psr-0": {"Academe\\SagePay": "src/"}
+    }
 }
