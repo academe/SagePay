@@ -1,8 +1,9 @@
 <?php
 
 /**
- * List of US state choices.
- * This list was extracted from the SagePay terminal drop-down list.
+ * List of US state choices (2-letter ANSI INCITS 38:2009 codes).
+ * See http://en.wikipedia.org/wiki/List_of_U.S._state_abbreviations for list.
+ * No list could be found in SagePay documentation.
  */
 
 namespace Academe\SagePay\Metadata;
