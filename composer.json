@@ -1,4 +1,15 @@
 {
+    "name": "academe/sagepay",
+    "version": "1.0.0-dev",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jason Judge",
+            "email": "jason.judge@academe.co.uk",
+            "homepage": "http://www.academe.co.uk/",
+            "role": "Developer"
+        }
+    ],
     "autoload": {
         "psr-0": {"Academe\\SagePay": "src/"}
     }
