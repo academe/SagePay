@@ -27,7 +27,18 @@ models for the basket, addresses, customers, and surcharges.
 This library does not depend on any other composer libraries at present. If using composer, it
 can be installed like this:
 
-    TODO
+    {
+        "repositories": [
+            {
+                "type": "vcs",
+                "url": "https://github.com/academe/SagePay"
+            }
+        ],
+        "require": {
+            "php": ">=5.3.0",
+            "academe/sagepay": "dev-master"
+        }
+    }
 
 Or if working on a clone of this repository in in vendor/sagepay:
 
