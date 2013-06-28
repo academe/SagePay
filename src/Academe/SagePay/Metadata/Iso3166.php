@@ -7,7 +7,7 @@
 
 namespace Academe\SagePay\Metadata;
 
-class iso3166
+class Iso3166
 {
     /**
      * Country code list.
