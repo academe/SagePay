@@ -835,7 +835,7 @@ class Register extends Model\XmlAbstract
         $fields = $this->toArray();
         foreach ($fields as $field => $value) {
             $token_path = '{' . $field . '}';
-            $token_query = '{' . $token . '}';
+            $token_query = '{' . $token_path . '}';
 
             // Query parameters and path parts use different escaping.
 
