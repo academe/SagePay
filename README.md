@@ -65,15 +65,21 @@ Very roughly, registering a [payment] transaction request will look like this:
     // Create a storage model object.
     // A basic PDO storage is provided, but just extend Model\Transaction and use your own.
     // Your framework may have active record model, or you may want to use WordPress post types, for example.
+    // You can write your own transaction storage model, perhaps storing the transaction data in a custom
+    // post type in WordPress, or a database model in your framework.
     $storage = new Academe\SagePay\Model\TransactionPdo();
     $storage->setDatabase('mysql:host=localhost;dbname=foobar', 'myuser', 'mypassword');
+    
+    // Within WordPress, setting the database details looks like this:
+    $storage->setDatabase('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASSWORD);
     
     // Inject the storage object.
     $register->setTransactionModel($storage);
     
     // If you want to create a table ("sagepay_transactions" by default) for the PDO storage, do this.
     // The table will be created from the details in Metadata\Transaction and should provide a decent
-    // out-of-the-box storage to get you up and running.
+    // out-of-the-box storage to get you up and running. You could execute this in the initialisation
+    // hook of a plugin, assuming you are not using a custom post type to track the transactions.
     $storage->createTable();
         
     // Set the main mandatory details for the transaction.
