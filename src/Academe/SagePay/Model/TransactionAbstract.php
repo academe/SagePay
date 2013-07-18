@@ -5,7 +5,6 @@
  * Add your own concrete storage methods, such as active record or a direct
  * database table.
  *
- * TODO: 
  * Data put into these fields should be truncated and formatted correctly.
  * That includes numbers to the correct number of decimal points, text fields
  * truncated to their maximum length (take ml features into account), and
@@ -243,6 +242,14 @@ abstract class TransactionAbstract
         // "3021 : The Basket format is invalid."
         'StatusDetail' => null,
 
+        // The StatusDetail split up into a code and a message.
+        // The code is the only reliable item available to programmatically point to which
+        // field has an issue or to provide appropriate corrective hints to the user.
+        // A lookup table of codes agaist classes of error and field names would be a good
+        // addition...
+        'StatusDetailMessage' => null,
+        'StatusDetailCode' => null,
+
         // The URL the user should be sent to. Provided by SagePay.
         'NextURL' => null,
 
@@ -455,6 +462,31 @@ abstract class TransactionAbstract
 
     public function setField($name, $value, $force = null)
     {
+        // If setting the StatusDetail, then split this up into a message and code.
+        // Status messages may come from other sources, so be prepared that a StatusDetail
+        // value is not a simple "{code} : {message}"
+        // There us also no documentation that states this format will not change.
+
+        if ($name == 'StatusDetail') {
+            // Split at the first colon.
+            $split = explode(':', $value, 2);
+
+            if (count($split) == 2) {
+                list($code, $message) = $split;
+
+                $code = trim($code);
+                $message = trim($message);
+
+                // The code should be numeric (hopefully, but who knows without SagePay
+                // providing definitive docuementation?).
+
+                if (is_numeric($code)) {
+                    $this->setField('StatusDetailCode', $code);
+                    $this->setField('StatusDetailMessage', $message);
+                }
+            }
+        }
+
         if (array_key_exists($name, $this->fields) || $force == 'data') {
             $this->fields[$name] = $value;
             return;

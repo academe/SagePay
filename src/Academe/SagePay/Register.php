@@ -27,7 +27,7 @@ class Register extends Model\XmlAbstract
     protected $save_failed_registrationns = true;
 
     /**
-     * The timeout, in seconds, waiting fot SagePay to respond to a registration request.
+     * The timeout, in seconds, waiting for SagePay to respond to a registration request.
      */
 
     protected $timeout = 30;
