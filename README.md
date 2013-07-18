@@ -55,41 +55,51 @@ Very roughly, registering a [payment] transaction request will look like this:
     // In all the code examples here, I will assume a PSR-0 autoloader is configured.
     // e.g. for composer this may be included like this, taking the path to the vendor
     // directory into account:
+    
     require 'vendor/autoload.php';
 
     // This just half the process. This registers a payment request with the gateway.
     
     // Create the registration object.
+    
     $register = new Academe\SagePay\Register();
     
     // Create a storage model object.
     // A basic PDO storage is provided, but just extend Model\Transaction and use your own.
     // Your framework may have active record model, or you may want to use WordPress post types, for example.
     // You can write your own transaction storage model, perhaps storing the transaction data in a custom
-    // post type in WordPress, or a database model in your framework.
+    // post type in WordPress, or a database model in your framework. This TransactionPdo model is just
+    // a usable example that comes with the library.
+    
     $storage = new Academe\SagePay\Model\TransactionPdo();
     $storage->setDatabase('mysql:host=localhost;dbname=foobar', 'myuser', 'mypassword');
     
     // Within WordPress, setting the database details looks like this:
+    
     $storage->setDatabase('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASSWORD);
     
     // Inject the storage object.
+    
     $register->setTransactionModel($storage);
     
     // If you want to create a table ("sagepay_transactions" by default) for the PDO storage, do this.
     // The table will be created from the details in Metadata\Transaction and should provide a decent
     // out-of-the-box storage to get you up and running. You could execute this in the initialisation
     // hook of a plugin, assuming you are not using a custom post type to track the transactions.
+    
     $storage->createTable();
         
     // Set the main mandatory details for the transaction.
+    
     $register->setMain('PAYMENT', 'vendorx', '99.99', 'GBP', 'Store purchase', 'http://example.com/mycallback.php');
     
     // Indicate which platform you are connecting to - test or live.
+    
     $register->setPlatform('test');
     
     // Set the addresses.
     // You can just set one (e.g. billing) and the other will automatically mirror it. Or set both.
+    
     $billing = new Academe\SagePay\Model\Address();
     $billing->setField('Surname', 'Judge');
     $billing->setField('Firstnames', 'Jason');
@@ -100,6 +110,7 @@ Very roughly, registering a [payment] transaction request will look like this:
     // Set option stuff, including customer details, surcharges, basket.
     // Here is an example for the basket. This is a very simple example, as SagePay 3.0
     // can support many more structured data items and properties in the basket.
+    
     $basket = new Academe\SagePay\Model\Basket();
     $basket->setDelivery(32.50, 5);
     $basket->addSimpleLine('Widget', 4.00, 3, 0.75, 3.75);
@@ -107,13 +118,12 @@ Very roughly, registering a [payment] transaction request will look like this:
     
     // Send the request to SagePay, get the response, The request and response will also
     // be saved in whatever storage you are using.
+    
     $register->sendRegistration();
 
 The response will provide details of what to do next: it may be a fail, or give a SagePay URL to jump to, or
 just a simple data validation error to correct. If `$register->getField('Status')` is "OK" then redirect
 the user to `$register->getField('NextURL')` otherwise handle the error.
-
-Somewhere above you need to tell the registration which platform you want to sent to (test or live).
 
 SagePay is very strict on data validatin. If a postcode is too long, or an address has an invalid character
 in, then it will reject the registration, but will not be very clear exactly why it was rejected, and
@@ -129,14 +139,16 @@ The library should validate everything before it goes to SagePay, but also those
 to feed into the framework that the end user interacts with. Work is still to be done here.
 
 Once a transaction registration is submitted successfuly, and the user is sent to SagePay to enter their
-card details, SagePay will send the result the the callback URL. This is easily handled, with mycallback.php
+card details, SagePay will send the result to the callback URL. This is easily handled, with mycallback.php
 looking something like this:
 
     // Gather the POST data.
     // For some platforms (e.g. WordPress) you may need to do some decoding of the POST data.
+    
     $post = $_POST;
     
     // Set up the transaction model, same as when registering. Here is a slightly shorter-hand version.
+    
     $register = new Academe\SagePay\Register();
     $register->setTransactionModel(new Academe\SagePay\Model\TransactionPdo())
         ->setDatabase('mysql:host=localhost;dbname=foobar', 'myuser', 'mypassword');
@@ -145,6 +157,7 @@ looking something like this:
     // The final URL sent back, which is where the user will end up. We are also passing the
     // status with the URL for convenience, but don't rely on looking at that status to
     // determine if the payment was successful - a user could fake it.
+    
     $result = $register->notification(
         $post, 
         'http://example.com/mysite/final.php?status={{Status}}'
@@ -156,7 +169,10 @@ looking something like this:
     
     // Return the result to SagePay.
     // Do not output *anything* else on this page. SagePay is expecting the contents of $result *only*.
+    
     echo $result;
+    
+    exit();
     
 Now, at this point the user will be sent back to mysite/final.php
 
@@ -164,14 +180,17 @@ Here the user needs to be informed about the outcome, and that will depend on th
 of the transaction. The page will need the VendorTxCode to get hold of the transaction like this:
 
     // Set up the transaction model, same as when registering. Here is a slightly shorter-hand version.
+    
     $register = new Academe\SagePay\Register();
     $register->setTransactionModel(new Academe\SagePay\Model\TransactionPdo())
         ->setDatabase('mysql:host=localhost;dbname=foobar', 'myuser', 'mypassword');
 
     // Fetch the transaction from storage.
+    
     $register->findTransaction($VendorTxCode);
     
     // Look at the result and take it from there.
+    
     $status = $register->getField('Status');
     
     if ($status == 'OK' || $status == 'AUTHENTICATED' || $status == 'REGISTERED') {
