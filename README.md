@@ -16,7 +16,8 @@ the myriad other types. However, they should all be straight-forward to implemen
 
 ## Status ##
 
-This library is being actively worked on. The intention is for a back-end library for SagePay
+This library is being actively worked on. Having said that, is *is* production-ready and is in service now.
+The intention is for a back-end library for SagePay
 protocol version 3, that can use any storage mechanism you like and does not have side-effects
 related to input (i.e. does not read POST behind your back, so your application controls all
 routing and input validation).
