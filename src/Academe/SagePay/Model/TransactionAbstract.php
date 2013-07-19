@@ -538,5 +538,19 @@ abstract class TransactionAbstract
         $VendorTxCode = uniqid(date('Ymd-His-'), false);
         return $VendorTxCode;
     }
+
+    /**
+     * Returns true if the status of the transaction is one resulting from a
+     * successful payment.
+     */
+
+    public function isPaymentSuccess()
+    {
+        if ($this->Status == 'OK' || $this->Status == 'AUTHENTICATED' || $this->Status == 'REGISTERED') {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 

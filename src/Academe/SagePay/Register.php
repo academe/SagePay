@@ -442,78 +442,20 @@ class Register extends Model\XmlAbstract
 
         $query = array();
 
-        // TODO: this can be derived from the Metadata\Transaction of source "registration".
+        // Get the list of fields we want to send to SagePay from the transaction metadata.
+
+        $all_fields = Metadata\Transaction::get('array');
+
+        $fields_to_send = array();
+        $optional_fields = array();
+
+        foreach($all_fields as $field_name => $field_meta) {
+            if ($field_meta['source'] != 'registration') continue;
+            $fields_to_send[] = $field_name;
+            if (empty($field_meta['required'])) $optional_fields[] = $field_name;
+        }
+
         // Loop through the fields, both optional and mandatory.
-        $fields_to_send = array(
-            'VPSProtocol',
-            'TxType',
-            'Vendor',
-            'VendorTxCode',
-            'Amount',
-            'Currency',
-            'Description',
-            'NotificationURL',
-
-            'BillingSurname',
-            'BillingFirstnames',
-            'BillingAddress1',
-            'BillingAddress2',
-            'BillingCity',
-            'BillingPostCode',
-            'BillingCountry',
-            'BillingState',
-            'BillingPhone',
-
-            'DeliverySurname',
-            'DeliveryFirstnames',
-            'DeliveryAddress1',
-            'DeliveryAddress2',
-            'DeliveryCity',
-            'DeliveryPostCode',
-            'DeliveryCountry',
-            'DeliveryState',
-            'DeliveryPhone',
-
-            'CustomerEMail',
-            'AllowGiftAid',
-            'ApplyAVSCV2',
-            'Apply3DSecure',
-            'Profile',
-            'BillingAgreement',
-            'AccountType',
-            'CreateToken',
-            'BasketXML',
-            'CustomerXML',
-            'SurchargeXML',
-            'VendorData',
-            'ReferrerID',
-            'Language',
-            'Website',
-        );
-
-        $optional_fields = array(
-            'BillingAddress2',
-            'BillingState',
-            'BillingPhone',
-            'DeliveryAddress2',
-            'DeliveryState',
-            'DeliveryPhone',
-            'CustomerEMail',
-            'AllowGiftAid',
-            'ApplyAVSCV2',
-            'Apply3DSecure',
-            'Profile',
-            'BillingAgreement',
-            'AccountType',
-            'CreateToken',
-            'BasketXML',
-            'CustomerXML',
-            'SurchargeXML',
-            'VendorData',
-            'ReferrerID',
-            'Language',
-            'Website',
-        );
 
         foreach($fields_to_send as $field) {
             $value = $this->tx_model->getField($field);
