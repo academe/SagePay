@@ -60,7 +60,10 @@ This library handles the back-end processing only. You will need:
 * Routeing and a handler for the notification callback that SagePay will perform.
 * A MySQL database or an extension to the Transaction model for persisting the transaction data.
 
-Some more detailed examples of how this could work, will follow later.
+Some more detailed examples of how this could work, will follow later. If you want to wrap this
+library up in a more diverse library, such as [Omnipay](https://github.com/adrianmacneil/omnipay), then this
+would be a good start - it handles all the nuances of SagePay and so should be easier to incorporate into
+a multi-gateway payment site.
 
 ## Usage ##
 
