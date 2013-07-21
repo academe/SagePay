@@ -61,9 +61,11 @@ This library handles the back-end processing only. You will need:
 * A MySQL database or an extension to the Transaction model for persisting the transaction data.
 
 Some more detailed examples of how this could work, will follow later. If you want to wrap this
-library up in a more diverse library, such as [Omnipay](https://github.com/adrianmacneil/omnipay), then this
+library up in a more diverse library, such as [OmniPay](https://github.com/adrianmacneil/omnipay), then this
 would be a good start - it handles all the nuances of SagePay and so should be easier to incorporate into
-a multi-gateway payment site.
+a multi-gateway payment site. IMO OmniPay is too monolithic, a single library that aims to be the jack of
+all trades, but as a framework to pull together many payment gateways into one unified interface, is a
+great idea. But that's an argument for another day. Please let me know what you think.
 
 ## Usage ##
 
