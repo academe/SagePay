@@ -1,6 +1,8 @@
 # Client Library for SagePay Server - Protocol V3 #
 
-Provides the functionality for Protocol 3 of the SagePay Server service.
+Provides the functionality for Protocol 3 of the SagePay Server service. It purposefully does not fully support all
+protocol v2 interface features (e.g. the non-XML basket, because the XML basket is a lot more flexible) but that could 
+be added if people really desire it. V3 is truly a superset of the V2 protocol, so no functional features are lost.
 
 ## Main Requirements ##
 
