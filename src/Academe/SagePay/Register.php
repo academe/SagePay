@@ -797,5 +797,16 @@ class Register extends Model\XmlAbstract
             . 'StatusDetail=' . $retStatusDetail . $eol
             . 'RedirectURL=' . $redirect_url . $eol;
     }
+    
+    /**
+    * Returns true if the status of the transaction is one resulting from a
+    * successful payment.
+    */
+
+    public function isPaymentSuccess()
+    {
+        return $this->tx_model->isPaymentSuccess();
+    }
+
 }
 
