@@ -25,8 +25,10 @@ routing and input validation).
 So far there is a storage model abstract, with an example PDO storage implementation. There are
 models for the basket, addresses, customers, and surcharges.
 
+## Installation ##
+
 This library does not depend on any other composer libraries at present. If using composer, it
-can be installed like this:
+can be installed like this (in composer.json):
 
     {
         "repositories": [
@@ -48,6 +50,17 @@ Or if working on a clone of this repository in in vendor/sagepay:
             "psr-0": "Academe\\SagePay": "vendor/sagepay/src"
         }
     }
+
+## What else do you need? ##
+
+This library handles the back-end processing only. You will need:
+
+* Front-end forms to capture the user's name and address.
+* Validation on those forms to act as a gatekeeper before we sent those details to SagePay.
+* Routeing and a handler for the notification callback that SagePay will perform.
+* A MySQL database or an extension to the Transaction model for persisting the transaction data.
+
+Some more detailed examples of how this could work, will follow later.
 
 ## Usage ##
 
@@ -170,6 +183,8 @@ looking something like this:
     
     // Return the result to SagePay.
     // Do not output *anything* else on this page. SagePay is expecting the contents of $result *only*.
+    // If you are calling up other code here to take action on the transaction, then it may be worth
+    // using ob_start()/ob_end_clean() to catch and discard any output that may be generated.
     
     echo $result;
     
@@ -194,10 +209,10 @@ of the transaction. The page will need the VendorTxCode to get hold of the trans
     
     $status = $register->getField('Status');
     
-    if ($status == 'OK' || $status == 'AUTHENTICATED' || $status == 'REGISTERED') {
+    if ($register->isPaymentSuccess()) {
         echo "Cool. Your payment was successful.";
     } elseif ($status == 'PENDING') {
-        echo "Your payment has got delayed while being processed - we will email you when it fimally goes through.";
+        echo "Your payment has got delayed while being processed - we will email you when it finally goes through.";
     } else {
         echo "Whoops - something went wrong here. No payment has been taken.";
     }
