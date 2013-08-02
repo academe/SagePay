@@ -24,6 +24,14 @@ class TransactionPdo extends TransactionAbstract
     protected $pdo_password = '';
 
     /**
+     * Reserved for future use.
+     */
+
+    public function __construct()
+    {
+    }
+
+    /**
      * The name of the table used to store the transactions.
      */
 
