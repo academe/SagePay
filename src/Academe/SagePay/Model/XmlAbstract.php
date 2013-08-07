@@ -9,10 +9,29 @@ namespace Academe\SagePay\Model;
 abstract class XmlAbstract
 {
     /**
+     * The currency used for formatting.
+     */
+
+    protected $currency = 'GBP';
+
+    /**
+     * Set the currency for amount formatting.
+     * The three-character ISO4217 currency code is required.
+     */
+
+    public function setCurrency($currency)
+    {
+        // Minimal validation.
+        $this->currency = strtoupper($currency);
+
+        return $this;
+    }
+
+    /**
      * Format a monetory amount to the relavant number of decimal places as required by SagePay.
      */
 
-    protected function formatAmount($amount, $currency = 'GBP')
+    protected function formatAmount($amount)
     {
         // We need a numeric value, so make sure it is, even if it is a nujmber in a string.
         if ( ! is_numeric($amount)) $amount = 0;
@@ -20,7 +39,9 @@ abstract class XmlAbstract
         // Get the minor unit of the currency - the number of digits after the decimal point.
         // SagePay requires the amount to be padded out to the exact number of decimal places.
 
-        $minor_unit = \Academe\SagePay\Metadata\Iso4217::get()->{$currency}->minor;
+        $minor_unit = \Academe\SagePay\Metadata\Iso4217::get()
+            ->{$this->currency}
+            ->minor;
 
         return number_format($amount, $minor_unit, '.', '');
     }

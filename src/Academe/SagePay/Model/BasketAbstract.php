@@ -17,12 +17,6 @@ namespace Academe\SagePay\Model;
 abstract class BasketAbstract extends XmlAbstract
 {
     /**
-     * The currency to use for the basket; affects amount formatting.
-     */
-
-    protected $currency = 'GBP';
-
-    /**
      * Optional agent ID if a phone payment.
      */
 
@@ -65,9 +59,9 @@ abstract class BasketAbstract extends XmlAbstract
         }
 
         $this->delivery = array(
-            'deliveryNetAmount' => $this->formatAmount($net, $this->currency),
-            'deliveryTaxAmount' => $this->formatAmount($tax, $this->currency),
-            'deliveryGrossAmount' => $this->formatAmount($gross, $this->currency),
+            'deliveryNetAmount' => $this->formatAmount($net),
+            'deliveryTaxAmount' => $this->formatAmount($tax),
+            'deliveryGrossAmount' => $this->formatAmount($gross),
         );
 
         return $this;
@@ -128,20 +122,6 @@ abstract class BasketAbstract extends XmlAbstract
     }
 
     /**
-     * Set the currency to use in this basket.
-     * The three-character ISO4217 currency code is required.
-     */
-
-    public function setCurrency($currency)
-    {
-        // Set the currency with a minimal of validation checks.
-
-        $this->currency = strtoupper($currency);
-
-        return $this;
-    }
-
-    /**
      * Add a simple product line, with values similar to the old (non-XML) basket.
      * This adds a product line array to the lines array. The more complex lines with other details
      * will involve adding a line as an object. Simple lines and complex lines can be freely mixed.
@@ -161,10 +141,10 @@ abstract class BasketAbstract extends XmlAbstract
         $this->lines[] =  array(
             'description' => $description,
             'quantity' => $quantity,
-            'unitNetAmount' => $this->formatAmount($unit_net, $this->currency),
-            'unitTaxAmount' => $this->formatAmount($unit_tax, $this->currency),
-            'unitGrossAmount' => $this->formatAmount($unit_gross, $this->currency),
-            'totalGrossAmount' => $this->formatAmount($line_gross, $this->currency),
+            'unitNetAmount' => $this->formatAmount($unit_net),
+            'unitTaxAmount' => $this->formatAmount($unit_tax),
+            'unitGrossAmount' => $this->formatAmount($unit_gross),
+            'totalGrossAmount' => $this->formatAmount($line_gross),
         );
 
         return $this;

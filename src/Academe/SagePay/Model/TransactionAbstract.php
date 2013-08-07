@@ -45,9 +45,10 @@ abstract class TransactionAbstract
         // Supplied in transaction registration.
         'VendorTxCode' => '',
 
-        // The total transaction amount (0.01 to 100,000.00) to 2 decimal places.
+        // The total transaction amount (0.01 to 100,000.00).
+        // Decimal places will be formatted according to the currnecy.
         // Supplied in transaction registration.
-        'Amount' => '0.00',
+        'Amount' => '0',
 
         // The currency for the transaction (GBP, EUR or USD).
         // Supplied in transaction registration.

@@ -278,11 +278,15 @@ class Register extends Model\XmlAbstract
 
     public function setAmount($amount, $currency = 'GBP')
     {
+        // Set the currency first, before we start formatting amounts.
+        $this->setCurrency($currency);
+
         // Some minimal validation.
         $currency = strtoupper($currency);
 
-        $this->setField('Amount', $this->formatAmount($amount, $currency));
+        $this->setField('Amount', $this->formatAmount($amount));
         $this->setField('Currency', $currency);
+
         return $this;
     }
 
@@ -292,9 +296,9 @@ class Register extends Model\XmlAbstract
 
     public function setMain($tx_type, $vendor, $amount, $currency, $description, $url)
     {
+        $this->setAmount($amount, $currency);
         $this->setField('TxType', $tx_type);
         $this->setField('Vendor', $vendor);
-        $this->setAmount($amount, $currency);
         $this->setField('Description', $description);
         $this->setField('NotificationURL', $url);
         return $this;
