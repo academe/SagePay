@@ -122,6 +122,7 @@ Very roughly, registering a [payment] transaction request will look like this:
     $storage->createTable();
         
     // Set the main mandatory details for the transaction.
+    // We have: payment type, vandor name, total amount, currency, note to display to user, callback URL.
     
     $register->setMain('PAYMENT', 'vendorx', '99.99', 'GBP', 'Store purchase', 'http://example.com/mycallback.php');
     
@@ -132,18 +133,21 @@ Very roughly, registering a [payment] transaction request will look like this:
     // Set the addresses.
     // You can just set one (e.g. billing) and the other will automatically mirror it. Or set both.
     
-    $billing = new Academe\SagePay\Model\Address();
-    $billing->setField('Surname', 'Judge');
-    $billing->setField('Firstnames', 'Jason');
-    $billing->setField('Address1', 'Some Address');
+    $billing_addr = new Academe\SagePay\Model\Address();
+    $billing_addr->setField('Surname', 'Judge');
+    $billing_addr->setField('Firstnames', 'Jason');
+    $billing_addr->setField('Address1', 'Some Street Name');
+    $billing_addr->setField('City', 'A City Name');
     // etc.
-    $register->setBillingAddress($billing);
+    $register->setBillingAddress($billing_addr);
     
-    // Set option stuff, including customer details, surcharges, basket.
+    // Set optional stuff, including customer details, surcharges, basket.
     // Here is an example for the basket. This is a very simple example, as SagePay 3.0
     // can support many more structured data items and properties in the basket.
+    // The currency needs to be set as it affects how the monetory amounts are formatted.
     
     $basket = new Academe\SagePay\Model\Basket();
+    $basket->setCurrency('GBP');
     $basket->setDelivery(32.50, 5);
     $basket->addSimpleLine('Widget', 4.00, 3, 0.75, 3.75);
     $register->setBasketModel($basket);
