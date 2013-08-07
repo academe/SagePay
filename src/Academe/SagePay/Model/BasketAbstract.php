@@ -17,6 +17,12 @@ namespace Academe\SagePay\Model;
 abstract class BasketAbstract extends XmlAbstract
 {
     /**
+     * The currency to use for the basket; affects amount formatting.
+     */
+
+    protected $currency = 'GBP';
+
+    /**
      * Optional agent ID if a phone payment.
      */
 
@@ -49,7 +55,7 @@ abstract class BasketAbstract extends XmlAbstract
 
     /**
      * Set delivery details.
-     * All amounts will be formatted to 2dp.
+     * All [currency] amounts will be formatted according to the currency.
      */
 
     public function setDelivery($net, $tax = 0, $gross = null)
@@ -59,9 +65,9 @@ abstract class BasketAbstract extends XmlAbstract
         }
 
         $this->delivery = array(
-            'deliveryNetAmount' => $this->formatAmount($net),
-            'deliveryTaxAmount' => $this->formatAmount($tax),
-            'deliveryGrossAmount' => $this->formatAmount($gross),
+            'deliveryNetAmount' => $this->formatAmount($net, $this->currency),
+            'deliveryTaxAmount' => $this->formatAmount($tax, $this->currency),
+            'deliveryGrossAmount' => $this->formatAmount($gross, $this->currency),
         );
 
         return $this;
@@ -117,6 +123,22 @@ abstract class BasketAbstract extends XmlAbstract
         }
 
         $this->hotel[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Set the currency to use in this basket.
+     * The three-character ISO4217 currency code is required.
+     */
+
+    public function setCurrency($currency)
+    {
+        // Set the currency with a minimal of validation checks.
+
+        $this->currency = strtoupper($currency);
+
+        return $this;
     }
 
     /**
@@ -139,11 +161,13 @@ abstract class BasketAbstract extends XmlAbstract
         $this->lines[] =  array(
             'description' => $description,
             'quantity' => $quantity,
-            'unitNetAmount' => $this->formatAmount($unit_net),
-            'unitTaxAmount' => $this->formatAmount($unit_tax),
-            'unitGrossAmount' => $this->formatAmount($unit_gross),
-            'totalGrossAmount' => $this->formatAmount($line_gross),
+            'unitNetAmount' => $this->formatAmount($unit_net, $this->currency),
+            'unitTaxAmount' => $this->formatAmount($unit_tax, $this->currency),
+            'unitGrossAmount' => $this->formatAmount($unit_gross, $this->currency),
+            'totalGrossAmount' => $this->formatAmount($line_gross, $this->currency),
         );
+
+        return $this;
     }
 
     /**

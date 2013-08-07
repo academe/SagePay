@@ -9,15 +9,20 @@ namespace Academe\SagePay\Model;
 abstract class XmlAbstract
 {
     /**
-     * Format a monetory amount to 2dp, as required by SagePay.
+     * Format a monetory amount to the relavant number of decimal places as required by SagePay.
      */
 
-    protected function formatAmount($amount)
+    protected function formatAmount($amount, $currency = 'GBP')
     {
         // We need a numeric value, so make sure it is.
         if ( ! is_numeric($amount)) $amount = 0;
 
-        return money_format('%!.2n', $amount);
+        // Get the minor unit of the currency - the number of digits after the decimal point.
+        // SagePay requires the amount to be padded out to the exact number of decimal places.
+
+        $minor_unit = \Academe\SagePay\Metadata\Iso4217::get()->{$currency}->minor;
+
+        return number_format($amount, $minor_unit, '.', '');
     }
 
     /**
