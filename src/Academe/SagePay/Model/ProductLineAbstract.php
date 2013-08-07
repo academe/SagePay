@@ -43,6 +43,19 @@ abstract class ProductLineAbstract extends XmlAbstract
     protected $itemShipNo = null;
     protected $itemGiftMsg = null;
 
+    protected $currency = 'GBP';
+
+    /**
+     * Set the currency for amount formatting.
+     */
+
+    public function setCurrency($currency)
+    {
+        $this->currency = strtoupper($currency);
+
+        return $this;
+    }
+
     /**
      * Set the mandatory items.
      */
@@ -58,12 +71,16 @@ abstract class ProductLineAbstract extends XmlAbstract
             $line_gross = $unit_gross * $quantity;
         }
 
+        // CHECKME: we probably do not need to set the format here, as it is done later when
+        // we output the XML. That allows us to set the currency later than would otherwise
+        // be necessary.
+
         $this->description = $description;
         $this->quantity = $quantity;
-        $this->unitNetAmount = $this->formatAmount($unit_net);
-        $this->unitTaxAmount = $this->formatAmount($unit_tax);
-        $this->unitGrossAmount = $this->formatAmount($unit_gross);
-        $this->totalGrossAmount = $this->formatAmount($line_gross);
+        $this->unitNetAmount = $this->formatAmount($unit_net, $this->currency);
+        $this->unitTaxAmount = $this->formatAmount($unit_tax, $this->currency);
+        $this->unitGrossAmount = $this->formatAmount($unit_gross, $this->currency);
+        $this->totalGrossAmount = $this->formatAmount($line_gross, $this->currency);
 
         return $this;
     }
@@ -168,10 +185,10 @@ abstract class ProductLineAbstract extends XmlAbstract
         if (isset($this->productSku)) $structure['productSku'] = $this->productSku;
         if (isset($this->productCode)) $structure['productCode'] = $this->productCode;
         $structure['quantity'] = $this->quantity;
-        $structure['unitNetAmount'] = $this->unitNetAmount;
-        $structure['unitTaxAmount'] = $this->unitTaxAmount;
-        $structure['unitGrossAmount'] = $this->unitGrossAmount;
-        $structure['totalGrossAmount'] = $this->totalGrossAmount;
+        $structure['unitNetAmount'] = $this->formatAmount($this->unitNetAmount, $this->currency);
+        $structure['unitTaxAmount'] = $this->formatAmount($this->unitTaxAmount, $this->currency);
+        $structure['unitGrossAmount'] = $this->formatAmount($this->unitGrossAmount, $this->currency);
+        $structure['totalGrossAmount'] = $this->formatAmount($this->totalGrossAmount, $this->currency);
 
         // Note: the SagePay documentation says that accented (i.e. extended ASCII)
         // characters are allowed in the recipient's name. This does, however, result

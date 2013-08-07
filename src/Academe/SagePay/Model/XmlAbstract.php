@@ -14,7 +14,7 @@ abstract class XmlAbstract
 
     protected function formatAmount($amount, $currency = 'GBP')
     {
-        // We need a numeric value, so make sure it is.
+        // We need a numeric value, so make sure it is, even if it is a nujmber in a string.
         if ( ! is_numeric($amount)) $amount = 0;
 
         // Get the minor unit of the currency - the number of digits after the decimal point.

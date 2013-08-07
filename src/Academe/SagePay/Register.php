@@ -278,7 +278,10 @@ class Register extends Model\XmlAbstract
 
     public function setAmount($amount, $currency = 'GBP')
     {
-        $this->setField('Amount', $this->formatAmount($amount));
+        // Some minimal validation.
+        $currency = strtoupper($currency);
+
+        $this->setField('Amount', $this->formatAmount($amount, $currency));
         $this->setField('Currency', $currency);
         return $this;
     }
