@@ -271,7 +271,9 @@ http://www.sagepay.com/help/faq/merchant_number_format
 Some merchant accounts support dozens of currencies, and some only a handful. A SagePay account can be set up
 to further restrict the list that the merchant account supports.
 
-There is no server or direct API that will list the supported currencies.
+There is no server or direct API that will list the supported currencies. The Reporting and Admin API does
+provide getCurrencies() to list the currencies that the vendor accoutn supports. This library does not yet
+support the Reporting and Admin API, but it is something that is likely to be added.
 
 By supporting a currency for payments, it means that payments can be taken in that currency. A shop will
 often be based in a single country and support just that local currency. If your shop supports multiple
