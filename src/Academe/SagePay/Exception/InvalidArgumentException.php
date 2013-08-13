@@ -1,7 +1,7 @@
 <?php
 
 /**
- *
+ * Invalid Argument Exception for the library.
  */
 
 namespace Academe\SagePay\Exception;

@@ -2,6 +2,10 @@
 
 /**
  * Manages surcharge data, with an end result being an XML string.
+ * The surcharges can be set for an account, but can also be set and overridden
+ * individually for each payment request. So for example, the surcharges can
+ * be set at different rates for different customers or for different basket
+ * costs.
  */
 
 namespace Academe\SagePay\Model;

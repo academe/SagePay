@@ -413,10 +413,12 @@ class Register extends Model\XmlAbstract
      * Do this before reading the data array.
      * If either address is not set, then default it to the other address, as both
      * are mandatory.
+     * Also expand all other objects in the request: basket, customer, surcharges.
      */
 
     protected function expandModels()
     {
+        // Default the billing and delivery address from its opposite number if not set.
         $billing = (is_object($this->billing_address) ? $this->billing_address : $this->delivery_address);
         $delivery = (is_object($this->delivery_address) ? $this->delivery_address : $this->billing_address);
 

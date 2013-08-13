@@ -7,6 +7,9 @@
  *  - creating a database table
  *  - validating data
  *  - cleaning data (e.g. removing invalid characters from a product line descriptio).
+ * Note the lengths of fields are in bytes, for a single-character encoding (ISO 8859-1).
+ * Your website is likely to use UTF-8, and you may want to store the UTF-8 data in the
+ * database, so the database columns must be sized appropriately.
  */
 
 namespace Academe\SagePay\Metadata;
@@ -52,8 +55,10 @@ class Transaction
      * TODO: fields in basket record
      * TODO: fields in customer record
      *
-     * An optional record with a minimum legth of 1 must not be sent to SagePay
-     * if it is empty.
+     * An optional field with a minimum length of 1 must not be sent to SagePay
+     * if it is empty, i.e. do not pass an empty string but simply don't send
+     * the field at all. An optional field with a minimum length of zero *can*
+     * be sent to the payment gateway as an empty string.
      */
 
     public static $data_json = <<<ENDDATA
