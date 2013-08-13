@@ -9,6 +9,7 @@
 namespace Academe\SagePay;
 
 use Academe\SagePay\Metadata as Metadata;
+use Academe\SagePay\Exception as Exception;
 
 class Register extends Model\XmlAbstract
 {
@@ -307,12 +308,19 @@ class Register extends Model\XmlAbstract
     /**
      * Set the platform we are going to use.
      * Platforms are 'test' or 'live' (there is no simulator for V3 protocol).
+     *
+     * @throws Academe\SagePay\Exception\InvalidArgumentException
      */
 
     public function setPlatform($platform)
     {
-        if (isset($this->sagepay_platform[strtolower($platform)])) {
-            $this->sagepay_platform = strtolower($platform);
+        $platform = strtolower($platform);
+
+        if (isset($this->sagepay_url_base[$platform])) {
+            $this->sagepay_platform = $platform;
+        } else {
+            // Supplied platform name not supported.
+            throw new Exception\InvalidArgumentException("Invalid platform name '{$platform}'");
         }
 
         return $this;
@@ -320,21 +328,31 @@ class Register extends Model\XmlAbstract
 
     /**
      * Get the URL for the platform and service selected.
+     *
+     * @throws Academe\SagePay\Exception\InvalidArgumentException
      */
 
     public function getUrl()
     {
         $sub = '{service}';
+        $platform = $this->sagepay_platform;
+        $transaction_type = $this->getField('TxType');
 
-        $url_base = $this->sagepay_url_base[$this->sagepay_platform];
-        $service = $this->sagepay_url_service[$this->getField('TxType')][$this->sagepay_platform];
-
-        if (!isset($service)) {
-            // No URL - this platform/service is not supported.
-            return null;
-        } else {
-            return str_replace($sub, $service, $url_base);
+        if ( ! isset($this->sagepay_url_base[$platform])) {
+            throw new Exception\InvalidArgumentException("Invalid platform '{$platform}'");
         }
+
+        $url_base = $this->sagepay_url_base[$platform];
+
+        if ( ! isset($this->sagepay_url_service[$transaction_type])) {
+            throw new \InvalidArgumentException("Invalid transaction type '{$transaction_type}'");
+        } elseif ( ! isset($this->sagepay_url_service[$transaction_type][$platform])) {
+            throw new Exception\InvalidArgumentException("Transaction type '{$transaction_type}' not supported by platform '{$platform}'");
+        }
+
+        $service = $this->sagepay_url_service[$transaction_type][$platform];
+
+        return str_replace($sub, $service, $url_base);
     }
 
     
@@ -500,16 +518,16 @@ class Register extends Model\XmlAbstract
         $curlSession = curl_init();
 
         // Set the URL
-        curl_setopt ($curlSession, CURLOPT_URL, $sagepay_url);
+        curl_setopt($curlSession, CURLOPT_URL, $sagepay_url);
 
         // No headers.
-        curl_setopt ($curlSession, CURLOPT_HEADER, 0);
+        curl_setopt($curlSession, CURLOPT_HEADER, 0);
 
         // It's a POST request
-        curl_setopt ($curlSession, CURLOPT_POST, 1);
+        curl_setopt($curlSession, CURLOPT_POST, 1);
 
         // Set the fields for the POST
-        curl_setopt ($curlSession, CURLOPT_POSTFIELDS, $query_string);
+        curl_setopt($curlSession, CURLOPT_POSTFIELDS, $query_string);
 
         // Return it direct, don't print it out
         curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
@@ -569,7 +587,7 @@ class Register extends Model\XmlAbstract
         // Construct the query string from data in the model.
         $query_string = $this->queryData();
 
-        // Get the URL, which is derived from the platform and the 
+        // Get the URL, which is derived from the platform and the xxx
         $sagepay_url = $this->getUrl();
 
         // Post the request to SagePay
