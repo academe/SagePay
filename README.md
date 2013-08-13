@@ -259,3 +259,27 @@ page that the user is sent to.
 
 You can make use of the `CustomerData` field in the transaction for linking the payment to a resource in
 the application to be actioned.
+
+## A Note About Currencies ##
+
+This library will support any ISO 4217 currency, identified by its three-character code. However, the
+merchant account connected to the SagePay account will normally only support a subset of those currencies. This
+page lists the current merchant accounts and the currencies they support:
+
+http://www.sagepay.com/help/faq/merchant_number_format
+
+Some merchant accounts support dozens of currencies, and some only a handful. A SagePay account can be set up
+to further restrict the list that the merchant account supports.
+
+There is no server or direct API that will list the supported currencies. The Reporting and Admin API does
+provide getCurrencies() to list the currencies that the vendor accoutn supports. This library does not yet
+support the Reporting and Admin API, but it is something that is likely to be added.
+
+By supporting a currency for payments, it means that payments can be taken in that currency. A shop will
+often be based in a single country and support just that local currency. If your shop supports multiple
+currencies, then it is your responsibility to set the correct prices in each currency according to the
+exchange rates.
+
+A shop selling a product at 10 USD will still accept payments from people in other countries. In that case
+it will be the purchaser's card supplier that will calculate the amount to be paid in their local currency
+to ensure the shop receives exactly 10 USD.
