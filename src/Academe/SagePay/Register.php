@@ -34,7 +34,7 @@ class Register extends Model\XmlAbstract
     protected $timeout = 30;
 
     /**
-     * All SagePay URL parts.
+     * All SagePay Server and SagePay Direct URL base.
      */
 
     protected $sagepay_url_base = array(
@@ -58,9 +58,11 @@ class Register extends Model\XmlAbstract
      *  directrefund.vsp for DIRECTREFUND
      *  authorise.vsp for AUTHORISE
      *  cancel.vsp for CANCEL
+     *
+     * The services are different for SagePay Direct
      */
 
-    protected $sagepay_url_service = array(
+    protected $sagepay_server_url_service = array(
         'PAYMENT' => array(
             'test' => 'vspserver-register.vsp',
             'live' => 'vspserver-register.vsp',
@@ -334,7 +336,9 @@ class Register extends Model\XmlAbstract
 
     public function getUrl()
     {
+        // The replacement field for the URL; where we place the service name.
         $sub = '{service}';
+
         $platform = $this->sagepay_platform;
         $transaction_type = $this->getField('TxType');
 
@@ -344,13 +348,13 @@ class Register extends Model\XmlAbstract
 
         $url_base = $this->sagepay_url_base[$platform];
 
-        if ( ! isset($this->sagepay_url_service[$transaction_type])) {
+        if ( ! isset($this->sagepay_server_url_service[$transaction_type])) {
             throw new \InvalidArgumentException("Invalid transaction type '{$transaction_type}'");
-        } elseif ( ! isset($this->sagepay_url_service[$transaction_type][$platform])) {
+        } elseif ( ! isset($this->sagepay_server_url_service[$transaction_type][$platform])) {
             throw new Exception\InvalidArgumentException("Transaction type '{$transaction_type}' not supported by platform '{$platform}'");
         }
 
-        $service = $this->sagepay_url_service[$transaction_type][$platform];
+        $service = $this->sagepay_server_url_service[$transaction_type][$platform];
 
         return str_replace($sub, $service, $url_base);
     }
