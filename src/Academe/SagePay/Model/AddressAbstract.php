@@ -33,6 +33,18 @@ abstract class AddressAbstract
     protected $Email = null;
 
     /**
+     * Set multiple fields.
+     * Field names and values are passed in as an associative array.
+     */
+
+    public function setFields(array $values)
+    {
+        foreach($values as $name => $value) {
+            $this->setField($name, $value);
+        }
+    }
+
+    /**
      * Set a field value.
      */
 
@@ -42,6 +54,7 @@ abstract class AddressAbstract
         if (substr($name, 0, 7) == 'Billing') $name = substr($name, 7);
         if (substr($name, 0, 8) == 'Delivery') $name = substr($name, 8);
 
+        // Do we need to raise an exception if the properlty does not exist?
         if (property_exists($this, $name)) {
             $this->{$name} = $value;
         }
@@ -67,7 +80,7 @@ abstract class AddressAbstract
     }
 
     /**
-     * Set a field value.
+     * Return properties as an array.
      */
 
     public function toArray()

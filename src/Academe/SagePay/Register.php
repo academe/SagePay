@@ -25,7 +25,7 @@ class Register extends Model\XmlAbstract
      * presenting the user with the option to try again.
      */
 
-    protected $save_failed_registrationns = true;
+    protected $save_failed_registrations = true;
 
     /**
      * The timeout, in seconds, waiting for SagePay to respond to a registration request.
@@ -277,6 +277,11 @@ class Register extends Model\XmlAbstract
 
     public function setTxType($tx_type)
     {
+        // Make sure the transaction type is valid.
+        if ( ! isset($this->sagepay_server_url_service[$tx_type])) {
+            throw new Exception\InvalidArgumentException("Invalid transaction type '{$tx_type}'");
+        }
+
         $this->setField('TxType', strtoupper($tx_type));
         return $this;
     }
@@ -406,6 +411,7 @@ class Register extends Model\XmlAbstract
     public function findTransaction($VendorTxCode)
     {
         $this->checkTxModel();
+
         return $this->tx_model->find($VendorTxCode);
     }
 
@@ -608,7 +614,8 @@ class Register extends Model\XmlAbstract
 
     /**
      * Send the registration to SagePay and save the reply.
-     * TODO: make sure the transaction type is valid (one of three allowed).
+     * TODO: make sure the transaction type is valid (one of three allowed):
+     * PAYMENT, DEFERRED (not taken until RELEASE or ABORT) or AUTHENTICATE.
      */
 
     public function sendRegistration()
@@ -648,7 +655,7 @@ class Register extends Model\XmlAbstract
             // If the option is set, save the failed registration to the transaction to storage.
             // The failures are logged by SagePay anyway, and you probably don't want to clog up
             // storage with the failures, unless you have a specific reason to monitor this.
-            if ($this->save_failed_registrationns) {
+            if ($this->save_failed_registrations) {
                 $this->save();
             }
         }
