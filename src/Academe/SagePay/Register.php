@@ -20,6 +20,13 @@ class Register extends Model\XmlAbstract
     protected $tx_model = null;
 
     /**
+     * The SagePay method to be used.
+     * The method is either 'direct' or 'server'.
+     */
+
+    protected $method = 'server';
+
+    /**
      * Flag indicates whether failed transaction registrations should be saved to the transaction log.
      * Normally they would be logged by SagePay anyway, but discarded by the application, perhaps
      * presenting the user with the option to try again.
@@ -47,90 +54,115 @@ class Register extends Model\XmlAbstract
      * Mapping of the transaction type to URL service name.
      * Note some services are not supported by the simulator.
      *
-     * A list of services for transaction types:
-     *  vspserver-register.vsp for PAYMENT, DEFERRED and AUTHENTICATE.
-     *  release.vsp for RELEASE (to release a DEFERRED or REPEATDEFERRED Payment)
-     *  abort.vsp for ABORT
-     *  refund.vsp for REFUND
-     *  repeat.vsp for REPEAT and REPEATDEFERRED
-     *  void.vsp for VOID
-     *  manualpayment.vsp for MANUAL
-     *  directrefund.vsp for DIRECTREFUND
-     *  authorise.vsp for AUTHORISE
-     *  cancel.vsp for CANCEL
+     * A list of services for transaction types, to be added to the SagePay POST URL.
      *
      * The services are different for SagePay Direct
+     * The "3DSECURE" service is the only service that does not require that service
+     * name to be passed to SagePay in the TxType (transaction type) field of the POST.
+     *
+     * The "services" here are grouped into "methods" (server, direct and common).
      *
      * CHECKME: The v3.0 protocal documentation lists, in some places, the service for transaction
      * registration as "server-register.vsp" rather than "vspserver-register.vsp". But it does
      * contractict itself in a number of other places too.
      */
 
-    protected $sagepay_server_url_service = array(
-        'PAYMENT' => array(
-            'test' => 'vspserver-register.vsp',
-            'live' => 'vspserver-register.vsp',
-            'simulator' => null,
+    protected $sagepay_url_services = array(
+        'direct' => array(
+            'PAYMENT' => array(
+                'test' => 'vspdirect-register.vsp',
+                'live' => 'vspdirect-register.vsp',
+                'simulator' => null,
+            ),
+            'DEFERRED' => array(
+                'test' => 'vspdirect-register.vsp',
+                'live' => 'vspdirect-register.vsp',
+                'simulator' => null,
+            ),
+            'AUTHENTICATE' => array(
+                'test' => 'vspdirect-register.vsp',
+                'live' => 'vspdirect-register.vsp',
+                'simulator' => null,
+            ),
+            '3DSECURE' => array(
+                'test' => 'direct3dcallback.vsp',
+                'live' => 'direct3dcallback.vsp',
+                'simulator' => null,
+            ),
+            'COMPLETE' => array(
+                'test' => 'complete.vsp',
+                'live' => 'complete.vsp',
+                'simulator' => null,
+            ),
         ),
-        'DEFERRED' => array(
-            'test' => 'vspserver-register.vsp',
-            'live' => 'vspserver-register.vsp',
-            'simulator' => null,
+        'server' => array(
+            'PAYMENT' => array(
+                'test' => 'vspserver-register.vsp',
+                'live' => 'vspserver-register.vsp',
+                'simulator' => null,
+            ),
+            'DEFERRED' => array(
+                'test' => 'vspserver-register.vsp',
+                'live' => 'vspserver-register.vsp',
+                'simulator' => null,
+            ),
+            'AUTHENTICATE' => array(
+                'test' => 'vspserver-register.vsp',
+                'live' => 'vspserver-register.vsp',
+                'simulator' => null,
+            ),
         ),
-        'AUTHENTICATE' => array(
-            'test' => 'vspserver-register.vsp',
-            'live' => 'vspserver-register.vsp',
-            'simulator' => null,
-        ),
-        'RELEASE' => array(
-            'test' => 'release.vsp',
-            'live' => 'release.vsp',
-            'simulator' => 'VendorReleaseTx',
-        ),
-        'ABORT' => array(
-            'test' => 'abort.vsp',
-            'live' => 'abort.vsp',
-            'simulator' => 'VendorAbortTx',
-        ),
-        'REFUND' => array(
-            'test' => 'refund.vsp',
-            'live' => 'refund.vsp',
-            'simulator' => 'VendorRefundTx',
-        ),
-        'REPEAT' => array(
-            'test' => 'repeat.vsp',
-            'live' => 'repeat.vsp',
-            'simulator' => 'VendorRepeatTx',
-        ),
-        'REPEATDEFERRED' => array(
-            'test' => 'repeat.vsp',
-            'live' => 'repeat.vsp',
-            'simulator' => 'VendorRepeatTx',
-        ),
-        'VOID' => array(
-            'test' => 'void.vsp',
-            'live' => 'void.vsp',
-            'simulator' => 'VendorVoidTx',
-        ),
-        'MANUAL' => array(
-            'test' => 'manualpayment.vsp',
-            'live' => 'manualpayment.vsp',
-            'simulator' => null,
-        ),
-        'DIRECTREFUND' => array(
-            'test' => 'directrefund.vsp',
-            'live' => 'directrefund.vsp',
-            'simulator' => 'VendorDirectrefundTx',
-        ),
-        'AUTHORISE' => array(
-            'test' => 'authorise.vsp',
-            'live' => 'authorise.vsp',
-            'simulator' => 'VendorAuthoriseTx',
-        ),
-        'CANCEL' => array(
-            'test' => 'cancel.vsp',
-            'live' => 'cancel.vsp',
-            'simulator' => 'VendorCancelTx',
+        'common' => array(
+            'RELEASE' => array(
+                'test' => 'release.vsp',
+                'live' => 'release.vsp',
+                'simulator' => 'VendorReleaseTx',
+            ),
+            'ABORT' => array(
+                'test' => 'abort.vsp',
+                'live' => 'abort.vsp',
+                'simulator' => 'VendorAbortTx',
+            ),
+            'REFUND' => array(
+                'test' => 'refund.vsp',
+                'live' => 'refund.vsp',
+                'simulator' => 'VendorRefundTx',
+            ),
+            'REPEAT' => array(
+                'test' => 'repeat.vsp',
+                'live' => 'repeat.vsp',
+                'simulator' => 'VendorRepeatTx',
+            ),
+            'REPEATDEFERRED' => array(
+                'test' => 'repeat.vsp',
+                'live' => 'repeat.vsp',
+                'simulator' => 'VendorRepeatTx',
+            ),
+            'VOID' => array(
+                'test' => 'void.vsp',
+                'live' => 'void.vsp',
+                'simulator' => 'VendorVoidTx',
+            ),
+            'MANUAL' => array(
+                'test' => 'manualpayment.vsp',
+                'live' => 'manualpayment.vsp',
+                'simulator' => null,
+            ),
+            'DIRECTREFUND' => array(
+                'test' => 'directrefund.vsp',
+                'live' => 'directrefund.vsp',
+                'simulator' => 'VendorDirectrefundTx',
+            ),
+            'AUTHORISE' => array(
+                'test' => 'authorise.vsp',
+                'live' => 'authorise.vsp',
+                'simulator' => 'VendorAuthoriseTx',
+            ),
+            'CANCEL' => array(
+                'test' => 'cancel.vsp',
+                'live' => 'cancel.vsp',
+                'simulator' => 'VendorCancelTx',
+            ),
         ),
     );
 
@@ -191,6 +223,49 @@ class Register extends Model\XmlAbstract
     public function getTransactionModel()
     {
         return $this->tx_model;
+    }
+
+    /**
+     * Return the service list available to the current selected method.
+     * The services will be a merge of the method-specific services and the
+     * common services.
+     */
+
+    public function getServices()
+    {
+        return array_merge(
+            $this->sagepay_url_services[$this->method],
+            $this->sagepay_url_services['common']
+        );
+    }
+
+    /**
+     * Set the method used to access the services - 'direct' or 'server'.
+     */
+
+    public function setMethod($method)
+    {
+        $method = strtolower($method);
+
+        // Should these be constants, or a array constant in this class? Making them public
+        // kind of makes sense, even if they are unlikely to ever change.
+
+        if ($method != 'direct' && $method != 'server') {
+            throw new Exception\InvalidArgumentException("Invalid method type '{$method}'");
+        }
+
+        $this->method = $method;
+
+        return $this;
+    }
+
+    /**
+     * Get the method used to access the services.
+     */
+
+    public function getMethod()
+    {
+        return $this->$method;
     }
 
     /**
@@ -282,7 +357,8 @@ class Register extends Model\XmlAbstract
     public function setTxType($tx_type)
     {
         // Make sure the transaction type is valid.
-        if ( ! isset($this->sagepay_server_url_service[$tx_type])) {
+        $services = $this->getServices();
+        if ( ! isset($services[$tx_type])) {
             throw new Exception\InvalidArgumentException("Invalid transaction type '{$tx_type}'");
         }
 
@@ -355,6 +431,7 @@ class Register extends Model\XmlAbstract
 
     /**
      * Get the URL for the platform and service selected.
+     * FIXME: use the sagepay_url_services property to set the service suffix, in context with the method.
      *
      * @throws Academe\SagePay\Exception\InvalidArgumentException
      */
@@ -364,6 +441,7 @@ class Register extends Model\XmlAbstract
         // The replacement field for the URL; where we place the service name.
         $sub = '{service}';
 
+        $services = $this->getServices();
         $platform = $this->sagepay_platform;
         $transaction_type = $this->getField('TxType');
 
@@ -373,13 +451,13 @@ class Register extends Model\XmlAbstract
 
         $url_base = $this->sagepay_url_base[$platform];
 
-        if ( ! isset($this->sagepay_server_url_service[$transaction_type])) {
+        if ( ! isset($services[$transaction_type])) {
             throw new \InvalidArgumentException("Invalid transaction type '{$transaction_type}'");
-        } elseif ( ! isset($this->sagepay_server_url_service[$transaction_type][$platform])) {
+        } elseif ( ! isset($services[$transaction_type][$platform])) {
             throw new Exception\InvalidArgumentException("Transaction type '{$transaction_type}' not supported by platform '{$platform}'");
         }
 
-        $service = $this->sagepay_server_url_service[$transaction_type][$platform];
+        $service = $services[$transaction_type][$platform];
 
         return str_replace($sub, $service, $url_base);
     }
@@ -620,10 +698,17 @@ class Register extends Model\XmlAbstract
      * Send the registration to SagePay and save the reply.
      * TODO: make sure the transaction type is valid (one of three allowed):
      * PAYMENT, DEFERRED (payment not taken until RELEASE or there is an ABORT) or AUTHENTICATE.
+     *
+     * Note: at present this is a "server" (not "direct") registration request method only. This
+     * method will become the entry point for BOTH server and direct, while retaining backward
+     * compatibility.
      */
 
     public function sendRegistration()
     {
+        // TODO: check the transaction type.
+        // ...
+
         // Construct the query string from data in the model.
         $query_string = $this->queryData();
 
