@@ -226,11 +226,25 @@ class Register extends Model\XmlAbstract
     }
 
     /**
+     * Check a transaction model is set before we attempt to use it.
+     */
+
+    private function checkTxModel()
+    {
+        if (!isset($this->tx_model)) {
+            throw new Exception\BadMethodCallException('Transaction model is not set');
+        }
+    }
+
+    /**
      * Save the transaction data to storage.
      */
 
     public function save()
     {
+        // Ensure we have a transaction model.
+        $this->checkTxModel();
+
         $this->expandModels();
         return $this->tx_model->save();
     }
@@ -241,6 +255,8 @@ class Register extends Model\XmlAbstract
 
     public function toArray()
     {
+        $this->checkTxModel();
+
         $this->expandModels();
         return $this->tx_model->toArray();
     }
@@ -366,6 +382,8 @@ class Register extends Model\XmlAbstract
 
     public function setField($name, $value)
     {
+        $this->checkTxModel();
+
         $this->tx_model->setField($name, $value);
         return $this;
     }
@@ -376,6 +394,8 @@ class Register extends Model\XmlAbstract
 
     public function getField($name)
     {
+        $this->checkTxModel();
+
         return $this->tx_model->getField($name);
     }
 
@@ -385,6 +405,7 @@ class Register extends Model\XmlAbstract
 
     public function findTransaction($VendorTxCode)
     {
+        $this->checkTxModel();
         return $this->tx_model->find($VendorTxCode);
     }
 
@@ -468,6 +489,8 @@ class Register extends Model\XmlAbstract
 
     public function queryData($format_as_querystring = true)
     {
+        $this->checkTxModel();
+
         // Make sure all the models are expanded into the main transaction data model.
         $this->expandModels();
 
@@ -836,6 +859,7 @@ class Register extends Model\XmlAbstract
 
     public function isPaymentSuccess()
     {
+        $this->checkTxModel();
         return $this->tx_model->isPaymentSuccess();
     }
 
