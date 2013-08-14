@@ -60,6 +60,10 @@ class Register extends Model\XmlAbstract
      *  cancel.vsp for CANCEL
      *
      * The services are different for SagePay Direct
+     *
+     * CHECKME: The v3.0 protocal documentation lists, in some places, the service for transaction
+     * registration as "server-register.vsp" rather than "vspserver-register.vsp". But it does
+     * contractict itself in a number of other places too.
      */
 
     protected $sagepay_server_url_service = array(
@@ -615,7 +619,7 @@ class Register extends Model\XmlAbstract
     /**
      * Send the registration to SagePay and save the reply.
      * TODO: make sure the transaction type is valid (one of three allowed):
-     * PAYMENT, DEFERRED (not taken until RELEASE or ABORT) or AUTHENTICATE.
+     * PAYMENT, DEFERRED (payment not taken until RELEASE or there is an ABORT) or AUTHENTICATE.
      */
 
     public function sendRegistration()
@@ -623,7 +627,7 @@ class Register extends Model\XmlAbstract
         // Construct the query string from data in the model.
         $query_string = $this->queryData();
 
-        // Get the URL, which is derived from the platform and the xxx
+        // Get the URL, which is derived from the platform and the service.
         $sagepay_url = $this->getUrl();
 
         // Post the request to SagePay

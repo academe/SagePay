@@ -547,11 +547,13 @@ abstract class TransactionAbstract
 
     public function isPaymentSuccess()
     {
-        if ($this->Status == 'OK' || $this->Status == 'AUTHENTICATED' || $this->Status == 'REGISTERED') {
-            return true;
-        } else {
-            return false;
-        }
+        // There may be no status at all during testing, so account for that.
+        // Credit https://github.com/phillbrown
+
+        return (
+            isset($this->Status)
+            && ($this->Status == 'OK' || $this->Status == 'AUTHENTICATED' || $this->Status == 'REGISTERED')
+        );
     }
 }
 
