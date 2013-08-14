@@ -377,8 +377,11 @@ abstract class TransactionAbstract
         // Sent with the notification POST.
         // 38 characters GUID.
         'Token' => null,
-    );
 
+        // Custom data for carrying along with the transaction, and not sent to SagePay,
+        // unlike VendorData.
+        'CustomData' => null,
+    );
 
     /**
      * The reference ID of the partner that referred the vendor to SagePay.

@@ -212,6 +212,10 @@ class TransactionPdo extends TransactionAbstract
             }
         }
         catch (\PDOException $e) {
+            // FIXME: should we be nesting this PDO exception into a library exception and throwing
+            // it on from here? If we are not careful, datanase errors will just get hidden and
+            // not handled when they should be.
+
             $this->pdo_error_message = $e->getMessage();
             return false;
         }
@@ -259,6 +263,7 @@ class TransactionPdo extends TransactionAbstract
     /**
      * Create the database table for the transactions.
      * Returns true if successful.
+     * TODO: As for upgrading the table? Will have to think about that.
      */
 
     public function createTable()
@@ -307,12 +312,13 @@ class TransactionPdo extends TransactionAbstract
 
             $max = $field->max;
 
-            // If currency, then take the max value as a string and add 3 (for the dp and 2 dp digits)
-            if ($field->type == 'currency') $max = strlen((string)$max) + 3;
+            // If currency, then take the max value as a string and add 4 (for the dp and 3 dp digits)
+            // Some currencies have three decimal digits.
+            if ($field->type == 'currency') $max = strlen((string)$max) + 4;
 
             // Now here is a nasty hack.
             // Columns that can accept UTF-8 data need to have their length multiplied by
-            // four to guarantee a full UTF-8 string can fit in. There are probably ways around
+            // four to (nearly) guarantee a full UTF-8 string can fit in. There are probably ways around
             // this, but the documentation is (and always has been) veru confused, mixing up the
             // storage of charactersets, the searching of charactersets and the automatic
             // conversion between the two. This is nasty, nasty, but should work everywhere.

@@ -10,6 +10,10 @@
  * Note the lengths of fields are in bytes, for a single-character encoding (ISO 8859-1).
  * Your website is likely to use UTF-8, and you may want to store the UTF-8 data in the
  * database, so the database columns must be sized appropriately.
+ *
+ * FIXME: the validation on currency fields should actually vary, depending on the
+ * currency. Some currencies have three decimal places, so can support a wider range
+ * of fractional values (e.g. a min value of 0.001 rather than the SagePay documented 0.01).
  */
 
 namespace Academe\SagePay\Metadata;
@@ -35,6 +39,7 @@ class Transaction
      *  "+" Plus
      *  "n" Carriage return and line feed
      *  "&" Ampersand
+     *  "*" No restrictions
      *
      * Data types are:
      *  string
@@ -50,6 +55,11 @@ class Transaction
      *  iso639-2 - two-digit language code
      *  date - a date in YYYY-MM-DD format
      *  base64 - A-Z, a-z, 0-9, _ and /
+     *
+     * Source can be:
+     *  registration - created as a part of the initial transaction registration
+     *  notification - received from SageaPay in the notification callback
+     *  custom - custom data maintained by the application (use as you like)
      *
      * TODO: fields in surcharge record
      * TODO: fields in basket record
@@ -662,6 +672,16 @@ class Transaction
                 "source": "notification",
                 "store": true,
                 "notes": "GUID format"
+            },
+            "CustomData": {
+                "required": false,
+                "type": "string",
+                "chars": ["*"],
+                "min": 0,
+                "max": 4096,
+                "source": "custom",
+                "store": true,
+                "notes": "Custom data to use as you like"
             }
         }
 ENDDATA;
