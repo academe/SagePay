@@ -229,12 +229,19 @@ class Register extends Model\XmlAbstract
      * Return the service list available to the current selected method.
      * The services will be a merge of the method-specific services and the
      * common services.
+     * $method defaults to the method selected for the request.
      */
 
-    public function getServices()
+    public function getServices($method = null)
     {
+        if ( ! isset($method)) $method = $this->method;
+
+        if ( ! isset($this->sagepay_url_services[$method])) {
+            throw new Exception\InvalidArgumentException("Invalid method type '{$method}'");
+        }
+
         return array_merge(
-            $this->sagepay_url_services[$this->method],
+            $this->sagepay_url_services[$method],
             $this->sagepay_url_services['common']
         );
     }
@@ -433,17 +440,21 @@ class Register extends Model\XmlAbstract
      * Get the URL for the platform and service selected.
      * FIXME: use the sagepay_url_services property to set the service suffix, in context with the method.
      *
+     * The method, platform and transactino_type default to those selected for the transaction,
+     * but you can pass in any valid values for testing, without affecting the values selected
+     * for the transaction.
+     *
      * @throws Academe\SagePay\Exception\InvalidArgumentException
      */
 
-    public function getUrl()
+    public function getUrl($method = null, $platform = null, $transaction_type = null)
     {
         // The replacement field for the URL; where we place the service name.
         $sub = '{service}';
 
-        $services = $this->getServices();
-        $platform = $this->sagepay_platform;
-        $transaction_type = $this->getField('TxType');
+        $services = $this->getServices($method);
+        if ( ! isset($platform)) $platform = $this->sagepay_platform;
+        if ( ! isset($transaction_type)) $transaction_type = $this->getField('TxType');
 
         if ( ! isset($this->sagepay_url_base[$platform])) {
             throw new Exception\InvalidArgumentException("Invalid platform '{$platform}'");
