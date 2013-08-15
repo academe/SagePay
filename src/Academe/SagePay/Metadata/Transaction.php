@@ -58,6 +58,10 @@ class Transaction
      *  date - a date in YYYY-MM-DD format
      *  base64 - A-Z, a-z, 0-9, _ and /
      *
+     * TODO: the list of sources needs to be more consistent; there are around 20 different messages
+     * (POSTs and responses) flying around in both directions, and the "source" field should link each
+     * field to all messages it is used in.
+     *
      * Source can be:
      *  server-registration - created as a part of the initial transaction registration for SagePay Server.
      *  direct-registration - created as a part of the initial transaction registration for SagePay Direct.
