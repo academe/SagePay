@@ -64,6 +64,10 @@ class Transaction
      *  registration-response - the immediate response to the transaction registration.
      *  notification - received from SageaPay in the notification callback
      *  custom - custom data maintained by the application (use as you like)
+     *  3dauth-response - 3D-Authentication Results POST from your Terminal URL to Sage Pay
+     *  paypal-response - Sage Pay Response to the Registration POST (for PayPal transactions).
+     *  paypal-callback - Sage Pay callback after sending users to the PayPal URL.
+     *  paypal-complete - To complete a PayPal direct payment.
      *
      * Fields with the "tamper" flag set are included in tamper-detection
      * code in the notification message.
@@ -100,7 +104,7 @@ class Transaction
                 "min": 4,
                 "max": 4,
                 "default": "3.00",
-                "source": ["server-registration", "direct-registration"],
+                "source": ["server-registration", "direct-registration", "paypal-response", "paypal-callback", "paypal-complete"],
                 "store": true
             },
             "TxType": {
@@ -110,7 +114,7 @@ class Transaction
                 "min": 1,
                 "max": 15,
                 "default": "PAYMENT",
-                "source": ["server-registration", "direct-registration"],
+                "source": ["server-registration", "direct-registration", "paypal-complete"],
                 "store": true
             },
             "Vendor": {
@@ -129,7 +133,7 @@ class Transaction
                 "min": 0.01,
                 "max": 100000,
                 "chars": ["9", ",", "."],
-                "source": ["server-registration", "direct-registration"],
+                "source": ["server-registration", "direct-registration", "paypal-complete"],
                 "default": "0",
                 "store": true
             },
@@ -247,7 +251,7 @@ class Transaction
                 "chars": ["A", "a", "^", " ", "/", "&", ".", "-", "'"],
                 "min": 1,
                 "max": 20,
-                "source": ["server-registration", "direct-registration"],
+                "source": ["server-registration", "direct-registration", "paypal-callback"],
                 "store": true
             },
             "DeliveryFirstnames": {
@@ -256,7 +260,7 @@ class Transaction
                 "chars": ["A", "a", "^", " ", "/", "&", ".", "-", "'"],
                 "min": 1,
                 "max": 20,
-                "source": ["server-registration", "direct-registration"],
+                "source": ["server-registration", "direct-registration", "paypal-callback"],
                 "store": true
             },
             "DeliveryAddress1": {
@@ -265,7 +269,7 @@ class Transaction
                 "chars": ["A", "a", "^", "9", " ", "+", "'", "/", "&", ":", ",", ".", "-", "n", "("],
                 "min": 1,
                 "max": 100,
-                "source": ["server-registration", "direct-registration"],
+                "source": ["server-registration", "direct-registration", "paypal-callback"],
                 "store": true
             },
             "DeliveryAddress2": {
@@ -274,7 +278,7 @@ class Transaction
                 "chars": ["A", "a", "^", "9", " ", "+", "'", "/", "&", ":", ",", ".", "-", "n", "("],
                 "min": 0,
                 "max": 100,
-                "source": ["server-registration", "direct-registration"],
+                "source": ["server-registration", "direct-registration", "paypal-callback"],
                 "store": true
             },
             "DeliveryCity": {
@@ -283,7 +287,7 @@ class Transaction
                 "chars": ["A", "a", "^", "9", " ", "+", "'", "/", "&", ":", ",", ".", "-", "n", "("],
                 "min": 1,
                 "max": 40,
-                "source": ["server-registration", "direct-registration"],
+                "source": ["server-registration", "direct-registration", "paypal-callback"],
                 "store": true
             },
             "DeliveryPostCode": {
@@ -292,7 +296,7 @@ class Transaction
                 "chars": ["A", "a", "9", " ", "-"],
                 "min": 1,
                 "max": 10,
-                "source": ["server-registration", "direct-registration"],
+                "source": ["server-registration", "direct-registration", "paypal-callback"],
                 "store": true
             },
             "DeliveryCountry": {
@@ -301,7 +305,7 @@ class Transaction
                 "chars": ["A"],
                 "min": 2,
                 "max": 2,
-                "source": ["server-registration", "direct-registration"],
+                "source": ["server-registration", "direct-registration", "paypal-callback"],
                 "store": true
             },
             "DeliveryState": {
@@ -310,7 +314,7 @@ class Transaction
                 "chars": ["A"],
                 "min": 2,
                 "max": 2,
-                "source": ["server-registration", "direct-registration"],
+                "source": ["server-registration", "direct-registration", "paypal-callback"],
                 "store": true
             },
             "DeliveryPhone": {
@@ -328,7 +332,7 @@ class Transaction
                 "type": "rfc532n",
                 "min": 1,
                 "max": 255,
-                "source": ["server-registration", "direct-registration"],
+                "source": ["server-registration", "direct-registration", "paypal-callback"],
                 "store": true
             },
 
@@ -370,6 +374,16 @@ class Transaction
                 "max": 1,
                 "source": ["server-registration"],
                 "store": true
+            },
+            "Profile": {
+                "required": false,
+                "type": "enum",
+                "values": ["NORMAL", "LOW"],
+                "default": "NORMAL",
+                "min": 3,
+                "max": 6,
+                "source": ["server-registration"],
+                "store": false
             },
             "BillingAgreement": {
                 "required": false,
@@ -441,6 +455,7 @@ class Transaction
                 "chars": ["A", "a", "^", "9", " ", "+", "'", "/", "&", ":", ",", ".", "-", "n", "("],
                 "min": 1,
                 "max": 40,
+                "default": "academe",
                 "source": ["server-registration"],
                 "store": false
             },
@@ -466,10 +481,10 @@ class Transaction
             "Status": {
                 "required": false,
                 "type": "enum",
-                "chars": ["OK", "MALFORMED", "INVALID", "ERROR"],
+                "values": ["OK", "MALFORMED", "INVALID", "ERROR"],
                 "min": 1,
                 "max": 14,
-                "source": ["registration-response"],
+                "source": ["registration-response", "paypal-response", "paypal-callback"],
                 "tamper": true,
                 "store": true
             },
@@ -478,7 +493,7 @@ class Transaction
                 "type": "string",
                 "min": 1,
                 "max": 255,
-                "source": ["registration-response"],
+                "source": ["registration-response", "paypal-response", "paypal-callback"],
                 "store": true
             },
             "VPSTxId": {
@@ -486,7 +501,7 @@ class Transaction
                 "type": "string",
                 "min": 38,
                 "max": 38,
-                "source": ["registration-response"],
+                "source": ["registration-response", "paypal-response", "paypal-callback", "paypal-complete"],
                 "tamper": true,
                 "store": true
             },
@@ -584,7 +599,7 @@ class Transaction
                 "values": ["NONE", "CONFIRMED", "UNCONFIRMED"],
                 "min": 1,
                 "max": 20,
-                "source": ["notification"],
+                "source": ["notification", "paypal-callback"],
                 "tamper": true,
                 "store": true
              },
@@ -594,7 +609,7 @@ class Transaction
                 "values": ["VERIFIED", "UNVERIFIED"],
                 "min": 1,
                 "max": 20,
-                "source": ["notification"],
+                "source": ["notification", "paypal-callback"],
                 "tamper": true,
                 "store": true
              },
@@ -619,7 +634,7 @@ class Transaction
             "FraudResponse": {
                 "required": false,
                 "type": "enum",
-                "chars": ["ACCEPT", "CHALLENGE", "DENY", "NOTCHECKED"],
+                "values": ["ACCEPT", "CHALLENGE", "DENY", "NOTCHECKED"],
                 "min": 1,
                 "max": 10,
                 "source": ["notification"],
@@ -725,12 +740,91 @@ class Transaction
             "CardType": {
                 "required": true,
                 "type": "enum",
-                "chars": ["VISA", "MC", "MCDEBIT", "DELTA", "MAESTRO", "UKE", "AMEX", "DC", "JCB", "LASER", "PAYPAL"],
-                "min": 1,
+                "values": ["VISA", "MC", "MCDEBIT", "DELTA", "MAESTRO", "UKE", "AMEX", "DC", "JCB", "LASER", "PAYPAL"],
+                "min": 2,
                 "max": 20,
                 "source": ["direct-registration"],
                 "store": false
-             }
+            },
+
+            "PayPalCallbackURL": {
+                "required": false,
+                "min": 1,
+                "max": 255,
+                "type": "rfc1738",
+                "source": ["direct-registration"],
+                "store": false
+            },
+            "ClientIPAddress": {
+                "required": false,
+                "chars": ["9", "."],
+                "min": 1,
+                "max": 15,
+                "type": "string",
+                "source": ["direct-registration"],
+                "store": false
+            },
+
+            "MD": {
+                "required": false,
+                "type": "string",
+                "chars": ["A", "a", "9"],
+                "min": 1,
+                "max": 35,
+                "source": ["registration-response", "3dauth-response"],
+                "store": true,
+                "notes": "Direct 3DSecure only"
+            },
+            "ACSURL": {
+                "required": false,
+                "type": "rfc1738",
+                "min": 1,
+                "max": 7500,
+                "source": ["registration-response"],
+                "store": false,
+                "notes": "Direct 3DSecure only"
+            },
+            "PAReq": {
+                "required": false,
+                "type": "string",
+                "chars": ["A", "a", "9"],
+                "min": 1,
+                "max": 7500,
+                "source": ["registration-response", "3dauth-response"],
+                "store": false,
+                "notes": "Direct 3DSecure only"
+            },
+            "PayPalRedirectURL": {
+                "required": false,
+                "type": "rfc1738",
+                "min": 1,
+                "max": 255,
+                "source": ["paypal-response"],
+                "store": false,
+                "notes": "Direct 3DSecure only"
+            },
+
+            "PayerID": {
+                "required": false,
+                "type": "string",
+                "chars": ["A", "a", "9"],
+                "min": 1,
+                "max": 15,
+                "source": ["paypal-callback"],
+                "store": false,
+                "notes": "Unique PayPal User Reference ID"
+            },
+
+            "Accept": {
+                "required": false,
+                "type": "enum",
+                "values": ["YES", "NO"],
+                "min": 2,
+                "max": 3,
+                "source": ["paypal-complete"],
+                "store": true,
+                "notes": "To finally accept (COMPLETE) a PayPal payment"
+            }
         }
 ENDDATA;
 
