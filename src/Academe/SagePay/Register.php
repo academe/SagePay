@@ -584,6 +584,8 @@ class Register extends Model\XmlAbstract
     /**
      * Collect he query data together for the transaction registration.
      * Returns key/value pairs
+     * TODO: different types of transaction will need different sets of fields to
+     * be sent to SagePay.
      */
 
     public function queryData($format_as_querystring = true)
@@ -603,7 +605,7 @@ class Register extends Model\XmlAbstract
         $optional_fields = array();
 
         foreach($all_fields as $field_name => $field_meta) {
-            if ($field_meta['source'] != 'registration') continue;
+            if ( ! in_array('server-registration', $field_meta['source'])) continue;
             $fields_to_send[] = $field_name;
             if (empty($field_meta['required'])) $optional_fields[] = $field_name;
         }
@@ -708,7 +710,7 @@ class Register extends Model\XmlAbstract
     /**
      * Send the registration to SagePay and save the reply.
      * TODO: make sure the transaction type is valid (one of three allowed):
-     * PAYMENT, DEFERRED (payment not taken until RELEASE or there is an ABORT) or AUTHENTICATE.
+     * PAYMENT, DEFERRED or AUTHENTICATE.
      *
      * Note: at present this is a "server" (not "direct") registration request method only. This
      * method will become the entry point for BOTH server and direct, while retaining backward
@@ -717,13 +719,18 @@ class Register extends Model\XmlAbstract
 
     public function sendRegistration()
     {
-        // TODO: check the transaction type.
-        // ...
+        // Check the transaction type.
+
+        $tx_type = $this->getField('TxType');
+        if ($tx_type != 'PAYMENT' && $tx_type != 'DEFERRED' && $tx_type != 'AUTHENTICATE') {
+            // The transaction type is not valid for sending a registration.
+            throw new Exception\InvalidArgumentException("Invalid transaction type for registration '{$tx_type}'");
+        }
 
         // Construct the query string from data in the model.
         $query_string = $this->queryData();
 
-        // Get the URL, which is derived from the platform and the service.
+        // Get the URL, which is derived from the method, platform and the service.
         $sagepay_url = $this->getUrl();
 
         // Post the request to SagePay

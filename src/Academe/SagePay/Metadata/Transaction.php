@@ -14,6 +14,8 @@
  * FIXME: the validation on currency fields should actually vary, depending on the
  * currency. Some currencies have three decimal places, so can support a wider range
  * of fractional values (e.g. a min value of 0.001 rather than the SagePay documented 0.01).
+ *
+ * TODO: find a method to allow the metadata to be amended or added to.
  */
 
 namespace Academe\SagePay\Metadata;
@@ -57,9 +59,18 @@ class Transaction
      *  base64 - A-Z, a-z, 0-9, _ and /
      *
      * Source can be:
-     *  registration - created as a part of the initial transaction registration
+     *  server-registration - created as a part of the initial transaction registration for SagePay Server.
+     *  direct-registration - created as a part of the initial transaction registration for SagePay Direct.
+     *  registration-response - the immediate response to the transaction registration.
      *  notification - received from SageaPay in the notification callback
      *  custom - custom data maintained by the application (use as you like)
+     *
+     * Fields with the "tamper" flag set are included in tamper-detection
+     * code in the notification message.
+     *
+     * Fields with the "store" field set are tracked (saved) from page-to-page. Fields
+     * that are not stored are just included here for their formatting and validation
+     * details.
      *
      * TODO: fields in surcharge record
      * TODO: fields in basket record
@@ -79,7 +90,7 @@ class Transaction
                 "min": 1,
                 "max": 40,
                 "chars": ["A", "a", "9", "{", ".", "-", "_"],
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "tamper": true,
                 "store": true
             },
@@ -89,17 +100,17 @@ class Transaction
                 "min": 4,
                 "max": 4,
                 "default": "3.00",
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "TxType": {
                 "required": true,
                 "type": "enum",
-                "values": ["PAYMENT", "DEFERRED", "AUTHENTICATE", "RELEASE", "ABORT", "REFUND", "REPEAT", "REPEATDEFERRED", "VOID", "MANUAL", "DIRECTREFUND", "AUTHORISE", "CANCEL"],
+                "values": ["PAYMENT", "DEFERRED", "AUTHENTICATE", "RELEASE", "ABORT", "REFUND", "REPEAT", "REPEATDEFERRED", "VOID", "MANUAL", "DIRECTREFUND", "AUTHORISE", "CANCEL", "COMPLETE", "3DSECURE"],
                 "min": 1,
                 "max": 15,
                 "default": "PAYMENT",
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "Vendor": {
@@ -108,7 +119,7 @@ class Transaction
                 "min": 1,
                 "max": 15,
                 "chars": ["A", "a", "9"],
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "tamper": true,
                 "store": true
             },
@@ -118,7 +129,8 @@ class Transaction
                 "min": 0.01,
                 "max": 100000,
                 "chars": ["9", ",", "."],
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
+                "default": "0",
                 "store": true
             },
             "Currency": {
@@ -126,7 +138,8 @@ class Transaction
                 "type": "iso4217",
                 "min": 3,
                 "max": 3,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
+                "default": "GBP",
                 "store": true
             },
             "Description": {
@@ -134,7 +147,7 @@ class Transaction
                 "min": 1,
                 "max": 100,
                 "type": "html",
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "NotificationURL": {
@@ -142,7 +155,7 @@ class Transaction
                 "min": 1,
                 "max": 255,
                 "type": "rfc1738",
-                "source": "registration",
+                "source": ["server-registration"],
                 "store": true
             },
 
@@ -152,7 +165,7 @@ class Transaction
                 "chars": ["A", "a", "^", " ", "/", "&", ".", "-", "'"],
                 "min": 1,
                 "max": 20,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "BillingFirstnames": {
@@ -161,7 +174,7 @@ class Transaction
                 "chars": ["A", "a", "^", " ", "/", "&", ".", "-", "'"],
                 "min": 1,
                 "max": 20,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "BillingAddress1": {
@@ -170,7 +183,7 @@ class Transaction
                 "chars": ["A", "a", "^", "9", " ", "+", "'", "/", "&", ":", ",", ".", "-", "n", "("],
                 "min": 1,
                 "max": 100,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "BillingAddress2": {
@@ -179,7 +192,7 @@ class Transaction
                 "chars": ["A", "a", "^", "9", " ", "+", "'", "/", "&", ":", ",", ".", "-", "n", "("],
                 "min": 0,
                 "max": 100,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "BillingCity": {
@@ -188,7 +201,7 @@ class Transaction
                 "chars": ["A", "a", "^", "9", " ", "+", "'", "/", "&", ":", ",", ".", "-", "n", "("],
                 "min": 1,
                 "max": 40,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "BillingPostCode": {
@@ -197,7 +210,7 @@ class Transaction
                 "chars": ["A", "a", "9", " ", "-"],
                 "min": 1,
                 "max": 10,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "BillingCountry": {
@@ -206,7 +219,7 @@ class Transaction
                 "chars": ["A"],
                 "min": 2,
                 "max": 2,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "BillingState": {
@@ -215,7 +228,7 @@ class Transaction
                 "chars": ["A"],
                 "min": 2,
                 "max": 2,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "BillingPhone": {
@@ -224,7 +237,7 @@ class Transaction
                 "chars": ["9", "-", "A", "a", "+", " ", "("],
                 "min": 0,
                 "max": 20,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
 
@@ -234,7 +247,7 @@ class Transaction
                 "chars": ["A", "a", "^", " ", "/", "&", ".", "-", "'"],
                 "min": 1,
                 "max": 20,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "DeliveryFirstnames": {
@@ -243,7 +256,7 @@ class Transaction
                 "chars": ["A", "a", "^", " ", "/", "&", ".", "-", "'"],
                 "min": 1,
                 "max": 20,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "DeliveryAddress1": {
@@ -252,7 +265,7 @@ class Transaction
                 "chars": ["A", "a", "^", "9", " ", "+", "'", "/", "&", ":", ",", ".", "-", "n", "("],
                 "min": 1,
                 "max": 100,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "DeliveryAddress2": {
@@ -261,7 +274,7 @@ class Transaction
                 "chars": ["A", "a", "^", "9", " ", "+", "'", "/", "&", ":", ",", ".", "-", "n", "("],
                 "min": 0,
                 "max": 100,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "DeliveryCity": {
@@ -270,7 +283,7 @@ class Transaction
                 "chars": ["A", "a", "^", "9", " ", "+", "'", "/", "&", ":", ",", ".", "-", "n", "("],
                 "min": 1,
                 "max": 40,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "DeliveryPostCode": {
@@ -279,7 +292,7 @@ class Transaction
                 "chars": ["A", "a", "9", " ", "-"],
                 "min": 1,
                 "max": 10,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "DeliveryCountry": {
@@ -288,7 +301,7 @@ class Transaction
                 "chars": ["A"],
                 "min": 2,
                 "max": 2,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "DeliveryState": {
@@ -297,7 +310,7 @@ class Transaction
                 "chars": ["A"],
                 "min": 2,
                 "max": 2,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
             "DeliveryPhone": {
@@ -306,7 +319,7 @@ class Transaction
                 "chars": ["9", "-", "A", "a", "+", " ", "("],
                 "min": 0,
                 "max": 20,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
 
@@ -315,7 +328,7 @@ class Transaction
                 "type": "rfc532n",
                 "min": 1,
                 "max": 255,
-                "source": "registration",
+                "source": ["server-registration", "direct-registration"],
                 "store": true
             },
 
@@ -324,7 +337,7 @@ class Transaction
                 "type": "html",
                 "min": 1,
                 "max": 7500,
-                "source": "registration",
+                "source": ["server-registration"],
                 "store": true
             },
 
@@ -335,7 +348,7 @@ class Transaction
                 "default": "0",
                 "min": 1,
                 "max": 1,
-                "source": "registration",
+                "source": ["server-registration"],
                 "store": true
             },
             "ApplyAVSCV2": {
@@ -345,7 +358,7 @@ class Transaction
                 "default": "0",
                 "min": 1,
                 "max": 1,
-                "source": "registration",
+                "source": ["server-registration"],
                 "store": true
             },
             "Apply3DSecure": {
@@ -355,17 +368,7 @@ class Transaction
                 "default": "0",
                 "min": 1,
                 "max": 1,
-                "source": "registration",
-                "store": true
-            },
-            "Profile": {
-                "required": false,
-                "type": "enum",
-                "values": ["NORMAL", "LOW"],
-                "default": "NORMAL",
-                "min": 3,
-                "max": 6,
-                "source": "registration",
+                "source": ["server-registration"],
                 "store": true
             },
             "BillingAgreement": {
@@ -375,7 +378,7 @@ class Transaction
                 "default": "0",
                 "min": 1,
                 "max": 1,
-                "source": "registration",
+                "source": ["server-registration"],
                 "store": true
             },
             "AccountType": {
@@ -385,7 +388,7 @@ class Transaction
                 "default": "E",
                 "min": 1,
                 "max": 1,
-                "source": "registration",
+                "source": ["server-registration"],
                 "store": true
             },
             "CreateToken": {
@@ -395,7 +398,7 @@ class Transaction
                 "default": "0",
                 "min": 1,
                 "max": 1,
-                "source": "registration",
+                "source": ["server-registration"],
                 "store": true
             },
 
@@ -404,7 +407,7 @@ class Transaction
                 "type": "xml",
                 "min": 1,
                 "max": 20000,
-                "source": "registration",
+                "source": ["server-registration"],
                 "store": true
             },
             "CustomerXML": {
@@ -412,7 +415,7 @@ class Transaction
                 "type": "xml",
                 "min": 1,
                 "max": 2000,
-                "source": "registration",
+                "source": ["server-registration"],
                 "store": true
             },
             "SurchargeXML": {
@@ -420,7 +423,7 @@ class Transaction
                 "type": "xml",
                 "min": 1,
                 "max": 800,
-                "source": "registration",
+                "source": ["server-registration"],
                 "store": true
             },
             "VendorData": {
@@ -429,7 +432,7 @@ class Transaction
                 "chars": ["9", "A", "a", " "],
                 "min": 1,
                 "max": 200,
-                "source": "registration",
+                "source": ["server-registration"],
                 "store": true
             },
             "ReferrerID": {
@@ -438,8 +441,8 @@ class Transaction
                 "chars": ["A", "a", "^", "9", " ", "+", "'", "/", "&", ":", ",", ".", "-", "n", "("],
                 "min": 1,
                 "max": 40,
-                "source": "registration",
-                "store": true
+                "source": ["server-registration"],
+                "store": false
             },
             "Language": {
                 "required": false,
@@ -447,7 +450,7 @@ class Transaction
                 "chars": ["a"],
                 "min": 2,
                 "max": 2,
-                "source": "registration",
+                "source": ["server-registration"],
                 "store": false
             },
             "Website": {
@@ -456,7 +459,7 @@ class Transaction
                 "chars": ["A", "a", "^", "9", " ", "+", "'", "/", "&", ":", ",", ".", "-", "n", "("],
                 "min": 1,
                 "max": 100,
-                "source": "registration",
+                "source": ["server-registration"],
                 "store": true
             },
 
@@ -466,17 +469,16 @@ class Transaction
                 "chars": ["OK", "MALFORMED", "INVALID", "ERROR"],
                 "min": 1,
                 "max": 14,
-                "source": "registration-response",
+                "source": ["registration-response"],
                 "tamper": true,
                 "store": true
             },
             "StatusDetail": {
                 "required": false,
-                "type": "enum",
-                "values": ["OK", "MALFORMED", "INVALID", "ERROR"],
+                "type": "string",
                 "min": 1,
                 "max": 255,
-                "source": "registration-response",
+                "source": ["registration-response"],
                 "store": true
             },
             "VPSTxId": {
@@ -484,7 +486,7 @@ class Transaction
                 "type": "string",
                 "min": 38,
                 "max": 38,
-                "source": "registration-response",
+                "source": ["registration-response"],
                 "tamper": true,
                 "store": true
             },
@@ -493,7 +495,7 @@ class Transaction
                 "type": "string",
                 "min": 10,
                 "max": 10,
-                "source": "registration-response",
+                "source": ["registration-response"],
                 "store": true
             },
             "TxAuthNo": {
@@ -502,7 +504,7 @@ class Transaction
                 "chars": ["9"],
                 "min": 1,
                 "max": 50,
-                "source": "notification",
+                "source": ["notification"],
                 "tamper": true,
                 "store": true
             },
@@ -512,7 +514,7 @@ class Transaction
                 "values": ["ALL MATCH", "SECURITY CODE MATCH ONLY", "ADDRESS MATCH ONLY", "NO DATA MATCHES", "DATA NOT CHECKED"],
                 "min": 1,
                 "max": 50,
-                "source": "notification",
+                "source": ["notification"],
                 "tamper": true,
                 "store": true
             },
@@ -522,7 +524,7 @@ class Transaction
                 "values": ["NOTPROVIDED", "NOTCHECKED", "MATCHED", "NOTMATCHED"],
                 "min": 1,
                 "max": 20,
-                "source": "notification",
+                "source": ["notification"],
                 "tamper": true,
                 "store": true
             },
@@ -532,7 +534,7 @@ class Transaction
                 "values": ["NOTPROVIDED", "NOTCHECKED", "MATCHED", "NOTMATCHED"],
                 "min": 1,
                 "max": 20,
-                "source": "notification",
+                "source": ["notification"],
                 "tamper": true,
                 "store": true
             },
@@ -542,7 +544,7 @@ class Transaction
                 "values": ["NOTPROVIDED", "NOTCHECKED", "MATCHED", "NOTMATCHED"],
                 "min": 1,
                 "max": 20,
-                "source": "notification",
+                "source": ["notification"],
                 "tamper": true,
                 "store": true
             },
@@ -552,7 +554,7 @@ class Transaction
                 "values": ["0", "1"],
                 "min": 1,
                 "max": 1,
-                "source": "notification",
+                "source": ["notification"],
                 "tamper": true,
                 "store": true
             },
@@ -562,7 +564,7 @@ class Transaction
                 "values": ["OK", "NOTCHECKED", "NOTAVAILABLE", "NOTAUTHED", "INCOMPLETE", "ERROR", "ATTEMPTONLY"],
                 "min": 1,
                 "max": 50,
-                "source": "notification",
+                "source": ["notification"],
                 "tamper": true,
                 "store": true
              },
@@ -572,7 +574,7 @@ class Transaction
                 "chars": ["A", "a", "^", "9"],
                 "min": 1,
                 "max": 32,
-                "source": "notification",
+                "source": ["notification"],
                 "tamper": true,
                 "store": true
              },
@@ -582,7 +584,7 @@ class Transaction
                 "values": ["NONE", "CONFIRMED", "UNCONFIRMED"],
                 "min": 1,
                 "max": 20,
-                "source": "notification",
+                "source": ["notification"],
                 "tamper": true,
                 "store": true
              },
@@ -592,7 +594,7 @@ class Transaction
                 "values": ["VERIFIED", "UNVERIFIED"],
                 "min": 1,
                 "max": 20,
-                "source": "notification",
+                "source": ["notification"],
                 "tamper": true,
                 "store": true
              },
@@ -602,7 +604,7 @@ class Transaction
                 "values": ["VISA", "MC", "MCDEBIT", "DELTA", "MAESTRO", "UKE", "AMEX", "DC", "JCB", "LASER", "PAYPAL", "EPS", "GIROPAY", "IDEAL", "SOFORT", "ELV"],
                 "min": 1,
                 "max": 15,
-                "source": "notification",
+                "source": ["notification"],
                 "store": true
              },
             "Last4Digits": {
@@ -611,7 +613,7 @@ class Transaction
                 "chars": ["9"],
                 "min": 1,
                 "max": 4,
-                "source": "notification",
+                "source": ["notification"],
                 "store": true
              },
             "FraudResponse": {
@@ -620,7 +622,7 @@ class Transaction
                 "chars": ["ACCEPT", "CHALLENGE", "DENY", "NOTCHECKED"],
                 "min": 1,
                 "max": 10,
-                "source": "notification",
+                "source": ["notification"],
                 "tamper": true,
                 "store": true
              },
@@ -630,7 +632,7 @@ class Transaction
                 "chars": ["9", ".", ","],
                 "min": 0.01,
                 "max": 100000.00,
-                "source": "notification",
+                "source": ["notification"],
                 "store": true
             },
             "BankAuthCode": {
@@ -639,7 +641,7 @@ class Transaction
                 "chars": ["9"],
                 "min": 1,
                 "max": 6,
-                "source": "notification",
+                "source": ["notification"],
                 "tamper": true,
                 "store": true
             },
@@ -649,7 +651,7 @@ class Transaction
                 "chars": ["9"],
                 "min": 1,
                 "max": 2,
-                "source": "notification",
+                "source": ["notification"],
                 "tamper": true,
                 "store": true
             },
@@ -659,7 +661,7 @@ class Transaction
                 "chars": ["9"],
                 "min": 4,
                 "max": 4,
-                "source": "notification",
+                "source": ["notification"],
                 "tamper": true,
                 "store": true
             },
@@ -669,7 +671,7 @@ class Transaction
                 "chars": ["A", "a", "9", "-", "{"],
                 "min": 38,
                 "max": 38,
-                "source": "notification",
+                "source": ["notification"],
                 "store": true,
                 "notes": "GUID format"
             },
@@ -679,10 +681,56 @@ class Transaction
                 "chars": ["*"],
                 "min": 0,
                 "max": 4096,
-                "source": "custom",
+                "source": ["custom"],
                 "store": true,
                 "notes": "Custom data to use as you like"
-            }
+            },
+
+            "CardHolder": {
+                "required": false,
+                "type": "string",
+                "chars": ["A", "a", "^", " ", "&", ".", "-", "'"],
+                "min": 1,
+                "max": 50,
+                "source": ["direct-registration"],
+                "store": false
+            },
+            "CardNumber": {
+                "required": false,
+                "type": "string",
+                "chars": ["9"],
+                "min": 1,
+                "max": 20,
+                "source": ["direct-registration"],
+                "store": false
+            },
+            "ExpiryDate": {
+                "required": false,
+                "type": "string",
+                "chars": ["9"],
+                "min": 4,
+                "max": 4,
+                "source": ["direct-registration"],
+                "store": false
+            },
+            "CV2": {
+                "required": false,
+                "type": "string",
+                "chars": ["9"],
+                "min": 3,
+                "max": 4,
+                "source": ["direct-registration"],
+                "store": false
+            },
+            "CardType": {
+                "required": true,
+                "type": "enum",
+                "chars": ["VISA", "MC", "MCDEBIT", "DELTA", "MAESTRO", "UKE", "AMEX", "DC", "JCB", "LASER", "PAYPAL"],
+                "min": 1,
+                "max": 20,
+                "source": ["direct-registration"],
+                "store": false
+             }
         }
 ENDDATA;
 

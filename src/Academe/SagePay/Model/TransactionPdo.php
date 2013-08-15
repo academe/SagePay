@@ -11,6 +11,7 @@
 namespace Academe\SagePay\Model;
 
 use Academe\SagePay\Metadata as Metadata;
+use Academe\SagePay\Exception as Exception;
 
 class TransactionPdo extends TransactionAbstract
 {
@@ -29,6 +30,7 @@ class TransactionPdo extends TransactionAbstract
 
     public function __construct()
     {
+        parent::__construct();
     }
 
     /**
@@ -212,12 +214,11 @@ class TransactionPdo extends TransactionAbstract
             }
         }
         catch (\PDOException $e) {
-            // FIXME: should we be nesting this PDO exception into a library exception and throwing
-            // it on from here? If we are not careful, datanase errors will just get hidden and
-            // not handled when they should be.
-
             $this->pdo_error_message = $e->getMessage();
-            return false;
+
+            // PDO exceptions should be forwarded on. They are generally going to be fatal.
+
+            throw new Exception\RuntimeException($e->getMessage(), (int)$e->getCode(), $e);
         }
 
         return true;
@@ -292,18 +293,22 @@ class TransactionPdo extends TransactionAbstract
 
     /**
      * Generate the database column creation statements from the Transaction metadata.
+     * Extend this method to add further custom columns if required.
      */
 
     public function createColumnsDdl()
     {
-        // NOTE: the column lengths are to support unicode (UTF-8) characters, and not ASCII bytes.
+        // NOTE: the column lengths listed in the metadata are to support unicode (UTF-8) characters,
+        // and not ASCII bytes.
         // If the database is not set up with a unicode charset, then we need to add a percentage 
         // to the lengths of all columns.
+
         $field_meta = Metadata\Transaction::get();
 
         $columns = array();
 
         foreach($field_meta as $name => $field) {
+            // Only interested in stored fields.
             if ( ! $field->store ) continue;
 
             $column = $name . ' ';
