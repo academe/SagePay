@@ -925,7 +925,18 @@ class Register extends Model\XmlAbstract
             $this->setField('Token', $post['Token']);
 
             // Save the transaction record to local storage.
-            $this->save();
+            // We don't want to throw exceptions here; SagePay must get its response.
+            try{
+                $this->save();
+            }
+            catch (Exception\RuntimeException $e) {
+                $retStatus = 'ERROR';
+                $retStatusDetail = 'Cannot save result to database';
+            }
+            catch (\RuntimeException $e) {
+                $retStatus = 'ERROR';
+                $retStatusDetail = 'Cannot save result to database';
+            }
         }
 
         // Finally return the result to SagePay, including the relevant redirect URL.
