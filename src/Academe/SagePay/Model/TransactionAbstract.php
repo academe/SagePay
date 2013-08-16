@@ -279,9 +279,11 @@ abstract class TransactionAbstract
         // There may be no status at all during testing, so account for that.
         // Credit https://github.com/phillbrown
 
+        $Status = $this->getField('Status');
+
         return (
-            isset($this->Status)
-            && ($this->Status == 'OK' || $this->Status == 'AUTHENTICATED' || $this->Status == 'REGISTERED')
+            isset($Status)
+            && ($Status == 'OK' || $Status == 'AUTHENTICATED' || $Status == 'REGISTERED')
         );
     }
 }
