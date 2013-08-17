@@ -77,10 +77,13 @@ and so through [composer](http://getcomposer.org/).
 
 This library handles the back-end processing only. You will need:
 
-* Front-end forms to capture the user's name and address.
+* Front-end forms to capture the user's name and address (not required for SagePay Direct).
 * Validation on those forms to act as a gatekeeper before we sent those details to SagePay.
-* Routeing and a handler for the notification callback that SagePay will perform.
+* Routeing and a handler for the notification callback that SagePay will perform (the handler is more complex
+  for SagePay Direct, as you need to handle more of the protocol on your site).
 * A MySQL database or an extension to the Transaction model for persisting the transaction data.
+  The transaction data can be stored anywhere you like, but a simple PDO extension, only tested on MySQL, is
+  built in for convenience.
 
 Some more detailed examples of how this could work, will follow later. If you want to wrap this
 library up in a more diverse library, such as [OmniPay](https://github.com/adrianmacneil/omnipay), then this
