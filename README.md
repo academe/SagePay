@@ -122,6 +122,11 @@ Very roughly, registering a [payment] transaction request will look like this:
     
     $storage->setDatabase('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASSWORD);
     
+    // Or alternatively use the storage model TransactionPdoWordpress and have the database details
+    // set for you automatically:
+    
+    $storage = new Academe\SagePay\Model\TransactionPdoWordpress(); // No need to call setDatabase()
+    
     // Inject the storage object.
     
     $register->setTransactionModel($storage);
