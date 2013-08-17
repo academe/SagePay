@@ -12,9 +12,9 @@ a REST resource.
 
 ## Limitations ##
 
-The first working release of this library will focus on paying PAYMENT transactions. It will
-not deal with repeating transactions for handling DEFERRED or AUTHENTICATE transaction types, or
-the myriad other types. However, they should all be straight-forward to implement.
+The first working release of this library will focus on paying PAYMENT transactions. It has not been
+tested with repeating transactions or DEFERRED or AUTHENTICATE transaction types, or
+the myriad other services. However, these are all being worked on.
 
 This library is only handling "SagePay Server" at present. This service pushes details of the transaction to
 SagePay via a back-channel, then sends the user to SagePay to enter their credit card details. Credit card
@@ -24,8 +24,7 @@ do not need a SSL certificate beyond a simple one for encrypting address details
 "SagePay Direct" allows you to keep the user on your own site. You take all credit card details on your site
 and send the full payment details via a back-channel to SagePay. You need a good SSL certificate, and PCI
 certification is a lot more involved, since you are directly handling end-user credit card details. This library
-does not support this service. If you do require this facility, please get in contact, and we may be able to
-extend the code.
+does not support this service at present, though it is being worked on.
 
 ## Status ##
 
@@ -37,6 +36,9 @@ routing and input validation).
 
 So far there is a storage model abstract, with an example PDO storage implementation. There are
 models for the basket, addresses, customers, and surcharges.
+
+[This wiki page](https://github.com/academe/SagePay/wiki/List-of-Messages) lists the messages that will
+ultimately be supported by the library.
 
 ## Installation ##
 
@@ -63,6 +65,9 @@ Or if working on a clone of this repository in in vendor/sagepay:
             "psr-0": "Academe\\SagePay": "vendor/sagepay/src"
         }
     }
+
+The official releases are also available on [Packageist](https://packagist.org/packages/academe/sagepay)
+and so through [composer](http://getcomposer.org/).
 
 ## What else do you need? ##
 
