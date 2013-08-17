@@ -21,10 +21,14 @@ SagePay via a back-channel, then sends the user to SagePay to enter their credit
 details do not have to be taken on your own site, and that helps immensely with PCI accreditation. You also
 do not need a SSL certificate beyond a simple one for encrypting address details as they are entered.
 
-"SagePay Direct" allows you to keep the user on your own site. You take all credit card details on your site
+"SagePay Direct" allows you to keep the user on your own site, while taking payment details at least. 
+You take all credit card details on your site
 and send the full payment details via a back-channel to SagePay. You need a good SSL certificate, and PCI
-certification is a lot more involved, since you are directly handling end-user credit card details. This library
-does not support this service at present, though it is being worked on.
+certification is a lot more involved, since you are directly handling end-user credit card details.
+This is not really as big an advantage as it first appears, as you still need to send visitors to other
+sites for 3DSecure authorisation and PayPal authentication. These sites can all be embdded into an
+iframe to improve the user experience, but that also applies to SagePay Server.
+This library does not support this service at present, though it is being worked on.
 
 ## Status ##
 
