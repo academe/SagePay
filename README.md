@@ -12,20 +12,23 @@ a REST resource.
 
 ## Limitations ##
 
-The first working release of this library will focus on paying PAYMENT transactions. It will
-not deal with repeating transactions for handling DEFERRED or AUTHENTICATE transaction types, or
-the myriad other types. However, they should all be straight-forward to implement.
+The first working release of this library will focus on paying PAYMENT transactions. It has not been
+tested with repeating transactions or DEFERRED or AUTHENTICATE transaction types, or
+the myriad other services. However, these are all being worked on.
 
 This library is only handling "SagePay Server" at present. This service pushes details of the transaction to
 SagePay via a back-channel, then sends the user to SagePay to enter their credit card details. Credit card
 details do not have to be taken on your own site, and that helps immensely with PCI accreditation. You also
 do not need a SSL certificate beyond a simple one for encrypting address details as they are entered.
 
-"SagePay Direct" allows you to keep the user on your own site. You take all credit card details on your site
+"SagePay Direct" allows you to keep the user on your own site, while taking payment details at least. 
+You take all credit card details on your site
 and send the full payment details via a back-channel to SagePay. You need a good SSL certificate, and PCI
-certification is a lot more involved, since you are directly handling end-user credit card details. This library
-does not support this service. If you do require this facility, please get in contact, and we may be able to
-extend the code.
+certification is a lot more involved, since you are directly handling end-user credit card details.
+This is not really as big an advantage as it first appears, as you still need to send visitors to other
+sites for 3DSecure authorisation and PayPal authentication. These sites can all be embdded into an
+iframe to improve the user experience, but that also applies to SagePay Server.
+This library does not support this service at present, though it is being worked on.
 
 ## Status ##
 
@@ -37,6 +40,9 @@ routing and input validation).
 
 So far there is a storage model abstract, with an example PDO storage implementation. There are
 models for the basket, addresses, customers, and surcharges.
+
+[This wiki page](https://github.com/academe/SagePay/wiki/List-of-Messages) lists the messages that will
+ultimately be supported by the library.
 
 ## Installation ##
 
@@ -64,14 +70,20 @@ Or if working on a clone of this repository in in vendor/sagepay:
         }
     }
 
+The official releases are also available on [Packageist](https://packagist.org/packages/academe/sagepay)
+and so through [composer](http://getcomposer.org/).
+
 ## What else do you need? ##
 
 This library handles the back-end processing only. You will need:
 
-* Front-end forms to capture the user's name and address.
+* Front-end forms to capture the user's name and address (not required for SagePay Direct).
 * Validation on those forms to act as a gatekeeper before we sent those details to SagePay.
-* Routeing and a handler for the notification callback that SagePay will perform.
+* Routeing and a handler for the notification callback that SagePay will perform (the handler is more complex
+  for SagePay Direct, as you need to handle more of the protocol on your site).
 * A MySQL database or an extension to the Transaction model for persisting the transaction data.
+  The transaction data can be stored anywhere you like, but a simple PDO extension, only tested on MySQL, is
+  built in for convenience.
 
 Some more detailed examples of how this could work, will follow later. If you want to wrap this
 library up in a more diverse library, such as [OmniPay](https://github.com/adrianmacneil/omnipay), then this
@@ -109,6 +121,11 @@ Very roughly, registering a [payment] transaction request will look like this:
     // Within WordPress, setting the database details looks like this:
     
     $storage->setDatabase('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASSWORD);
+    
+    // Or alternatively use the storage model TransactionPdoWordpress and have the database details
+    // set for you automatically:
+    
+    $storage = new Academe\SagePay\Model\TransactionPdoWordpress(); // No need to call setDatabase()
     
     // Inject the storage object.
     
