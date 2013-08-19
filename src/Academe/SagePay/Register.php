@@ -441,8 +441,8 @@ class Register extends Model\XmlAbstract
      * FIXME: use the sagepay_url_services property to set the service suffix, in context with the method.
      *
      * The method, platform and transactino_type default to those selected for the transaction,
-     * but you can pass in any valid values for testing, without affecting the values selected
-     * for the transaction.
+     * but you can pass in any valid values for testing, without mutating the transaction (is that
+     * the right term?).
      *
      * @throws Academe\SagePay\Exception\InvalidArgumentException
      */
@@ -464,11 +464,15 @@ class Register extends Model\XmlAbstract
 
         if ( ! isset($services[$transaction_type])) {
             throw new \InvalidArgumentException("Invalid transaction type '{$transaction_type}'");
-        } elseif ( ! isset($services[$transaction_type][$platform])) {
+        }
+        if ( ! isset($services[$transaction_type][$platform])) {
             throw new Exception\InvalidArgumentException("Transaction type '{$transaction_type}' not supported by platform '{$platform}'");
         }
 
         $service = $services[$transaction_type][$platform];
+
+        // Replace the service substitution field of the selected base URL with
+        // the selected service URL part.
 
         return str_replace($sub, $service, $url_base);
     }
@@ -709,8 +713,6 @@ class Register extends Model\XmlAbstract
 
     /**
      * Send the registration to SagePay and save the reply.
-     * TODO: make sure the transaction type is valid (one of three allowed):
-     * PAYMENT, DEFERRED or AUTHENTICATE.
      *
      * Note: at present this is a "server" (not "direct") registration request method only. This
      * method will become the entry point for BOTH server and direct, while retaining backward
@@ -769,7 +771,7 @@ class Register extends Model\XmlAbstract
     }
 
     /**
-     * The notification callback.
+     * The notification callback for SagePay Server PAYMENT, DEFERRED, AUTHENTICATE.
      * This handles the callback from SagePay in response to a [successful] transaction registration.
      *
      * The redirect URL should not carray any information that allows an end user to be able to
@@ -789,7 +791,7 @@ class Register extends Model\XmlAbstract
 
     public function notification($post, $redirect_url)
     {
-        // End of line string.
+        // End of line characters.
         $eol = "\r\n";
 
         // Get the main details that identify the transaction.
@@ -870,6 +872,7 @@ class Register extends Model\XmlAbstract
             */
 
             // Construct a concatenated POST string hash.
+            // TODO: these can vbe constructed from the transaction metadata.
             $strMessage = 
                 // V2.23 protocol
                 $post['VPSTxId'] . $post['VendorTxCode'] . $post['Status']

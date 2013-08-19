@@ -62,19 +62,31 @@ class Transaction
      * (POSTs and responses) flying around in both directions, and the "source" field should link each
      * field to all messages it is used in.
      *
-     * Source can be:
+     * Source can be (see https://github.com/academe/SagePay/wiki/List-of-Messages):
+     *
      *  server-registration - created as a part of the initial transaction registration for SagePay Server.
+     *  server-registration-response - the immediate response to the transaction registration.
+     *  server-notification - received from SageaPay server in the notification callback.
+     *  server-notification-response - returned to SageaPay server in the notification callback response.
+     *
      *  direct-registration - created as a part of the initial transaction registration for SagePay Direct.
-     *  registration-response - the immediate response to the transaction registration.
-     *  notification - received from SageaPay in the notification callback
-     *  custom - custom data maintained by the application (use as you like)
-     *  3dauth-response - 3D-Authentication Results POST from your Terminal URL to Sage Pay
-     *  paypal-response - Sage Pay Response to the Registration POST (for PayPal transactions).
-     *  paypal-callback - Sage Pay callback after sending users to the PayPal URL.
+     *  direct-final-response - Sage Pay Response to the Registration POST (final, for all transactino types).
+     *  direct-paypal-response - Sage Pay Response to the Registration POST (for PayPal transactions).
+     *  direct-paypal-callback - Sage Pay callback after sending users to the PayPal URL.
+     *  direct-3dsecure-callback - Site informaing SagePay of the encryoted 3DSecure auth results.
+     *  direct-3dsecure-callback-response - TODO
+     *  direct-3dauth-issuer - client-side redirect POST to card issuer for 3DSecure authorisation.
+     *  direct-3dauth-issuer-return - return from the 3DSecure card issuer
+     *  direct-3dauth-response - 3D-Authentication Results POST from your Terminal URL to SagePay.
+     *
      *  paypal-complete - To complete a PayPal direct payment.
+     *  custom - custom data maintained by the application (use as you like)
+     *
+     * "Source" is effectively the message in which a field is sent, in either direction.
      *
      * Fields with the "tamper" flag set are included in tamper-detection
-     * code in the notification message.
+     * code in the server-notification message. The flag may need to be expanded to
+     * other message types.
      *
      * Fields with the "store" field set are tracked (saved) from page-to-page. Fields
      * that are not stored are just included here for their formatting and validation
@@ -108,7 +120,7 @@ class Transaction
                 "min": 4,
                 "max": 4,
                 "default": "3.00",
-                "source": ["server-registration", "direct-registration", "paypal-response", "paypal-callback", "paypal-complete"],
+                "source": ["server-registration", "direct-registration", "direct-paypal-response", "direct-paypal-callback", "paypal-complete"],
                 "store": true
             },
             "TxType": {
@@ -255,7 +267,7 @@ class Transaction
                 "chars": ["A", "a", "^", " ", "/", "&", ".", "-", "'"],
                 "min": 1,
                 "max": 20,
-                "source": ["server-registration", "direct-registration", "paypal-callback"],
+                "source": ["server-registration", "direct-registration", "direct-paypal-callback"],
                 "store": true
             },
             "DeliveryFirstnames": {
@@ -264,7 +276,7 @@ class Transaction
                 "chars": ["A", "a", "^", " ", "/", "&", ".", "-", "'"],
                 "min": 1,
                 "max": 20,
-                "source": ["server-registration", "direct-registration", "paypal-callback"],
+                "source": ["server-registration", "direct-registration", "direct-paypal-callback"],
                 "store": true
             },
             "DeliveryAddress1": {
@@ -273,7 +285,7 @@ class Transaction
                 "chars": ["A", "a", "^", "9", " ", "+", "'", "/", "&", ":", ",", ".", "-", "n", "("],
                 "min": 1,
                 "max": 100,
-                "source": ["server-registration", "direct-registration", "paypal-callback"],
+                "source": ["server-registration", "direct-registration", "direct-paypal-callback"],
                 "store": true
             },
             "DeliveryAddress2": {
@@ -282,7 +294,7 @@ class Transaction
                 "chars": ["A", "a", "^", "9", " ", "+", "'", "/", "&", ":", ",", ".", "-", "n", "("],
                 "min": 0,
                 "max": 100,
-                "source": ["server-registration", "direct-registration", "paypal-callback"],
+                "source": ["server-registration", "direct-registration", "direct-paypal-callback"],
                 "store": true
             },
             "DeliveryCity": {
@@ -291,7 +303,7 @@ class Transaction
                 "chars": ["A", "a", "^", "9", " ", "+", "'", "/", "&", ":", ",", ".", "-", "n", "("],
                 "min": 1,
                 "max": 40,
-                "source": ["server-registration", "direct-registration", "paypal-callback"],
+                "source": ["server-registration", "direct-registration", "direct-paypal-callback"],
                 "store": true
             },
             "DeliveryPostCode": {
@@ -300,7 +312,7 @@ class Transaction
                 "chars": ["A", "a", "9", " ", "-"],
                 "min": 1,
                 "max": 10,
-                "source": ["server-registration", "direct-registration", "paypal-callback"],
+                "source": ["server-registration", "direct-registration", "direct-paypal-callback"],
                 "store": true
             },
             "DeliveryCountry": {
@@ -309,7 +321,7 @@ class Transaction
                 "chars": ["A"],
                 "min": 2,
                 "max": 2,
-                "source": ["server-registration", "direct-registration", "paypal-callback"],
+                "source": ["server-registration", "direct-registration", "direct-paypal-callback"],
                 "store": true
             },
             "DeliveryState": {
@@ -318,7 +330,7 @@ class Transaction
                 "chars": ["A"],
                 "min": 2,
                 "max": 2,
-                "source": ["server-registration", "direct-registration", "paypal-callback"],
+                "source": ["server-registration", "direct-registration", "direct-paypal-callback"],
                 "store": true
             },
             "DeliveryPhone": {
@@ -336,7 +348,7 @@ class Transaction
                 "type": "rfc532n",
                 "min": 1,
                 "max": 255,
-                "source": ["server-registration", "direct-registration", "paypal-callback"],
+                "source": ["server-registration", "direct-registration", "direct-paypal-callback"],
                 "store": true
             },
 
@@ -488,7 +500,7 @@ class Transaction
                 "values": ["OK", "MALFORMED", "INVALID", "ERROR"],
                 "min": 1,
                 "max": 14,
-                "source": ["registration-response", "paypal-response", "paypal-callback"],
+                "source": ["server-registration-response", "server-notification-response", "direct-paypal-response", "direct-paypal-callback", "direct-3dauth-response"],
                 "tamper": true,
                 "store": true
             },
@@ -497,7 +509,7 @@ class Transaction
                 "type": "string",
                 "min": 1,
                 "max": 255,
-                "source": ["registration-response", "paypal-response", "paypal-callback"],
+                "source": ["server-registration-response", "server-notification-response", "direct-paypal-response", "direct-paypal-callback", "direct-3dauth-response"],
                 "store": true
             },
             "VPSTxId": {
@@ -505,7 +517,7 @@ class Transaction
                 "type": "string",
                 "min": 38,
                 "max": 38,
-                "source": ["registration-response", "paypal-response", "paypal-callback", "paypal-complete"],
+                "source": ["server-registration-response", "direct-paypal-response", "direct-paypal-callback", "paypal-complete"],
                 "tamper": true,
                 "store": true
             },
@@ -514,7 +526,7 @@ class Transaction
                 "type": "string",
                 "min": 10,
                 "max": 10,
-                "source": ["registration-response"],
+                "source": ["server-registration-response"],
                 "store": true
             },
             "TxAuthNo": {
@@ -523,7 +535,7 @@ class Transaction
                 "chars": ["9"],
                 "min": 1,
                 "max": 50,
-                "source": ["notification"],
+                "source": ["server-notification"],
                 "tamper": true,
                 "store": true
             },
@@ -533,7 +545,7 @@ class Transaction
                 "values": ["ALL MATCH", "SECURITY CODE MATCH ONLY", "ADDRESS MATCH ONLY", "NO DATA MATCHES", "DATA NOT CHECKED"],
                 "min": 1,
                 "max": 50,
-                "source": ["notification"],
+                "source": ["server-notification"],
                 "tamper": true,
                 "store": true
             },
@@ -543,7 +555,7 @@ class Transaction
                 "values": ["NOTPROVIDED", "NOTCHECKED", "MATCHED", "NOTMATCHED"],
                 "min": 1,
                 "max": 20,
-                "source": ["notification"],
+                "source": ["server-notification"],
                 "tamper": true,
                 "store": true
             },
@@ -553,7 +565,7 @@ class Transaction
                 "values": ["NOTPROVIDED", "NOTCHECKED", "MATCHED", "NOTMATCHED"],
                 "min": 1,
                 "max": 20,
-                "source": ["notification"],
+                "source": ["server-notification"],
                 "tamper": true,
                 "store": true
             },
@@ -563,7 +575,7 @@ class Transaction
                 "values": ["NOTPROVIDED", "NOTCHECKED", "MATCHED", "NOTMATCHED"],
                 "min": 1,
                 "max": 20,
-                "source": ["notification"],
+                "source": ["server-notification"],
                 "tamper": true,
                 "store": true
             },
@@ -573,7 +585,7 @@ class Transaction
                 "values": ["0", "1"],
                 "min": 1,
                 "max": 1,
-                "source": ["notification"],
+                "source": ["server-notification"],
                 "tamper": true,
                 "store": true
             },
@@ -583,7 +595,7 @@ class Transaction
                 "values": ["OK", "NOTCHECKED", "NOTAVAILABLE", "NOTAUTHED", "INCOMPLETE", "ERROR", "ATTEMPTONLY"],
                 "min": 1,
                 "max": 50,
-                "source": ["notification"],
+                "source": ["server-notification", "direct-3dauth-response"],
                 "tamper": true,
                 "store": true
              },
@@ -593,7 +605,7 @@ class Transaction
                 "chars": ["A", "a", "^", "9"],
                 "min": 1,
                 "max": 32,
-                "source": ["notification"],
+                "source": ["server-notification"],
                 "tamper": true,
                 "store": true
              },
@@ -603,7 +615,7 @@ class Transaction
                 "values": ["NONE", "CONFIRMED", "UNCONFIRMED"],
                 "min": 1,
                 "max": 20,
-                "source": ["notification", "paypal-callback"],
+                "source": ["server-notification", "direct-paypal-callback"],
                 "tamper": true,
                 "store": true
              },
@@ -613,7 +625,7 @@ class Transaction
                 "values": ["VERIFIED", "UNVERIFIED"],
                 "min": 1,
                 "max": 20,
-                "source": ["notification", "paypal-callback"],
+                "source": ["server-notification", "direct-paypal-callback"],
                 "tamper": true,
                 "store": true
              },
@@ -623,7 +635,7 @@ class Transaction
                 "values": ["VISA", "MC", "MCDEBIT", "DELTA", "MAESTRO", "UKE", "AMEX", "DC", "JCB", "LASER", "PAYPAL", "EPS", "GIROPAY", "IDEAL", "SOFORT", "ELV"],
                 "min": 1,
                 "max": 15,
-                "source": ["notification"],
+                "source": ["server-notification"],
                 "store": true
              },
             "Last4Digits": {
@@ -632,7 +644,7 @@ class Transaction
                 "chars": ["9"],
                 "min": 1,
                 "max": 4,
-                "source": ["notification"],
+                "source": ["server-notification"],
                 "store": true
              },
             "FraudResponse": {
@@ -641,7 +653,7 @@ class Transaction
                 "values": ["ACCEPT", "CHALLENGE", "DENY", "NOTCHECKED"],
                 "min": 1,
                 "max": 10,
-                "source": ["notification"],
+                "source": ["server-notification"],
                 "tamper": true,
                 "store": true
              },
@@ -651,7 +663,7 @@ class Transaction
                 "chars": ["9", ".", ","],
                 "min": 0.01,
                 "max": 100000.00,
-                "source": ["notification"],
+                "source": ["server-notification"],
                 "store": true
             },
             "BankAuthCode": {
@@ -660,7 +672,7 @@ class Transaction
                 "chars": ["9"],
                 "min": 1,
                 "max": 6,
-                "source": ["notification"],
+                "source": ["server-notification"],
                 "tamper": true,
                 "store": true
             },
@@ -670,7 +682,7 @@ class Transaction
                 "chars": ["9"],
                 "min": 1,
                 "max": 2,
-                "source": ["notification"],
+                "source": ["server-notification"],
                 "tamper": true,
                 "store": true
             },
@@ -680,7 +692,7 @@ class Transaction
                 "chars": ["9"],
                 "min": 4,
                 "max": 4,
-                "source": ["notification"],
+                "source": ["server-notification"],
                 "tamper": true,
                 "store": true
             },
@@ -690,10 +702,20 @@ class Transaction
                 "chars": ["A", "a", "9", "-", "{"],
                 "min": 38,
                 "max": 38,
-                "source": ["notification"],
+                "source": ["server-notification"],
                 "store": true,
                 "notes": "GUID format"
             },
+            "RedirectURL": {
+                "required": false,
+                "type": "rfc1738",
+                "min": 1,
+                "max": 255,
+                "source": ["server-notification-response"],
+                "store": false,
+                "notes": "Direct 3DSecure only"
+            },
+
             "CustomData": {
                 "required": false,
                 "type": "string",
@@ -775,7 +797,7 @@ class Transaction
                 "chars": ["A", "a", "9"],
                 "min": 1,
                 "max": 35,
-                "source": ["registration-response", "3dauth-response"],
+                "source": ["server-registration-response", "direct-3dauth-response", "direct-3dsecure-callback", "direct-3dauth-issuer", "direct-3dauth-issuer-return"],
                 "store": true,
                 "notes": "Direct 3DSecure only"
             },
@@ -784,26 +806,64 @@ class Transaction
                 "type": "rfc1738",
                 "min": 1,
                 "max": 7500,
-                "source": ["registration-response"],
+                "source": ["server-registration-response"],
                 "store": false,
                 "notes": "Direct 3DSecure only"
             },
+
             "PAReq": {
                 "required": false,
-                "type": "string",
-                "chars": ["A", "a", "9"],
+                "type": "base64",
                 "min": 1,
                 "max": 7500,
-                "source": ["registration-response", "3dauth-response"],
+                "source": ["server-registration-response", "direct-3dauth-response"],
                 "store": false,
                 "notes": "Direct 3DSecure only"
             },
+            "PaReq": {
+                "required": false,
+                "type": "base64",
+                "min": 1,
+                "max": 7500,
+                "source": ["direct-3dauth-issuer"],
+                "store": false,
+                "notes": "Direct 3DSecure client-side POST"
+            },
+            "TermUrl": {
+                "required": false,
+                "type": "rfc1738",
+                "min": 1,
+                "max": 255,
+                "source": ["direct-3dauth-issuer"],
+                "store": false,
+                "notes": "Direct 3DSecure client-side POST"
+            },
+
+            "PaRes": {
+                "required": false,
+                "type": "base64",
+                "min": 1,
+                "max": 7500,
+                "source": ["direct-3dauth-issuer-return"],
+                "store": false,
+                "notes": "Direct 3DSecure sent by card issuer"
+            },
+            "PARes": {
+                "required": false,
+                "type": "base64",
+                "min": 1,
+                "max": 7500,
+                "source": ["direct-3dsecure-callback"],
+                "store": false,
+                "notes": "Direct 3DSecure sent to SagePay"
+            },
+
             "PayPalRedirectURL": {
                 "required": false,
                 "type": "rfc1738",
                 "min": 1,
                 "max": 255,
-                "source": ["paypal-response"],
+                "source": ["direct-paypal-response"],
                 "store": false,
                 "notes": "Direct 3DSecure only"
             },
@@ -814,7 +874,7 @@ class Transaction
                 "chars": ["A", "a", "9"],
                 "min": 1,
                 "max": 15,
-                "source": ["paypal-callback"],
+                "source": ["direct-paypal-callback"],
                 "store": false,
                 "notes": "Unique PayPal User Reference ID"
             },
