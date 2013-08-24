@@ -1,0 +1,153 @@
+Code	Type	Message
+	NOTAUTHED	The Authorisation has been declined by the bank. Please try ...
+	NOTAUTHED	The Authorisation has been declined by the bank. You will need to try a different card type.
+	OK	The Authorisation was Successful.
+		Please select the card type you would like to use for the tr...
+		Please select the card type you would like to use for the transaction.
+	REJECTED	The Authorisation has been rejected by the Vendor due to ins...
+		The network connection to the bank is currently unavailable....
+400	BAD REQUEST	The syntax of the request was not understood by the server.
+405	Method Not Allowed	The method specified in the Request-Line is not allowed for ...
+408	Request Timeout	The client failed to send a request in the time allowed by t...
+414	REQUEST URL TOO LONG	The request was unsuccessful because the URL specified is longer than the server is willing to process.
+503	SERVICE UNAVAILABLE	The request was unsuccessful to the server being down or overloaded.
+2000	NOTAUTHED	The Authorisation was Declined by the bank.
+2001	REJECTED	The Authorisation was Rejected by the vendor rule-base.
+2002	NOTAUTHED	The Authorisation timed out.
+2003	ERROR	An ERROR has occurred on the Protx System.
+2004	OK	The Release was Successful.
+2005	OK	The Void was Successful.
+2006	OK	The Abort was Successful.
+2007	OK	Please redirect your customer to the ACSURL, passing the MD
+2008	NOTAUTHED	The Transaction timed-out.
+2009	NOTAUTHED	The network connection to the bank is currently unavailable.
+2010	OK	The Authentication was Successful.
+2011	OK	The Transaction has been Registered.
+2012	OK	The Cancel was Successful.
+2013	ABORT	The Transaction was cancelled by the customer.
+2014	OK	The Transaction was Registered Successfully.
+3002	INVALID	The VPSTxId is invalid.
+3003	INVALID	The Currency is invalid.
+3004	INVALID	The Amount is invalid
+3005	INVALID	The Amount is outside the mininum and maximum limits.
+3006	INVALID	The fractional part of the Amount is invalid for the specified currency.
+3007	INVALID	The RelatedSecurityKey format invalid.
+3008	INVALID	The Vendor or Vendorname format is invalid.
+3009	MALFORMED	The VendorTxCode is missing.
+3010	INVALID	The RelatedVPSTxId is invalid.
+3011	INVALID	The NotificationURL format is invalid.
+3012	INVALID	The RelatedVendorTxCode format invalid.
+3013	MALFORMED	The Description is missing.
+3014	INVALID	The TxType or PaymentType is invalid.
+3015	INVALID	The BillingAddress value is too long.
+3016	INVALID	The BillingPostCode value is too long.
+3017	INVALID	The RelatedTxAuthNo format is invalid.
+3018	INVALID	The GiftAid flag is invalid. If a value is supplied, should ...
+3019	INVALID	The ApplyAVSCV2 flag is invalid. The value, if supplied, should contain either 0, 1, 2 or 3.
+3020	INVALID	The Apply3DSecure flag is invalid. The value, if supplied, should contain either 0, 1, 2 or 3.
+3021	INVALID	The Basket format is invalid.
+3022	INVALID	The CustomerEMail is too long.
+3023	INVALID	The Contact Fax is too long.
+3024	INVALID	The ContactNumber is too long.
+3025	INVALID	The DeliveryPostCode is too long.
+3026	INVALID	The DeliveryAddress is too long.
+3027	INVALID	The BillingPostCode is too long.
+3028	INVALID	The BillingAddress is too long.
+3029	MALFORMED	The FailureURL is missing.
+3030	MALFORMED	The SuccessURL is missing.
+3031	MALFORMED	The Amount value is required.
+3032	INVALID	The Amount format is invalid.
+3033	MALFORMED	The RelatedSecurityKey is required.
+3034	MALFORMED	The Vendor or VendorName value is required.
+3035	INVALID	The VendorTxCode format is invalid.
+3036	INVALID	The Description format is invalid.
+3037	INVALID	The NotificationURL is too long.
+3038	MALFORMED	The RelatedVendorTxCode is required.
+3039	MALFORMED	The TxType or PaymentType is missing.
+3040	MALFORMED	The RelatedTxAuth number is required.
+3041	INVALID	The Basket field is too long.
+3042	INVALID	The CustomerName field is too long.
+3043	INVALID	The eMailMessage field is too long.
+3044	INVALID	The VendorEMail is too long.
+3045	MALFORMED	The Currency field is missing.
+3046	MALFORMED	The VPSTxId field is missing.
+3047	INVALID	Invalid VPSTxId format.
+3048	INVALID	The CardNumber length is invalid.
+3049	INVALID	The StartDate format is invalid.
+3050	INVALID	The ExpiryDate format is invalid.
+3051	MALFORMED	The CardNumber field is required.
+3052	MALFORMED	The ExpiryDate field is required.
+3053	INVALID	The IssueNumber format is invalid.
+3054	INVALID	The CardType length is invalid.
+3055	MALFORMED	The CardType field is required.
+3056	INVALID	Invalid Amount field format. The Amount value contains a dec...
+3057	INVALID	The CV2 format is invalid.
+3058	INVALID	The CardHolder field is required.
+3059	INVALID	The CardHolder value is too long.
+3060	INVALID	The GiftAid format is invalid.
+3061	INVALID	The AuthCode format invalid.
+3062	INVALID	The CardNumber field should only contain numbers. No spaces,...
+3068	INVALID	The PaymentSystem invalid.
+3069	INVALID	The PaymentSystem is not supported on the account.
+3078	INVALID	The CustomerEMail format is invalid.
+3080	INVALID	The VendorTxCode value is too long.
+3082	INVALID	The Description value is too long.
+3084	INVALID	The FailureURL value is too long.
+3085	INVALID	The FailureURL format is invalid.
+3086	INVALID	The SuccessURL value is too long.
+3087	INVALID	The SuccessURL format is invalid.
+3088	INVALID	The VendorEMail format is invalid.
+3089	MALFORMED	The BillingAddress is required.
+3099	INVALID	The AccountType is not setup on this account.
+3100	INVALID	The AccountType value is invalid.
+3102	INVALID	The ReleaseAmount invalid.
+3147		The BillingState field is required.
+4000	INVALID	The VendorName is invalid or the account is not active.
+4001	INVALID	The VendorTxCode has been used before. All VendorTxCodes sh...
+4006	INVALID	The TxType requested is not supported on this account.
+4008		The Currency is not supported on this account.
+4020	INVALID	Information received from an Invalid IP address.
+4025	INVALID	The Card Issue Number is invalid.
+4033	INVALID	The Currency does not match the original transaction.
+4034	INVALID	The Transaction has already been Refunded.
+4035	INVALID	This Refund would exceed the amount of the original transact...
+4036	INVALID	The Transaction has already been Voided.
+4037	INVALID	The Related transaction is not a DEFFERED payment.
+4038	INVALID	The Transaction has already been Released.
+4040	INVALID	The Transaction has been Aborted.
+4042	INVALID	The VendorTxCode has been used before for another transactio...
+4044	INVALID	This Authorise would exceed 115% of the value of the origina...
+4045	INVALID	The Related transaction is not an AUTHENTICATE.
+4046	REJECTED	3D-Authentication required. Cannot authorise this card.
+4047	INVALID	The vendor account is closed.
+4048	INVALID	The Card Number length is invalid.
+4049	INVALID	The ReleaseAmount larger the original amount.
+5001	INVALID	The required service is not available or invalid.
+5002	INVALID	Invalid request.
+5003	ERROR	Internal server error.
+5004	INVALID	The Transaction state is invalid.
+5005	INVALID	The Vendor configuration is missing or invalid.
+5007	INVALID	Invalid request. A required parameter is missing.
+5008	ERROR	Missing Custom vendor template.
+5009	INVALID	The Encryption password is missing.
+5010	INVALID	The CardNumber is required.
+5011	INVALID	The check digit invalid. Card failed the LUHN check. Check ...
+5012	MALFORMED	The CardHolder name is required.
+5013	INVALID	The card has expired.
+5014	MALFORMED	The card expiry date is required.
+5015	INVALID	Card validation failure.
+5016	INVALID	The StartDate is in the future. The card is not yet valid.
+5017	MALFORMED	The Security Code is required.
+5018	INVALID	The Security Code length is invalid.
+5019	INVALID	The Security Code is not a number.
+5020	MALFORMED	The Card Address is required.
+5021	INVALID	The Card Address is too long.
+5022	MALFORMED	The Post Code value is required.
+5023	INVALID	The Post Code value is too long.
+5024	INVALID	The CardHolder value is too long.
+5025	NOTAUTHED	The number of authorisation attempts exceeds the limit.
+5026	INVALID	The Card Number is not numeric.
+5027	INVALID	The Card Start Date is invalid.
+5028	INVALID	The Card Expiry Date is invalid.
+5030	ERROR	Unable to decrypt the request message. This might be caused by an incorrect password or invalid encoding.
+5996	NOTAUTHED	The Authorisation process timed-out. The bank did not respond within an acceptable time limit.

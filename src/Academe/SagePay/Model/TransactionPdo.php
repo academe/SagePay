@@ -112,20 +112,21 @@ class TransactionPdo extends TransactionAbstract
                 }
             }
 
-            // Get the field data and the metadata that describes those fields.
+            // Get the field data and the storable metadata that describes those fields.
             $fields = $this->toArray();
-            $field_meta = Metadata\Transaction::get();
+            $field_meta = Metadata\Transaction::get('object', array('store' => true));
 
             // Make a list of the fields we want to set in the database.
             $fields_to_update = array();
+
+            // Loop for all [storable] fields in the transaction object.
             foreach($fields as $field_name => $field_value) {
                 // Skip null values so we don't update columns we have not set up yet.
-                if (!isset($field_value)) continue;
+                if ( ! isset($field_value)) continue;
 
-                // Check the metadata to see if this is a field we want to save.
-                if ( ! isset($field_meta->{$field_name}) || ! $field_meta->{$field_name}->store) {
-                    continue;
-                }
+                // If this transaction field does not appear in the filtered (for storage) metadata,
+                // then we don't want to store it.
+                if ( ! isset($field_meta->{$field_name})) continue;
 
                 $fields_to_update[$field_name] = $field_name;
             }
@@ -142,9 +143,7 @@ class TransactionPdo extends TransactionAbstract
                     if (!isset($field_value)) continue;
 
                     // Check the metadata to see if this is a field we want to save.
-                    if ( ! isset($field_meta->{$field_name}) || ! $field_meta->{$field_name}->store) {
-                        continue;
-                    }
+                    if ( ! isset($field_meta->{$field_name})) continue;
 
                     $sql .= $sep . $field_name;
                     $sep = ', ';
@@ -303,14 +302,11 @@ class TransactionPdo extends TransactionAbstract
         // If the database is not set up with a unicode charset, then we need to add a percentage 
         // to the lengths of all columns.
 
-        $field_meta = Metadata\Transaction::get();
+        $field_meta = Metadata\Transaction::get('object', array('store' => true));
 
         $columns = array();
 
         foreach($field_meta as $name => $field) {
-            // Only interested in stored fields.
-            if ( ! $field->store ) continue;
-
             $column = $name . ' ';
 
             if (!isset($field->max)) continue;
@@ -363,7 +359,7 @@ class TransactionPdo extends TransactionAbstract
     {
         try {
             // Connect to the database.
-            $pdo = new \PDO($this->pdo_connect, $this->pdo_username, $this->pdo_password);
+            $pdo = $this->getConnection();
 
             // TOOD: check the result.
             $success = $pdo->exec('DROP TABLE ' . $this->transaction_table_name);
@@ -378,6 +374,10 @@ class TransactionPdo extends TransactionAbstract
 
     /**
      * Get a database connection.
+     * Not handled as a singleton, even though that would most like be how it is used.
+     * Just put your own singleton wrapper around this if you prefer that.
+     * TODO: what the hell, let's make this a singleton. We need a connection to read
+     * the transaction, then save it again, so there are two for each use at least.
      */
 
     protected function getConnection()

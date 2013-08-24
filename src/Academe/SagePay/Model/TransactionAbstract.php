@@ -182,6 +182,49 @@ abstract class TransactionAbstract
     }
 
     /**
+     * Split the statusDetail field into separate code and message strings.
+     * Returned as an associative array('code'=>'the code', 'message'=>'the message')
+     * or a numeric indexed array.
+     * A default code of zero means there was no error or a code could not be extracted.
+     * returned code will be numeric, so leading zeros will be gone.
+     * $index 'associative' or 'numeric'
+     */
+
+    public function splitStatusDetail($status_detail, $index = 'associative')
+    {
+        // Split at the first colon.
+        $split = explode(':', $status_detail, 2);
+
+        if (count($split) == 2) {
+            list($code, $message) = $split;
+
+            $code = trim($code);
+            $message = trim($message);
+
+            // The code should be numeric (hopefully, but who knows without SagePay
+            // providing definitive documentation?).
+            // Strip out non-numeric characters from the status code, to be safe.
+
+            $code = preg_replace('/[^0-9]/', '', $code);
+
+            if (is_numeric($code)) {
+                $code = (int)$code;
+            } else{
+                $code = 0;
+            }
+        } else {
+            $code = 0;
+            $message = '';
+        }
+
+        if ($index == 'associative') {
+            return array('code' => $code, 'message' => $message);
+        } else {
+            return array($code, $message);
+        }
+    }
+
+    /**
      * Set a field value.
      * Check if the field exists in the model field array first, then the class properties.
      * Force the value into the field data array or a property using $force='data' or $force='property'
@@ -195,26 +238,10 @@ abstract class TransactionAbstract
         // There us also no documentation that states this format will not change.
 
         if ($name == 'StatusDetail') {
-            // Split at the first colon.
-            $split = explode(':', $value, 2);
+            list($code, $message) = $this->splitStatusDetail($value, 'numeric');
 
-            if (count($split) == 2) {
-                list($code, $message) = $split;
-
-                $code = trim($code);
-                $message = trim($message);
-
-                // The code should be numeric (hopefully, but who knows without SagePay
-                // providing definitive docuementation?).
-                // Strip out non-numeric characters from the status code, to be safe.
-
-                $code = preg_replace('/[^0-9]/', '', $code);
-
-                if (is_numeric($code)) {
-                    $this->setField('StatusDetailCode', $code);
-                    $this->setField('StatusDetailMessage', $message);
-                }
-            }
+            $this->setField('StatusDetailCode', $code);
+            $this->setField('StatusDetailMessage', $message);
         }
 
         if (array_key_exists($name, $this->fields) || $force == 'data') {

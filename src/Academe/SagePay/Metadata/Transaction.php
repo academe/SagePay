@@ -894,17 +894,46 @@ ENDDATA;
 
     /**
      * Return the data.
-     * Format is "object" (default), "json" or "array".
+     * $format is "object" (default), "json" or "array".
+     * $filter is an array of property name/values, all of which must match.
+     * e.g. Fetch all fields that should be stored: get('array', array('store' => true))
      */
 
-    public static function get($format = 'object')
+    public static function get($format = 'object', array $filter = array())
     {
+        if (!empty($filter)) {
+            $array = json_decode(trim(static::$data_json), true);
+
+            $filtered_array = array_filter($array, function($test) use($filter) {
+                foreach($filter as $key => $value) {
+                    // The attribite does not exist, and is required to do so in the filter.
+                    if (!isset($test[$key]) && isset($value)) return false;
+
+                    if (is_array($test[$key])) {
+                        // The attribute is an array. Match at least one value.
+                        if (!is_array($value) && !in_array($value, $test[$key])) return false;
+                        if (is_array($value) && array_intersect($value, $test[$key]) == array()) return false;
+                    } else {
+                        if (!is_array($value) && $value !== $test[$key]) return false;
+                        if (is_array($value) && !in_array($test[$key], $value)) return false;
+                    }
+                }
+
+                return true;
+            });
+        }
+
         if ($format == 'json') {
-            return trim(static::$data_json);
+            return (isset($filtered_array) ? json_encode($filtered_array) : trim(static::$data_json));
         } elseif ($format == 'array') {
-            return json_decode(trim(static::$data_json), true); // CHECKME true or false?
+            return (isset($filtered_array) ? $filtered_array : json_decode(trim(static::$data_json), true));
         } else {
-            return json_decode(trim(static::$data_json));
+            // Return as an object
+            return (
+                isset($filtered_array)
+                ? json_decode(json_encode($filtered_array), false)
+                : json_decode(trim(static::$data_json), false)
+            );
         }
     }
 }
