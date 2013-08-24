@@ -132,6 +132,9 @@ Code	Type	Message
 3100	INVALID	The AccountType value is invalid.
 3101		The PaymentSystem does not support direct refund.
 3102	INVALID	The ReleaseAmount invalid.
+3130	INVALID	The BillingState value is too long.
+3138	INVALID	The BillingState format is invalid.
+3145	INVALID	The BillingCountry value is too long.
 3147		The BillingState field is required.
 4000	INVALID	The VendorName is invalid or the account is not active.
 4001	INVALID	The VendorTxCode has been used before. All VendorTxCodes sshould be unique.
