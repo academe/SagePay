@@ -134,7 +134,7 @@ class Transaction
                 "min": 4,
                 "max": 4,
                 "default": "3.00",
-                "source": ["server-registration", "direct-registration", "direct-paypal-response", "direct-paypal-callback", "paypal-complete", "shared-release"],
+                "source": ["server-registration", "direct-registration", "direct-paypal-response", "direct-paypal-callback", "paypal-complete", "shared-release", "shared-release-response"],
                 "store": true
             },
             "TxType": {
@@ -525,7 +525,7 @@ class Transaction
                 "values": ["OK", "MALFORMED", "INVALID", "ERROR"],
                 "min": 1,
                 "max": 14,
-                "source": ["server-registration-response", "server-notification-response", "direct-paypal-response", "direct-paypal-callback", "direct-3dauth-response"],
+                "source": ["server-registration-response", "server-notification-response", "direct-paypal-response", "direct-paypal-callback", "direct-3dauth-response", "shared-release-response"],
                 "tamper": true,
                 "store": true
             },
@@ -534,7 +534,7 @@ class Transaction
                 "type": "string",
                 "min": 1,
                 "max": 255,
-                "source": ["server-registration-response", "server-notification-response", "direct-paypal-response", "direct-paypal-callback", "direct-3dauth-response"],
+                "source": ["server-registration-response", "server-notification-response", "direct-paypal-response", "direct-paypal-callback", "direct-3dauth-response", "shared-release-response"],
                 "store": true
             },
             "VPSTxId": {
