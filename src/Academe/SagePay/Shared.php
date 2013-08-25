@@ -20,7 +20,7 @@ class Shared extends Register //Common
 
     public function release($OriginalVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0, $Amount = 0)
     {
-        return $this->abort_or_release('RELEASE', $OriginalVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo, $Amount);
+        return $this->releaseOrAbort('RELEASE', $OriginalVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo, $Amount);
     }
 
     /**
@@ -29,7 +29,7 @@ class Shared extends Register //Common
 
     protected function abort($TxType, $OriginalVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0)
     {
-        return $this->abort_or_release('ABORT', $OriginalVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo);
+        return $this->releaseOrAbort('ABORT', $OriginalVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo);
     }
 
     /**
@@ -40,7 +40,7 @@ class Shared extends Register //Common
      * So pass the VendorTxCode in here, or set the OriginalVendorTxCode field on the transaction.
      */
 
-    protected function abort_or_release($TxType, $OriginalVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0, $Amount = 0)
+    protected function releaseOrAbort($TxType, $OriginalVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0, $Amount = 0)
     {
         if ($TxType == 'RELEASE') {
             $message_type = 'shared-release';
