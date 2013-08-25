@@ -28,35 +28,53 @@ class Shared extends Register //Common
         $currency = $this->getTransactionCurrency($OriginalVendorTxCode);
         $this->setField('Currency', $currency);
 
-        return $this->releaseOrAbort('RELEASE', $OriginalVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo, $Amount);
+        return $this->releaseAbortVoidCancel('RELEASE', $OriginalVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo, $Amount);
     }
 
     /**
-     * Abort or release a DEFERRED or REPEATDEFERRED payment.
+     * Abort a DEFERRED or REPEATDEFERRED transaction.
      */
 
     protected function abort($TxType, $OriginalVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0)
     {
-        return $this->releaseOrAbort('ABORT', $OriginalVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo);
+        return $this->releaseAbortVoidCancel('ABORT', $OriginalVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo);
     }
 
     /**
-     * Abort or release a DEFERRED or REPEATDEFERRED payment.
-     * The VendorTxCode in this case is not the primary key of the transaction. It now
-     * refers to the key of the original deferred transaction. We probably need an OriginalVendorTxCode
-     * for storage, but that gets sent to SagePay as simply VendorTxCode.
-     * So pass the VendorTxCode in here, or set the OriginalVendorTxCode field on the transaction.
+     * Void a DEFERRED or REPEATDEFERRED payment.
      */
 
-    protected function releaseOrAbort($TxType, $OriginalVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0, $Amount = 0)
+    protected function void($TxType, $OriginalVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0)
+    {
+        return $this->releaseAbortVoidCancel('VOID', $OriginalVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo);
+    }
+
+    /**
+     * Cancel an AUTHENTICATE transaction.
+     */
+
+    protected function cancel($TxType, $OriginalVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0)
+    {
+        return $this->releaseAbortVoidCancel('VOID', $OriginalVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo);
+    }
+
+    /**
+     * Abort, release or void a DEFERRED or REPEATDEFERRED payment.
+     */
+
+    protected function releaseAbortVoidCancel($TxType, $OriginalVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0, $Amount = 0)
     {
         if ($TxType == 'RELEASE') {
             $message_type = 'shared-release';
         } elseif ($TxType == 'ABORT') {
             $message_type = 'shared-abort';
+        } elseif ($TxType == 'VOID') {
+            $message_type = 'shared-void';
+        } elseif ($TxType == 'CANCEL') {
+            $message_type = 'shared-cancel';
         } else {
             // Not a valid transaction type.
-            // TODO: throw error
+            throw new Exception\InvalidArgumentException("Invalid transaction type '{$TxType}'");
         }
 
         // Set the transaction type.
@@ -82,9 +100,11 @@ class Shared extends Register //Common
         // Other fields set straight-forward.
         if ($VPSTxId != '') $this->setField('VPSTxId', $VPSTxId);
         if ($SecurityKey != '') $this->setField('SecurityKey', $SecurityKey);
-        if ($TxAuthNo != 0) $this->setField('TxAuthNo', $TxAuthNo);
 
-        // The Amount is only relevant for the RELEASE transaction.
+        // The TxAuthNo is not relevant for the Cancel service
+        if ($TxAuthNo != 0 && $TxType != 'CANCEL') $this->setField('TxAuthNo', $TxAuthNo);
+
+        // The Amount is only relevant for the RELEASE transaction type.
 
         if ($TxType == 'RELEASE') {
             // The amount is put into ReleaseAmount to send to SagePay and Amount for storage.

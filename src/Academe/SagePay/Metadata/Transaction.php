@@ -80,6 +80,13 @@ class Transaction
      *  direct-3dauth-response - 3D-Authentication Results POST from your Terminal URL to SagePay.
      *
      *  shared-release - release a deferred or repeatdeferred transaction.
+     *  shared-release-response
+     *  shared-abort - abort a deferred or repeatdeferred transaction.
+     *  shared-abort-response
+     *  shared-void - void a deferred or repeatdeferred transaction.
+     *  shared-void-response
+     *  shared-cancel - cancel an authenticate transaction.
+     *  shared-cancel-response
      *
      *  paypal-complete - To complete a PayPal direct payment.
      *  custom - custom data maintained by the application (use as you like)
@@ -112,7 +119,7 @@ class Transaction
                 "min": 1,
                 "max": 40,
                 "chars": ["A", "a", "9", "{", ".", "-", "_"],
-                "source": ["server-registration", "direct-registration", "shared-release", "shared-release"],
+                "source": ["server-registration", "direct-registration", "shared-release", "shared-release", "shared-abort", "shared-void", "shared-cancel"],
                 "tamper": true,
                 "store": true,
                 "notes": "Primary key of each transaction"
@@ -123,7 +130,7 @@ class Transaction
                 "min": 1,
                 "max": 40,
                 "chars": ["A", "a", "9", "{", ".", "-", "_"],
-                "source": ["shared-release"],
+                "source": ["shared-release", "shared-abort", "shared-void", "shared-cancel"],
                 "tamper": false,
                 "store": true,
                 "notes": "Points to an original transaction"
@@ -134,7 +141,7 @@ class Transaction
                 "min": 4,
                 "max": 4,
                 "default": "3.00",
-                "source": ["server-registration", "direct-registration", "direct-paypal-response", "direct-paypal-callback", "paypal-complete", "shared-release", "shared-release-response"],
+                "source": ["server-registration", "direct-registration", "direct-paypal-response", "direct-paypal-callback", "paypal-complete", "shared-release", "shared-release-response", "shared-abort", "shared-abort-response", "shared-void", "shared-void-response", "shared-cancel", "shared-cancel-response"],
                 "store": true
             },
             "TxType": {
@@ -144,7 +151,7 @@ class Transaction
                 "min": 1,
                 "max": 15,
                 "default": "PAYMENT",
-                "source": ["server-registration", "direct-registration", "paypal-complete", "shared-release"],
+                "source": ["server-registration", "direct-registration", "paypal-complete", "shared-release", "shared-abort", "shared-void", "shared-cancel"],
                 "store": true
             },
             "Vendor": {
@@ -153,7 +160,7 @@ class Transaction
                 "min": 1,
                 "max": 15,
                 "chars": ["A", "a", "9"],
-                "source": ["server-registration", "direct-registration", "shared-release"],
+                "source": ["server-registration", "direct-registration", "shared-release", "shared-abort", "shared-void", "shared-cancel"],
                 "tamper": true,
                 "store": true
             },
@@ -525,7 +532,7 @@ class Transaction
                 "values": ["OK", "MALFORMED", "INVALID", "ERROR"],
                 "min": 1,
                 "max": 14,
-                "source": ["server-registration-response", "server-notification-response", "direct-paypal-response", "direct-paypal-callback", "direct-3dauth-response", "shared-release-response"],
+                "source": ["server-registration-response", "server-notification-response", "direct-paypal-response", "direct-paypal-callback", "direct-3dauth-response", "shared-release-response", "shared-abort-response", "shared-void-response", "shared-cancel-response"],
                 "tamper": true,
                 "store": true
             },
@@ -534,7 +541,7 @@ class Transaction
                 "type": "string",
                 "min": 1,
                 "max": 255,
-                "source": ["server-registration-response", "server-notification-response", "direct-paypal-response", "direct-paypal-callback", "direct-3dauth-response", "shared-release-response"],
+                "source": ["server-registration-response", "server-notification-response", "direct-paypal-response", "direct-paypal-callback", "direct-3dauth-response", "shared-release-response", "shared-abort-response", "shared-void-response", "shared-cancel-response"],
                 "store": true
             },
             "VPSTxId": {
@@ -542,7 +549,7 @@ class Transaction
                 "type": "string",
                 "min": 38,
                 "max": 38,
-                "source": ["server-registration-response", "direct-paypal-response", "direct-paypal-callback", "paypal-complete", "shared-release"],
+                "source": ["server-registration-response", "direct-paypal-response", "direct-paypal-callback", "paypal-complete", "shared-release", "shared-abort", "shared-void", "shared-cancel"],
                 "tamper": true,
                 "store": true
             },
@@ -551,7 +558,7 @@ class Transaction
                 "type": "string",
                 "min": 10,
                 "max": 10,
-                "source": ["server-registration-response", "shared-release"],
+                "source": ["server-registration-response", "shared-release", "shared-abort", "shared-void", "shared-cancel"],
                 "store": true
             },
             "TxAuthNo": {
@@ -560,7 +567,7 @@ class Transaction
                 "chars": ["9"],
                 "min": 1,
                 "max": 50,
-                "source": ["server-notification", "shared-release"],
+                "source": ["server-notification", "shared-release", "shared-abort", "shared-void"],
                 "tamper": true,
                 "store": true
             },
