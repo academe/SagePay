@@ -53,9 +53,9 @@ class Shared extends Register //Common
      * Cancel an AUTHENTICATE transaction.
      */
 
-    protected function cancel($TxType, $OriginalVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0)
+    protected function cancel($TxType, $OriginalVendorTxCode = '', $VPSTxId = '', $SecurityKey = '')
     {
-        return $this->releaseAbortVoidCancel('VOID', $OriginalVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo);
+        return $this->releaseAbortVoidCancel('VOID', $OriginalVendorTxCode, $VPSTxId, $SecurityKey);
     }
 
     /**
