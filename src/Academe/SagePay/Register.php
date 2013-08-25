@@ -586,13 +586,13 @@ class Register extends Model\XmlAbstract
     }
 
     /**
-     * Collect he query data together for the transaction registration.
+     * Collect the query data together for the transaction registration.
      * Returns key/value pairs
      * TODO: different types of transaction will need different sets of fields to
      * be sent to SagePay.
      */
 
-    public function queryData($format_as_querystring = true)
+    public function queryData($format_as_querystring = true, $message_type = 'server-registration')
     {
         $this->checkTxModel();
 
@@ -602,14 +602,14 @@ class Register extends Model\XmlAbstract
         $query = array();
 
         // Get the list of fields we want to send to SagePay from the transaction metadata.
+        // Filter the list by the message type. This is the superset of fields.
 
-        $all_fields = Metadata\Transaction::get('array');
+        $all_fields = Metadata\Transaction::get('array', array('source' => $message_type));
 
         $fields_to_send = array();
         $optional_fields = array();
 
         foreach($all_fields as $field_name => $field_meta) {
-            if ( ! in_array('server-registration', $field_meta['source'])) continue;
             $fields_to_send[] = $field_name;
             if (empty($field_meta['required'])) $optional_fields[] = $field_name;
         }
@@ -617,7 +617,7 @@ class Register extends Model\XmlAbstract
         // Loop through the fields, both optional and mandatory.
 
         foreach($fields_to_send as $field) {
-            $value = $this->tx_model->getField($field);
+            $value = $this->getField($field);
             if ( ! in_array($field, $optional_fields) || isset($value)) {
                 // If the input characterset is UTF-8, then convert the string to ISO-8859-1
                 // for transfer to SagePay.
@@ -627,6 +627,12 @@ class Register extends Model\XmlAbstract
                 if ($this->input_charset == 'UTF-8') {
                     $value = iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $value);
                 }
+
+                // Some fields are sent to SagePay as a different name to their local storage.
+                // An important one is VendorTxCode, which is used as the primary key of each transaction,
+                // but also as a foreign key reference to linked transactions, but has the same name when
+                // sent to SagePay in both cases.
+                if ($field == 'OriginalVendorTxCode') $field = 'VendorTxCode';
 
                 $query[$field] = $value;
             }
@@ -716,7 +722,8 @@ class Register extends Model\XmlAbstract
      *
      * Note: at present this is a "server" (not "direct") registration request method only. This
      * method will become the entry point for BOTH server and direct, while retaining backward
-     * compatibility.
+     * compatibility. Will probably split into sendServerRegistration() and sendDirectRegistration()
+     * with this method routing to the appropriate service.
      */
 
     public function sendRegistration()
@@ -730,7 +737,7 @@ class Register extends Model\XmlAbstract
         }
 
         // Construct the query string from data in the model.
-        $query_string = $this->queryData();
+        $query_string = $this->queryData(true, 'server-registration');
 
         // Get the URL, which is derived from the method, platform and the service.
         $sagepay_url = $this->getUrl();
@@ -740,11 +747,15 @@ class Register extends Model\XmlAbstract
 
         // If successful, save the returned data to the model, save it, then return the model.
         // TODO: include all extra fields that the V3 protocol introduces.
+        // TODO: we may have a malformed return value (e.g. a HTTP error or dropped connection) so
+        // that needs to be handled. i.e. there may not be a "Status" returned. This is partially
+        // handled in postSagePay() anyway, so perhaps extend that.
+
         if (isset($output['Status']) && $output['Status'] == 'OK') {
             $this->setField('VPSTxId', $output['VPSTxId']);
             $this->setField('SecurityKey', $output['SecurityKey']);
 
-            // Move the status as PENDING, to indicate we are waing for a response from SagePay.
+            // Move the status as PENDING, to indicate we are waitng for a response from SagePay.
             $this->setField('Status', 'PENDING');
 
             $this->setField('StatusDetail', $output['StatusDetail']);

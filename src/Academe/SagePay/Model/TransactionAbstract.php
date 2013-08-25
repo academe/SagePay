@@ -104,6 +104,12 @@ abstract class TransactionAbstract
     protected $CardType = null;
 
     /**
+     * Additional fields we need to handle, but not be saved in storage (at least under these names).
+     */
+
+    protected $ReleaseAmount = null;
+
+    /**
      * Use the metadata to set up the fields to be tracked and saved.
      * Further custom fields can be added here if required.
      */
@@ -131,14 +137,13 @@ abstract class TransactionAbstract
 
     public function transactionFields()
     {
-        $metadata = \Academe\SagePay\Metadata\Transaction::get('array');
+        // We only want the fields that will be stored.
+        // Actually, we want all fields as we don't know what we will be using.
+        $metadata = \Academe\SagePay\Metadata\Transaction::get('array', array('store' => true));
 
         $result = array();
 
         foreach($metadata as $name => $attr) {
-            // We only want the fields that will be stored.
-            if (empty($attr['store'])) continue;
-
             // Get its default value.
             if (isset($attr['default'])) {
                 // A default value has been supplied in the metadata.
@@ -213,8 +218,9 @@ abstract class TransactionAbstract
                 $code = 0;
             }
         } else {
+            // Could not find a code, so return the original detail as the message.
             $code = 0;
-            $message = '';
+            $message = trim($status_detail);
         }
 
         if ($index == 'associative') {

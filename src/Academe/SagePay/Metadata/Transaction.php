@@ -79,6 +79,8 @@ class Transaction
      *  direct-3dauth-issuer-return - return from the 3DSecure card issuer
      *  direct-3dauth-response - 3D-Authentication Results POST from your Terminal URL to SagePay.
      *
+     *  shared-release - release a deferred or repeatdeferred transaction.
+     *
      *  paypal-complete - To complete a PayPal direct payment.
      *  custom - custom data maintained by the application (use as you like)
      *
@@ -110,9 +112,21 @@ class Transaction
                 "min": 1,
                 "max": 40,
                 "chars": ["A", "a", "9", "{", ".", "-", "_"],
-                "source": ["server-registration", "direct-registration"],
+                "source": ["server-registration", "direct-registration", "shared-release", "shared-release"],
                 "tamper": true,
-                "store": true
+                "store": true,
+                "notes": "Primary key of each transaction"
+            },
+            "OriginalVendorTxCode": {
+                "required": false,
+                "type": "string",
+                "min": 1,
+                "max": 40,
+                "chars": ["A", "a", "9", "{", ".", "-", "_"],
+                "source": ["shared-release"],
+                "tamper": false,
+                "store": true,
+                "notes": "Points to an original transaction"
             },
             "VPSProtocol": {
                 "required": true,
@@ -120,7 +134,7 @@ class Transaction
                 "min": 4,
                 "max": 4,
                 "default": "3.00",
-                "source": ["server-registration", "direct-registration", "direct-paypal-response", "direct-paypal-callback", "paypal-complete"],
+                "source": ["server-registration", "direct-registration", "direct-paypal-response", "direct-paypal-callback", "paypal-complete", "shared-release"],
                 "store": true
             },
             "TxType": {
@@ -130,7 +144,7 @@ class Transaction
                 "min": 1,
                 "max": 15,
                 "default": "PAYMENT",
-                "source": ["server-registration", "direct-registration", "paypal-complete"],
+                "source": ["server-registration", "direct-registration", "paypal-complete", "shared-release"],
                 "store": true
             },
             "Vendor": {
@@ -139,7 +153,7 @@ class Transaction
                 "min": 1,
                 "max": 15,
                 "chars": ["A", "a", "9"],
-                "source": ["server-registration", "direct-registration"],
+                "source": ["server-registration", "direct-registration", "shared-release"],
                 "tamper": true,
                 "store": true
             },
@@ -152,6 +166,17 @@ class Transaction
                 "source": ["server-registration", "direct-registration", "paypal-complete"],
                 "default": "0",
                 "store": true
+            },
+            "ReleaseAmount": {
+                "required": false,
+                "type": "currency",
+                "min": 0.01,
+                "max": 100000,
+                "chars": ["9", ",", "."],
+                "source": ["shared-release"],
+                "default": "0",
+                "store": false,
+                "notes": "This will be stored in the Amount field."
             },
             "Currency": {
                 "required": true,
@@ -517,7 +542,7 @@ class Transaction
                 "type": "string",
                 "min": 38,
                 "max": 38,
-                "source": ["server-registration-response", "direct-paypal-response", "direct-paypal-callback", "paypal-complete"],
+                "source": ["server-registration-response", "direct-paypal-response", "direct-paypal-callback", "paypal-complete", "shared-release"],
                 "tamper": true,
                 "store": true
             },
@@ -526,7 +551,7 @@ class Transaction
                 "type": "string",
                 "min": 10,
                 "max": 10,
-                "source": ["server-registration-response"],
+                "source": ["server-registration-response", "shared-release"],
                 "store": true
             },
             "TxAuthNo": {
@@ -535,7 +560,7 @@ class Transaction
                 "chars": ["9"],
                 "min": 1,
                 "max": 50,
-                "source": ["server-notification"],
+                "source": ["server-notification", "shared-release"],
                 "tamper": true,
                 "store": true
             },
