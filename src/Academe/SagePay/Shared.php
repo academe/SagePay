@@ -16,10 +16,18 @@ class Shared extends Register //Common
 {
     /**
      * Release a DEFERRED or REPEATDEFERRED payment.
+     * CHECKME: SagePay does not document what the currency should be. It could be assumed to be
+     * the same as the original transaction, so we could load up that transaction to get hold of
+     * the currency. Although we do not need to send the currency in this transaction, the amount
+     * still needs to be formatted correctly. We'll do this then remove it later if necessary.
      */
 
     public function release($OriginalVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0, $Amount = 0)
     {
+        // Set the currency of the original transaction. This may not be necessary (see note above).
+        $currency = $this->getTransactionCurrency($OriginalVendorTxCode);
+        $this->setField('Currency', $currency);
+
         return $this->releaseOrAbort('RELEASE', $OriginalVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo, $Amount);
     }
 
@@ -109,7 +117,8 @@ class Shared extends Register //Common
             $this->setField('Status', $output['Status']);
             $this->setField('StatusDetail', $output['StatusDetail']);
         } else {
-            // TODO: fix postSagePay() so it guarantees to return a status pair.
+            // TODO: fix postSagePay() so it guarantees to return a status pair. i.e. push this whole
+            // condition back a layer.
             $this->setField('Status', 'FAIL');
             $this->setField('StatusDetail', 'Malformed return from SagePay');
         }
@@ -121,5 +130,24 @@ class Shared extends Register //Common
         return ($this->getField('Status') == 'OK');
     }
 
+    /**
+     * Get the currency used on an existing transaction.
+     */
+
+    protected function getTransactionCurrency($VendorTxCode)
+    {
+        // We need to duplicate the current transaction object, as we don't want
+        // to obliterate any data it already contains.
+        $this->checkTxModel();
+        $old_transaction = clone($this->tx_model);
+        $old_transaction->find($VendorTxCode);
+
+        if (!empty($old_transaction)) {
+            return $old_transaction->getField('Currency');
+        } else {
+            // Just default to what we currently have.
+            return $this->getField('Currency');
+        }
+    }
 }
 

@@ -315,7 +315,7 @@ class Register extends Model\XmlAbstract
      * Check a transaction model is set before we attempt to use it.
      */
 
-    private function checkTxModel()
+    protected function checkTxModel()
     {
         if (!isset($this->tx_model)) {
             throw new Exception\BadMethodCallException('Transaction model is not set');
