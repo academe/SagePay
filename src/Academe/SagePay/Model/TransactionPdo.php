@@ -6,6 +6,8 @@
  * A table is created with a separate column for all SagePay transaction values, in all
  * directions. In reality you may not want to store all these values, or you may want to
  * serialise a bunch of them up into a single field, for convenience.
+ * Strictly, this is probably just "MySQL-PDO" and will likely need to be extendeed for
+ * other database emngines.
  */
 
 namespace Academe\SagePay\Model;
@@ -259,6 +261,65 @@ class TransactionPdo extends TransactionAbstract
 
         return true;
     }
+
+    /**
+     * Update the transaction table structure.
+     * Returns true if successful.
+     * This is a really dirty way to do it, but we can come back to migrations later.
+     * We only support "up" here, so the table structure will move forward only. We will
+     * blindly do all updates that have ever been needed to update the table structure, and
+     * we will ignore any DDL errors. See, I told you it was dirty.
+     */
+
+    public function updateTable()
+    {
+        $transaction_table = $this->transaction_table_name;
+
+        try {
+            // Connect to the database.
+            $pdo = $this->getConnection();
+        }
+        catch (\PDOException $e) {
+            $this->pdo_error_message = $e->getMessage();
+            return false;
+        }
+
+        $up_migrations = array();
+
+        // Issue #9 rename a column.
+        $up_migrations[] = "ALTER TABLE $transaction_table CHANGE COLUMN OriginalVendorTxCode"
+            . " RelatedVendorTxCode varchar(40) DEFAULT NULL";
+
+        // Issue #9 add RelatedVPSTxId column.
+        $up_migrations[] = "ALTER TABLE $transaction_table ADD COLUMN RelatedVPSTxId"
+            . " varchar(38) DEFAULT NULL";
+
+        // Issue #9 add RelatedSecurityKey column.
+        $up_migrations[] = "ALTER TABLE $transaction_table ADD COLUMN RelatedSecurityKey"
+            . " varchar(10) DEFAULT NULL";
+
+        // Assume success.
+        $final_result = true;
+        $pdo_error_messages = array();
+
+        foreach($up_migrations as $up_migration) {
+            try {
+                $success = $pdo->exec($up_migration);
+            }
+            catch (\PDOException $e) {
+                // Record the error, but otherwise continue.
+                $final_result = false;
+                $pdo_error_messages[] = $e->getMessage();
+            }
+        }
+
+        if (!empty($pdo_error_messages)) {
+            $this->pdo_error_message = implode("\n", $pdo_error_messages);
+        }
+
+        return $final_result;
+    }
+
 
     /**
      * Create the database table for the transactions.

@@ -124,7 +124,7 @@ class Transaction
                 "store": true,
                 "notes": "Primary key of each transaction"
             },
-            "OriginalVendorTxCode": {
+            "RelatedVendorTxCode": {
                 "required": false,
                 "type": "string",
                 "min": 1,
