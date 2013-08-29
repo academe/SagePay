@@ -22,47 +22,47 @@ class Shared extends Register //Common
      * still needs to be formatted correctly. We'll do this then remove it later if necessary.
      */
 
-    public function release($OriginalVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0, $Amount = 0)
+    public function release($RelatedVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0, $Amount = 0)
     {
         // Set the currency of the original transaction. This may not be necessary (see note above).
-        $currency = $this->getTransactionCurrency($OriginalVendorTxCode);
+        $currency = $this->getTransactionCurrency($RelatedVendorTxCode);
         $this->setField('Currency', $currency);
 
-        return $this->releaseAbortVoidCancel('RELEASE', $OriginalVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo, $Amount);
+        return $this->releaseAbortVoidCancel('RELEASE', $RelatedVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo, $Amount);
     }
 
     /**
      * Abort a DEFERRED or REPEATDEFERRED transaction.
      */
 
-    protected function abort($TxType, $OriginalVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0)
+    protected function abort($TxType, $RelatedVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0)
     {
-        return $this->releaseAbortVoidCancel('ABORT', $OriginalVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo);
+        return $this->releaseAbortVoidCancel('ABORT', $RelatedVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo);
     }
 
     /**
      * Void a DEFERRED or REPEATDEFERRED payment.
      */
 
-    protected function void($TxType, $OriginalVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0)
+    protected function void($TxType, $RelatedVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0)
     {
-        return $this->releaseAbortVoidCancel('VOID', $OriginalVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo);
+        return $this->releaseAbortVoidCancel('VOID', $RelatedVendorTxCode, $VPSTxId, $SecurityKey, $TxAuthNo);
     }
 
     /**
      * Cancel an AUTHENTICATE transaction.
      */
 
-    protected function cancel($TxType, $OriginalVendorTxCode = '', $VPSTxId = '', $SecurityKey = '')
+    protected function cancel($TxType, $RelatedVendorTxCode = '', $VPSTxId = '', $SecurityKey = '')
     {
-        return $this->releaseAbortVoidCancel('VOID', $OriginalVendorTxCode, $VPSTxId, $SecurityKey);
+        return $this->releaseAbortVoidCancel('CANCEL', $RelatedVendorTxCode, $VPSTxId, $SecurityKey);
     }
 
     /**
      * Abort, release or void a DEFERRED or REPEATDEFERRED payment.
      */
 
-    protected function releaseAbortVoidCancel($TxType, $OriginalVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0, $Amount = 0)
+    protected function releaseAbortVoidCancel($TxType, $RelatedVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0, $Amount = 0)
     {
         if ($TxType == 'RELEASE') {
             $message_type = 'shared-release';
@@ -80,19 +80,19 @@ class Shared extends Register //Common
         // Set the transaction type.
         $this->setField('TxType', $TxType);
 
-        // The VendorTxCode passed in points to the eoriginal transaction being released, and is not
+        // The VendorTxCode passed in points to the original transaction being released, and is not
         // the ID of this transaction.
 
-        if ($OriginalVendorTxCode != '') {
-            $this->setField('OriginalVendorTxCode', $OriginalVendorTxCode);
+        if ($RelatedVendorTxCode != '') {
+            $this->setField('RelatedVendorTxCode', $RelatedVendorTxCode);
         } else {
             // If the VendorTxCode has been set (as the SagePay docs would lead) then move the
-            // value to the Original field. This helps keep usability simple.
+            // value to the Related field. This helps keep usability simple.
 
             $VendorTxCode = $this->getField('VendorTxCode');
 
             if (!empty($VendorTxCode)) {
-                $this->setField('OriginalVendorTxCode', $VendorTxCode);
+                $this->setField('RelatedVendorTxCode', $VendorTxCode);
                 $this->setField('VendorTxCode', null);
             }
         }

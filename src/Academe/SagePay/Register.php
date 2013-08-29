@@ -616,6 +616,8 @@ class Register extends Model\XmlAbstract
 
         // Loop through the fields, both optional and mandatory.
 
+        $TxType = $this->getField('TxType');
+
         foreach($fields_to_send as $field) {
             $value = $this->getField($field);
             if ( ! in_array($field, $optional_fields) || isset($value)) {
@@ -632,7 +634,12 @@ class Register extends Model\XmlAbstract
                 // An important one is VendorTxCode, which is used as the primary key of each transaction,
                 // but also as a foreign key reference to linked transactions, but has the same name when
                 // sent to SagePay in both cases.
-                if ($field == 'OriginalVendorTxCode') $field = 'VendorTxCode';
+                // But only for some transactino service types. Other services use RelatedVendorTxCode as
+                // that same field name.
+
+                if ($field == 'RelatedVendorTxCode' && ($TxType == 'RELEASE' || $TxType == 'ABORT' || $TxType == 'VOID' || $TxType == 'CANCEL')) {
+                    $field = 'VendorTxCode';
+                }
 
                 $query[$field] = $value;
             }
