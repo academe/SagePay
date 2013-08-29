@@ -137,6 +137,13 @@ Very roughly, registering a [payment] transaction request will look like this:
     // hook of a plugin, assuming you are not using a custom post type to track the transactions.
     
     $storage->createTable();
+    
+    // The PDO storage table may need upgrading for new releases. Call this method to do that:
+    
+    $storage->updateTable();
+    
+    // Note that both createTable() and updateTable() are both specific to the PDO storage model.
+    // You may store your data elsewhere and have your own way of setting up structures and storage.
         
     // Set the main mandatory details for the transaction.
     // We have: payment type, vandor name, total amount, currency, note to display to user, callback URL.
