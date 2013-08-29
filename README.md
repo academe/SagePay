@@ -144,6 +144,8 @@ Very roughly, registering a [payment] transaction request will look like this:
     
     // Note that both createTable() and updateTable() are both specific to the PDO storage model.
     // You may store your data elsewhere and have your own way of setting up structures and storage.
+    // For example, the transactions may be stored in a model in a framework that has its own way
+    // to migrate database structures during releases and upgrades.
         
     // Set the main mandatory details for the transaction.
     // We have: payment type, vandor name, total amount, currency, note to display to user, callback URL.
