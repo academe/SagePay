@@ -118,7 +118,7 @@ Very roughly, registering a [payment] transaction request will look like this:
     // a usable example that comes with the library.
     
     $storage = new Academe\SagePay\Model\TransactionPdo();
-    $storage->setDatabase('mysql:host=localhost;dbname=foobar', 'myuser', 'mypassword');
+    $storage->setDatabase('mysql:host=localhost;dbname=MyDatabase', 'MyUser', 'MyPassword');
     
     // Within WordPress, setting the database details looks like this:
     
@@ -215,7 +215,7 @@ looking something like this:
     
     $register = new Academe\SagePay\Server();
     $register->setTransactionModel(new Academe\SagePay\Model\TransactionPdo())
-        ->setDatabase('mysql:host=localhost;dbname=foobar', 'myuser', 'mypassword');
+        ->setDatabase('mysql:host=localhost;dbname=MyDatabase', 'MyUser', 'MyPassword'');
     
     // Handle the notification.
     // The final URL sent back, which is where the user will end up. We are also passing the
