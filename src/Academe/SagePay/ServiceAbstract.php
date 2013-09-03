@@ -9,7 +9,7 @@ namespace Academe\SagePay;
 use Academe\SagePay\Metadata as Metadata;
 use Academe\SagePay\Exception as Exception;
 
-class Common extends Model\XmlAbstract
+class ServiceAbstract extends Model\XmlAbstract
 {
     /**
      * The model used to store, retrieve and update the transaction.

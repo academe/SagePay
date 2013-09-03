@@ -3,8 +3,6 @@
 /**
  * SagePay shared services.
  * Services shared by SagePay Server and SagePay Direct.
- * TODO: inheriting Register for now, but will change to Common once
- * Register is split up.
  */
 
 namespace Academe\SagePay;
@@ -12,7 +10,7 @@ namespace Academe\SagePay;
 use Academe\SagePay\Metadata as Metadata;
 use Academe\SagePay\Exception as Exception;
 
-class Shared extends Common
+class Shared extends ServiceAbstract
 {
     /**
      * The SagePay method to be used.
