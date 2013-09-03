@@ -227,9 +227,9 @@ looking something like this:
         'http://example.com/mysite/final.php?status={{Status}}'
     );
     
-    // Other actions can be performed here, based on what we find in `$register->getField('Status')`
+    // Other actions can be performed here, based on what we find in `$server->getField('Status')`
     // For example, you may want to inform an application that an invoice has been paid.
-    // You may also want to send the user an email at this point (to `$register->getField('CustomerEMail')`
+    // You may also want to send the user an email at this point (to `$server->getField('CustomerEMail')`
     
     // Return the result to SagePay.
     // Do not output *anything* else on this page. SagePay is expecting the contents of $result *only*.
