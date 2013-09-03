@@ -1,6 +1,7 @@
-# Client Library for SagePay Server - Protocol V3 #
+# Client Library for SagePay Direct/Server - Protocol V3 #
 
-Provides the functionality for Protocol 3 of the SagePay Server service. It purposefully does not fully support all
+Provides the functionality for Protocol 3 of the SagePay Server and SagePay Direct services. 
+It purposefully does not fully support all
 protocol v2 interface features (e.g. the non-XML basket, because the XML basket is a lot more flexible) but that could 
 be added if people really desire it. V3 is truly a superset of the V2 protocol, so no functional features are lost.
 
@@ -32,7 +33,8 @@ This library does not support this service at present, though it is being worked
 
 ## Status ##
 
-This library is being actively worked on. Having said that, is *is* production-ready and is in service now.
+This library is being actively worked on. Having said that, is *is* production-ready and is in service now
+for SagePay Server. SagePay Direct is still being developed, which will happen after a little refactoring.
 The intention is for a back-end library for SagePay
 protocol version 3, that can use any storage mechanism you like and does not have side-effects
 related to input (i.e. does not read POST behind your back, so your application controls all
@@ -104,9 +106,9 @@ Very roughly, registering a [payment] transaction request will look like this:
 
     // This just half the process. This registers a payment request with the gateway.
     
-    // Create the registration object.
+    // Create the Server registration object.
     
-    $register = new Academe\SagePay\Register();
+    $register = new Academe\SagePay\Server();
     
     // Create a storage model object.
     // A basic PDO storage is provided, but just extend Model\Transaction and use your own.
@@ -211,7 +213,7 @@ looking something like this:
     
     // Set up the transaction model, same as when registering. Here is a slightly shorter-hand version.
     
-    $register = new Academe\SagePay\Register();
+    $register = new Academe\SagePay\Server();
     $register->setTransactionModel(new Academe\SagePay\Model\TransactionPdo())
         ->setDatabase('mysql:host=localhost;dbname=foobar', 'myuser', 'mypassword');
     
