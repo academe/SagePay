@@ -309,8 +309,11 @@ https://github.com/trashofmasters/sagepayadminapi-php
 By supporting a currency for payments, it means that payments can be taken in that currency. A shop will
 often be based in a single country and support just that local currency. If your shop supports multiple
 currencies, then it is your responsibility to set the correct prices in each currency according to the
-exchange rates.
+exchange rates. For example, if you are a UK based company and you choose to sell a widget to 20USD,
+then it will be the banks and card operators that handle the exchange. You won't know how much that
+20USD will be worth in GBP until it hits your bank account.
 
-A shop selling a product at 10 USD will still accept payments from people in other countries. In that case
+A shop selling a product at 10 USD (and only USD) will still accept payments from people in other countries. 
+In that case
 it will be the purchaser's card supplier that will calculate the amount to be paid in their local currency
 to ensure the shop receives exactly 10 USD.
