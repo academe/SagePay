@@ -5,6 +5,8 @@
  * Services shared by SagePay Server and SagePay Direct.
  * TODO: inheriting Register for now, but will change to Common once
  * Register is split up.
+ * TODO: all these service methods need to be available to the Server and
+ * Direct classes too. Moving them to Common is probably the way to achieve this.
  */
 
 namespace Academe\SagePay;
@@ -14,6 +16,12 @@ use Academe\SagePay\Exception as Exception;
 
 class Shared extends Register //Common
 {
+    /**
+     * The SagePay method to be used.
+     */
+
+    protected $method = 'shared';
+
     /**
      * Release a DEFERRED or REPEATDEFERRED payment.
      * CHECKME: SagePay does not document what the currency should be. It could be assumed to be

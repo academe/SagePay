@@ -18,7 +18,7 @@ Code	Type	Message
 2000	NOTAUTHED	The Authorisation was Declined by the bank.
 2001	REJECTED	The Authorisation was Rejected by the vendor rule-base.
 2002	NOTAUTHED	The Authorisation timed out.
-2003	ERROR	An ERROR has occurred on the Protx System.
+2003	ERROR	An ERROR has occurred on the Sage Pay System.
 2004	OK	The Release was Successful.
 2005	OK	The Void was Successful.
 2006	OK	The Abort was Successful.
@@ -135,7 +135,7 @@ Code	Type	Message
 3130	INVALID	The BillingState value is too long.
 3138	INVALID	The BillingState format is invalid.
 3145	INVALID	The BillingCountry value is too long.
-3147		The BillingState field is required.
+3147	MALFORMED	The BillingState field is required.
 4000	INVALID	The VendorName is invalid or the account is not active.
 4001	INVALID	The VendorTxCode has been used before. All VendorTxCodes sshould be unique.
 4002		An active transaction with this VendorTxCode has been found but the Amount is different.
@@ -152,7 +152,6 @@ Code	Type	Message
 4023		The Card Issue Number length is invalid.
 4024		The Card Issue Number is required.
 4025	INVALID	The Card Issue Number is invalid.
-4025		The Card Issue Number is invalid.
 4026		3D-Authentication failed. This vendor's rules require a successful 3D-Authentication.
 4027		3D-Authentication failed. Cannot authorise this card.
 4028		The RelatedVPSTxId cannot be found.
@@ -206,6 +205,7 @@ Code	Type	Message
 5028	INVALID	The Card Expiry Date is invalid.
 5029		3D-Authentication failed. This vendor's rules require a successful 3D-Authentication.
 5030	ERROR	Unable to decrypt the request message. This might be caused by an incorrect password or invalid encoding.
+5051	INVALID	The Contact Number contains invalid characters.
 5994		The Authorisation process failed, due to an internal server error.
 5995		The AVS/CV2cks failed.
 5996	NOTAUTHED	The Authorisation process timed-out. The bank did not respond within an acceptable time limit.
