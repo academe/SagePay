@@ -186,8 +186,8 @@ Very roughly, registering a [payment] transaction request will look like this:
     $server->sendRegistration();
 
 The response will provide details of what to do next: it may be a fail, or give a SagePay URL to jump to, or
-just a simple data validation error to correct. If `$register->getField('Status')` is "OK" then redirect
-the user to `$register->getField('NextURL')` otherwise handle the error.
+just a simple data validation error to correct. If `$server->getField('Status')` is "OK" then redirect
+the user to `$server->getField('NextURL')` otherwise handle the error.
 
 SagePay is very strict on data validatin. If a postcode is too long, or an address has an invalid character
 in, then it will reject the registration, but will not be very clear exactly why it was rejected, and
