@@ -5,8 +5,6 @@
  * Services shared by SagePay Server and SagePay Direct.
  * TODO: inheriting Register for now, but will change to Common once
  * Register is split up.
- * TODO: all these service methods need to be available to the Server and
- * Direct classes too. Moving them to Common is probably the way to achieve this.
  */
 
 namespace Academe\SagePay;
@@ -14,7 +12,7 @@ namespace Academe\SagePay;
 use Academe\SagePay\Metadata as Metadata;
 use Academe\SagePay\Exception as Exception;
 
-class Shared extends Register //Common
+class Shared extends Common
 {
     /**
      * The SagePay method to be used.

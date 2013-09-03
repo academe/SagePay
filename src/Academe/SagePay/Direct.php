@@ -11,7 +11,7 @@ namespace Academe\SagePay;
 use Academe\SagePay\Metadata as Metadata;
 use Academe\SagePay\Exception as Exception;
 
-class Direct extends Common
+class Direct extends Shared
 {
     /**
      * The SagePay method to be used.
