@@ -46,8 +46,14 @@ abstract class XmlAbstract
      * Format a monetory amount to the relavant number of decimal places as required by SagePay.
      */
 
-    protected function formatAmount($amount)
+    protected function formatAmount($amount, $currency = null)
     {
+        // Use the currency, if passed in.
+        // TODO: we should validate the currency passed in, to make sure it is valid.
+        // Better still, the currency formatting can be pulled out to a helper class, as it is
+        // used in many places (all XML formatting models and the main transaction process.
+        $use_currency = (isset($currency) ? strtoupper($currency) : $this->currency);
+
         // We need a numeric value, so make sure it is, even if it is a number in a string.
         if ( ! is_numeric($amount)) $amount = 0;
 
@@ -55,7 +61,7 @@ abstract class XmlAbstract
         // SagePay requires the amount to be padded out to the exact number of decimal places.
 
         $minor_unit = \Academe\SagePay\Metadata\Iso4217::get()
-            ->{$this->currency}
+            ->{$use_currency}
             ->minor;
 
         return number_format($amount, $minor_unit, '.', '');

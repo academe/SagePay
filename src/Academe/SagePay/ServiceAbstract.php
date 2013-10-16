@@ -13,9 +13,16 @@ class ServiceAbstract extends Model\XmlAbstract
 {
     /**
      * The model used to store, retrieve and update the transaction.
+     * Note "tx" is "transaction" and not "transmission". Sorry for the duff name.
      */
 
     protected $tx_model = null;
+
+    /**
+     * The transport object, used to talk to SagePay.
+     */
+
+    protected $transport_controller = null;
 
     /**
      * The SagePay method to be used.
