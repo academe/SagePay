@@ -69,98 +69,98 @@ class ServiceAbstract extends Model\XmlAbstract
     protected $sagepay_url_services = array(
         'direct' => array(
             'PAYMENT' => array(
+                'simulator' => null,
                 'test' => 'vspdirect-register.vsp',
                 'live' => 'vspdirect-register.vsp',
-                'simulator' => null,
             ),
             'DEFERRED' => array(
+                'simulator' => null,
                 'test' => 'vspdirect-register.vsp',
                 'live' => 'vspdirect-register.vsp',
-                'simulator' => null,
             ),
             'AUTHENTICATE' => array(
+                'simulator' => null,
                 'test' => 'vspdirect-register.vsp',
                 'live' => 'vspdirect-register.vsp',
-                'simulator' => null,
             ),
             '3DSECURE' => array(
+                'simulator' => null,
                 'test' => 'direct3dcallback.vsp',
                 'live' => 'direct3dcallback.vsp',
-                'simulator' => null,
             ),
             'COMPLETE' => array(
+                'simulator' => null,
                 'test' => 'complete.vsp',
                 'live' => 'complete.vsp',
-                'simulator' => null,
             ),
         ),
         'server' => array(
             'PAYMENT' => array(
+                'simulator' => null,
                 'test' => 'vspserver-register.vsp',
                 'live' => 'vspserver-register.vsp',
-                'simulator' => null,
             ),
             'DEFERRED' => array(
+                'simulator' => null,
                 'test' => 'vspserver-register.vsp',
                 'live' => 'vspserver-register.vsp',
-                'simulator' => null,
             ),
             'AUTHENTICATE' => array(
+                'simulator' => null,
                 'test' => 'vspserver-register.vsp',
                 'live' => 'vspserver-register.vsp',
-                'simulator' => null,
             ),
         ),
         'shared' => array(
             'RELEASE' => array(
+                'simulator' => 'VendorReleaseTx',
                 'test' => 'release.vsp',
                 'live' => 'release.vsp',
-                'simulator' => 'VendorReleaseTx',
             ),
             'ABORT' => array(
+                'simulator' => 'VendorAbortTx',
                 'test' => 'abort.vsp',
                 'live' => 'abort.vsp',
-                'simulator' => 'VendorAbortTx',
             ),
             'REFUND' => array(
+                'simulator' => 'VendorRefundTx',
                 'test' => 'refund.vsp',
                 'live' => 'refund.vsp',
-                'simulator' => 'VendorRefundTx',
             ),
             'REPEAT' => array(
+                'simulator' => 'VendorRepeatTx',
                 'test' => 'repeat.vsp',
                 'live' => 'repeat.vsp',
-                'simulator' => 'VendorRepeatTx',
             ),
             'REPEATDEFERRED' => array(
+                'simulator' => 'VendorRepeatTx',
                 'test' => 'repeat.vsp',
                 'live' => 'repeat.vsp',
-                'simulator' => 'VendorRepeatTx',
             ),
             'VOID' => array(
+                'simulator' => 'VendorVoidTx',
                 'test' => 'void.vsp',
                 'live' => 'void.vsp',
-                'simulator' => 'VendorVoidTx',
             ),
             'MANUAL' => array(
+                'simulator' => null,
                 'test' => 'manualpayment.vsp',
                 'live' => 'manualpayment.vsp',
-                'simulator' => null,
             ),
             'DIRECTREFUND' => array(
+                'simulator' => 'VendorDirectrefundTx',
                 'test' => 'directrefund.vsp',
                 'live' => 'directrefund.vsp',
-                'simulator' => 'VendorDirectrefundTx',
             ),
             'AUTHORISE' => array(
+                'simulator' => 'VendorAuthoriseTx',
                 'test' => 'authorise.vsp',
                 'live' => 'authorise.vsp',
-                'simulator' => 'VendorAuthoriseTx',
             ),
             'CANCEL' => array(
+                'simulator' => 'VendorCancelTx',
                 'test' => 'cancel.vsp',
                 'live' => 'cancel.vsp',
-                'simulator' => 'VendorCancelTx',
             ),
         ),
     );
@@ -534,6 +534,10 @@ class ServiceAbstract extends Model\XmlAbstract
      * If either address is not set, then default it to the other address, as both
      * are mandatory.
      * Also expand all other objects in the request: basket, customer, surcharges.
+     * TODO: implement a "dirty" flag on all the injected data models. Use this to determine
+     * whether a model needs to be expanded to XML or individual fields in the transaction.
+     * The dirty flag would need to be inspected when doing any getField() on the transaction
+     * to make sure the models are expanded if necessary.
      */
 
     protected function expandModels()
@@ -580,8 +584,8 @@ class ServiceAbstract extends Model\XmlAbstract
     /**
      * Collect the query data together for the transaction registration.
      * Returns key/value pairs
-     * TODO: different types of transaction will need different sets of fields to
-     * be sent to SagePay.
+     * Different types of transaction will need different sets of fields to
+     * be sent to SagePay. This is indicated by the $message_type.
      */
 
     public function queryData($format_as_querystring = true, $message_type = 'server-registration')
@@ -620,6 +624,8 @@ class ServiceAbstract extends Model\XmlAbstract
                 // for transfer to SagePay.
                 // FIXME: catch invalid UTF-8 stream errors. iconv() can easily fail if you
                 // pass it duff data.
+                // FIXME: don't make any assumptions about what the input chatset could be. It
+                // my not be UTF-8 but maystill need conversion to ISO-8859-1
 
                 if ($this->input_charset == 'UTF-8') {
                     $value = iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $value);
@@ -645,43 +651,44 @@ class ServiceAbstract extends Model\XmlAbstract
             return http_build_query($query, '', '&');
         } else {
             // Just return the data as an array.
-            // This may be more useful for some transport packages.
+            // This may be more useful for some transport packages that like to construct
+            // their own query string..
             return $query;
         }
     }
 
     /**
-     * Handle the POST to SagePay and collect the result.
-     * TODO: move to Transport namespace.
+     * Send a POST message to SagePay and collect the result.
+     * TODO: move to Transport namespace and a separate injected class.
      */
 
     public function postSagePay($sagepay_url, $query_string, $timeout = 30)
     {
         $curlSession = curl_init();
 
-        // Set the URL
+        // Set the URL.
         curl_setopt($curlSession, CURLOPT_URL, $sagepay_url);
 
         // No headers.
         curl_setopt($curlSession, CURLOPT_HEADER, 0);
 
-        // It's a POST request
+        // It's a POST request.
         curl_setopt($curlSession, CURLOPT_POST, 1);
 
-        // Set the fields for the POST
+        // Set the fields for the POST.
         curl_setopt($curlSession, CURLOPT_POSTFIELDS, $query_string);
 
-        // Return it direct, don't print it out
-        curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
+        // Return the result without echoing it.
+        curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, 1);
 
         // This connection will timeout in 30 seconds
         curl_setopt($curlSession, CURLOPT_TIMEOUT, $timeout);
 
-        // The next two lines must be present for the kit to work with newer version of cURL
+        // The next two lines must be present for this to work with newer versions of cURL
         curl_setopt($curlSession, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 2);
 
-        // Send the request and store the result in an array
+        // Send the request and store the result in an array.
         $rawresponse = trim(curl_exec($curlSession));
         $curl_info = curl_getinfo($curlSession);
 

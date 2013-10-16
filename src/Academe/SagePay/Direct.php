@@ -2,7 +2,7 @@
 
 /**
  * SagePay Direct services.
- * Work in progress as functionakity shared by Server, Direct and Shared
+ * Work in progress as functionality shared by Server, Direct and Shared
  * are moved from Register to Common.
  */
 

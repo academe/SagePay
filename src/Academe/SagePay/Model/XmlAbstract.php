@@ -2,9 +2,14 @@
 
 /**
  * Base model abstract for models that generate XML as their main output.
+ * TODO: split the currency stuff out to a separate abstract. Currency details
+ * are needed by the main service classes, but it makes no sense having
+ * ServieceAbstract inheriting the XML functions here.
  */
 
 namespace Academe\SagePay\Model;
+
+use Academe\SagePay\Exception as Exception;
 
 abstract class XmlAbstract
 {
@@ -21,8 +26,18 @@ abstract class XmlAbstract
 
     public function setCurrency($currency)
     {
-        // Minimal validation.
-        $this->currency = strtoupper($currency);
+        // Validate against the ISO4217 metadata and throw an exception if needed.
+        // The card handler still may not accept this currency, but at least it will
+        // be a valid currency code.
+
+        $currency = strtoupper($currency);
+        $all_currencies = \Academe\SagePay\Metadata\Iso4217::get('array');
+
+        if ( ! isset($all_currencies[$currency])) {
+            throw new Exception\InvalidArgumentException("Invalid currency code '{$currency}'");
+        }
+
+        $this->currency = $currency;
 
         return $this;
     }
@@ -33,7 +48,7 @@ abstract class XmlAbstract
 
     protected function formatAmount($amount)
     {
-        // We need a numeric value, so make sure it is, even if it is a nujmber in a string.
+        // We need a numeric value, so make sure it is, even if it is a number in a string.
         if ( ! is_numeric($amount)) $amount = 0;
 
         // Get the minor unit of the currency - the number of digits after the decimal point.

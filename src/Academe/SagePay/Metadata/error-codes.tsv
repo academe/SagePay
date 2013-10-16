@@ -1,20 +1,56 @@
 Code	Type	Message
 	NOTAUTHED	The Authorisation has been declined by the bank. Please try a different card.
 	NOTAUTHED	The Authorisation has been declined by the bank. You will need to try a different card type.
-	OK	The Authorisation was Successful.
 		Please select the card type you would like to use for the transaction.
 	REJECTED	The Authorisation has been rejected by the Vendor due to insufficient authentication. Please try a different card.
-		The network connection to the bank is currently unavailable.
+0	OK	The Authorisation was Successful.
+1		The message received was not valid XML.
+2		Invalid command. XML root node should be vspaccess.
+8		The specified and combination is not valid, or the user may be locked out.
+9		Error (retrieving/updating or inserting) data. Please email support@sagepay.com with this error.
+10		Cannot validate the value.
+11		You cannot execute the specified command without administrative privileges.
+13		The command passed in the parameter was not recognised.
+19		Error parsing the request XML. Check the format of your request message.
+21		Cannot create the new user. Check that the user does not already exist.
+38		The start date you have supplied is after the end date.
+39		The end date is more than one month after the start date. You can only return reports at monthly intervals.
+42		You must supply one of the following nodes with this command, either OR .
+43		Unable to find the transaction for the or supplied.
+44		The user does not have permission to view this transaction.
+45		You cannot set the administrator password using vspaccess. Please contact support@sagepay.com if you need this reset.
+77		A valid value is required.
+78		A valid value is required.
+99		Start Row and End Row range too large. The difference between the and value must be no greater than 50.
+204		element either not found, or present more than once.
+205		A valid value is required.
+211		value must be less than the value.
+235		More than 50,000 rows returned. Please refine the search.
 400	BAD REQUEST	The syntax of the request was not understood by the server.
 401		The request needs user authentication.
+402		Payment Required
 403		The server has refused to fulfill the request.
 404		The document/file requested by the client was not found.
 405	Method Not Allowed	The method specified in the Request-Line is not allowed for the resource identified.
+406		Not Acceptable
+407		Proxy Authentication Required
 408	Request Timeout	The client failed to send a request in the time allowed by the server.
+409		Conflict
+410		The resource requested is no longer available and no forwarding address is available.
+411		Length Required
+412		Precondition Failed
+413		Request Entity Too Large
 414	REQUEST URL TOO LONG	The request was unsuccessful because the URL specified is longer than the server is willing to process.
+415		Unsupported Media Type :The request was unsuccessful because the entity of the request is in a format not supported by the requested resource for the method requested.
+416		Requested Range Not Satisfiable : The request included a Range request-header field, and none of the range-specifier values in this field overlap the current extent of the selected resource, and also the request did not include an If-Range request-header
+417		Expectation Failed : The expectation given in the Expect request-header could not be fulfilled by the server.
 500		The request was unsuccessful due to an unexpected condition encountered by the server.
 501		The request was unsuccessful because the server can not support the functionality needed to fulfill the request.
+502		Bad Gateway : The server received an invalid response from the upstream server while trying to fulfil the request.
 503	SERVICE UNAVAILABLE	The request was unsuccessful to the server being down or overloaded.
+504		Gateway Timeout : The upstream server failed to send a request in the time allowed by the server.
+505		HTTP Version Not Supported : The server does not support or is not allowing the HTTP protocol version specified in the request.
+1115		element is only required for a Streamline merchant number.
 2000	NOTAUTHED	The Authorisation was Declined by the bank.
 2001	REJECTED	The Authorisation was Rejected by the vendor rule-base.
 2002	NOTAUTHED	The Authorisation timed out.
@@ -31,6 +67,36 @@ Code	Type	Message
 2013	ABORT	The Transaction was cancelled by the customer.
 2014	OK	The Transaction was Registered Successfully.
 2015		The server encountered an unexpected condition which prevented it from fulfilling the request.
+2016		The Card registration has been successful in exchange for a token.
+2017		Token removed successfully.
+2018		Token not supplied or Invalid token.
+2019		Transaction pending
+2020		Refunds are not allowed for this payment type
+2097		The email address provided was not recognised by PayPal.
+2098		The primary admin user cannot be locked.
+2099		You cannot unlock your own user.
+2104		A valid value is required in the format 123.123.123.123. You may need to zero pad your ip address so that each number block contains three digits.
+2106		A valid value is required in the format 123.123.123.123. You may need to zero pad your subnet mask so that each number block contains three digits.
+2128		The command cannot be run for the vspvendorname provided.
+2142		or element either not found, or present more than once.
+2173		The user must have access to the specified . Either provide the user with access to the chosen or select another which the user has access to.
+2180		You cannot delete your own user.
+2188		is too restrictive. Only C class subnet masks are allowed for blocking.
+2193		3D Secure rule not added. Overlaps with an existing rule.
+2194		AVSCV2 rule not added. Overlaps with an existing rule.
+2197		The primary admin user cannot be deleted.
+2210		No running server found
+2212		No successful transaction found within this duration.
+2213		Exceeded the allowed amount of commands to execute.
+2214		IP Address ##### not added.
+2216		can not be less than 8 characters.
+2217		IP Address ##### not deleted.
+2219		Card Range ##### not added.
+2220		Card Range ##### not deleted.
+2221		TerminalId ##### not added.
+2222		cannot be before , please check.
+2223		and cannot be the same. Please provide different value.
+2224		There is no such username associated with your account.
 3002	INVALID	The VPSTxId is invalid.
 3003	INVALID	The Currency is invalid.
 3004	INVALID	The Amount is invalid
@@ -132,10 +198,97 @@ Code	Type	Message
 3100	INVALID	The AccountType value is invalid.
 3101		The PaymentSystem does not support direct refund.
 3102	INVALID	The ReleaseAmount invalid.
+3103		The UserName value is Too long.
+3104		Account type selected requires 3D secure authentication to process Maestro or SOLO cards.
+3105		Transaction is not allowed without 3D secure authentication.
+3106		The PaymentSystem used for the original transaction does not support repeat transactions.
+3107		The BillingSurname field is required.
+3108		The BillingSurname value is too long.
+3109		The BillingFirstnames field is required.
+3110		The BillingFirstnames value is Too long.
+3111		The BillingAddress1 field is required.
+3112		The BillingAddress1 value is Too long.
+3113		The BillingAddress2 value is Too long.
+3114		The BillingCity field is required.
+3115		The BillingCity value is Too long.
+3117		The BillingCountry field is required.
+3118		The DeliverySurname field is required.
+3119		The DeliverySurname value is Too long.
+3120		The DeliveryFirstnames field is required.
+3121		The DeliveryFirstnames value is Too long.
+3122		The DeliveryAddress1 field is required.
+3123		The DeliveryAddress1 value is too long.
+3124		The DeliveryAddress2 value is too long.
+3125		The DeliveryAddress2 value is too long.
+3126		The DeliveryCity value is too long.
+3128		The DeliveryCountry field is required.
+3129		The DeliveryCountry value is too long.
 3130	INVALID	The BillingState value is too long.
+3131		The BillingPhone value is too long.
+3132		The DeliveryState value is too long.
+3133		The DeliveryPhone value is too long.
+3134		The ReferrerID value is too long.
+3135		The PayPalCallbackURL field is required.
+3136		The PayPalCallbackURL value is too long.
+3137		The PayPalCallbackURL format is invalid.
 3138	INVALID	The BillingState format is invalid.
+3139		The DeliveryState format is invalid.
+3140		The DeliveryCountry value is invalid.
+3141		The BillingCountry value is invalid.
+3142		The SendEMail value is invalid.
+3143		The Billing information is required.
+3144		The Delivery information is required.
 3145	INVALID	The BillingCountry value is too long.
+3146		The Profile value is invalid.
 3147	MALFORMED	The BillingState field is required.
+3148		The DeliveryState field is required.
+3149		The Card Firstnames is required.
+3150		The Card Firstnames value is too long.
+3151		The Card Surname is required.
+3152		The Card Surname value is too long.
+3153		The Card AddressLine1 is required.
+3154		The Card AddressLine1 value is too long.
+3155		The Card AddressLine2 value is too long.
+3156		The Card City field is required.
+3157		The Card City value is too long.
+3158		The Card Country field is required.
+3159		The Card Country value is too long.
+3160		The Card Country value is invalid.
+3161		The Card State value is too long.
+3162		The Card State field is required.
+3163		The Accept field is required.
+3164		The Accept value is invalid.
+3165		The paypal callback is invalid.
+3166		The transaction can not be repeated. Original transaction was not a billing agreement.
+3167		The BillingAgreement flag is invalid. If a value is supplied, should contain either 0 or 1.
+3168		The PhoneID value is required.
+3169		The PhoneID value is too long.
+3170		The PhoneID is not registered to any vendor account.
+3171		The vendor account does not support direct refund.
+3172		The create token value is invalid, should be either 1 or 0.
+3173		The Customer data is invalid.
+3174		The Surcharge data is invalid.
+3175		The Surcharge XML is too long.
+3176		The Customer XML is too long.
+3177		The Basket XML is too long.
+3178		The Vendor Data is too long.
+3179		The crypt string has been encoded incorrectly
+3180		The account number is too long.
+3181		The account number is invalid.
+3182		The account number is missing.
+3183		The bank code is too long.
+3184		The bank code is invalid.
+3185		The bank code is missing.
+3186		Invalid PPRO response status.
+3187		The website reference is too long.
+3188		The surcharge xml contains a fixed value with the incorrect number of decimal points for the currency.
+3189		The vendor data is invalid.
+3190		The token value format is invalid.
+3191		The storetoken value is invalid, If a value is supplied, should contain either 0 or 1.
+3192		Cannot find deferred transaction
+3193		Cannot create a token from a token transaction.
+3194		Must have only one basket field specified
+3195		The line item amount details do not add up correctly.
 4000	INVALID	The VendorName is invalid or the account is not active.
 4001	INVALID	The VendorTxCode has been used before. All VendorTxCodes sshould be unique.
 4002		An active transaction with this VendorTxCode has been found but the Amount is different.
@@ -146,6 +299,8 @@ Code	Type	Message
 4007		The TxType requested is not active on this account.
 4008		The Currency is not supported on this account.
 4009		The Amount is outside the allowed range.
+4010		The Amount including surcharge is outside the allowed range.
+4019		Client IP address is restricted by the vendor.
 4020	INVALID	Information received from an Invalid IP address.
 4021		The Card Range not supported by the system.
 4022		The Card Type selected does not match card number.
@@ -176,6 +331,16 @@ Code	Type	Message
 4047	INVALID	The vendor account is closed.
 4048	INVALID	The Card Number length is invalid.
 4049	INVALID	The ReleaseAmount larger the original amount.
+4050		Refund can no be performed until original transaction is settled.
+4051		TransactionType of the related transaction is not supported for this operation.
+4052		Invalid system used for the related transaction.
+4053		Transaction completed already.
+4054		Transaction not in paypal registered state.
+4055		The amount value is invalid, this value must be no more than + or - 15% of the original value.
+4056		The vendor does not match with the vendor who registered the token.
+4057		There are no card details registered for the token.
+4058		The payment requires authentication, Token system does not support this.
+4059		Cannot authorise this transaction.
 5001	INVALID	The required service is not available or invalid.
 5002	INVALID	Invalid request.
 5003	ERROR	Internal server error.
@@ -205,7 +370,39 @@ Code	Type	Message
 5028	INVALID	The Card Expiry Date is invalid.
 5029		3D-Authentication failed. This vendor's rules require a successful 3D-Authentication.
 5030	ERROR	Unable to decrypt the request message. This might be caused by an incorrect password or invalid encoding.
+5031		PayPal returned errors
+5032		PayPal void request failed.
+5033		PayPal capture request failed.
+5034		VOID operation is not supported for PAYPAL transaction
+5035		The Card Range requires 3D-Authentication, its not supported by the vendor.
+5036		The transaction not found.
+5037		The Delivery Address contains invalid characters.
+5038		The Delivery Phone contains invalid characters.
+5039		The Delivery City contains invalid characters.
+5040		The Billing Surname contains invalid characters.
+5041		The Billing Firstname contains invalid characters.
+5042		The Billing Address1 contains invalid characters.
+5043		The Billing Address2 contains invalid characters.
+5044		The Billing City contains invalid characters.
+5045		The Billing Phone contains invalid characters.
+5046		The Delivery Surname contains invalid characters.
+5047		The Delivery Firstname contains invalid characters.
+5048		The Delivery Address1 contains invalid characters.
+5049		The Delivery Address2 contains invalid characters.
+5050		The Billing Address contains invalid characters.
 5051	INVALID	The Contact Number contains invalid characters.
+5052		The Customer Name contains invalid characters.
+5053		The Email Message contains invalid characters.
+5054		The Cardholder Name contains invalid characters.
+5055		A Postcode field contains invalid characters.
+5056		The Contact Fax contains invalid characters.
+5057		The PayPal reference transaction failed.
+5058		The PayPal billing agreement was not accepted or failed.
+5068		The encryption method is not supported by this protocol version.
+5069		Cannot refund mobile transactions for this acquirer. Please use the mobile device.
+5070		Form transactions are disabled for this vendor in the test environment. Please contact support to re-enable this functionality.
+5992		Unable complete transaction due to resubmission of authorisation request by client.
+5993		The network connection to the bank is currently unavailable.
 5994		The Authorisation process failed, due to an internal server error.
 5995		The AVS/CV2cks failed.
 5996	NOTAUTHED	The Authorisation process timed-out. The bank did not respond within an acceptable time limit.
@@ -213,3 +410,12 @@ Code	Type	Message
 5998		Duplicate vendor notification attempt.
 5999		The Session is invalid or has expired.
 6000		Data Access Error.
+10029		The CardNumber field should only contain numbers. No spaces, hyphens or other characters or separators.
+11000		There was an error processing this payment type
+11001		The request was invalid
+11002		The payment was aborted at the bank site
+11003		The transaction timed out
+11004		There was a local error
+11005		There was error processing the payment at the bank site
+11006		The transaction was declined
+11007		The transaction was declined by the bank

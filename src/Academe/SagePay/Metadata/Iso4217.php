@@ -1040,7 +1040,7 @@ ENDDATA;
         if ($format == 'json') {
             return trim(static::$data_json);
         } elseif ($format == 'array') {
-            return json_decode(trim(static::$data_json), true); // CHECKME true or false?
+            return json_decode(trim(static::$data_json), true);
         } else {
             return json_decode(trim(static::$data_json));
         }

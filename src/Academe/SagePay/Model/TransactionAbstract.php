@@ -11,6 +11,12 @@
  * charactersets converted (that last one should probably be done in the final
  * transport stage - keep the characterset here in one that the application
  * understands).
+ *
+ * At the moment, this abstract is extended to provide a concrete transaction record
+ * with a built-in storage. An alternative way to do this would be injecting the storage
+ * as a dependancy injection. To do that, we can create a concrete version of
+ * TransactionAbstract with dependency injection suport built in, rather than a physical
+ * storage mechanism.
  */
 
 namespace Academe\SagePay\Model;
@@ -108,6 +114,22 @@ abstract class TransactionAbstract
      */
 
     protected $ReleaseAmount = null;
+
+    /**
+     * Save the transaction record to storage.
+     * Return true if successful, false if not.
+     * This may involved creating a new record, or may involve updating an existing record.
+     */
+
+    abstract public function save();
+
+    /**
+     * Find a saved transaction by its VendorTxCode.
+     * Returns the TransactionAbstract object or null.
+     * TODO: or should it always return $this, with an exception if not found?
+     */
+
+    abstract public function find($VendorTxCode);
 
     /**
      * Use the metadata to set up the fields to be tracked and saved.
@@ -273,27 +295,12 @@ abstract class TransactionAbstract
     }
 
     /**
-     * Save the transaction record to storage.
-     * Return true if successful, false if not.
-     * This may involved creating a new record, or may involve updating an existing record.
-     */
-
-    abstract public function save();
-
-    /**
-     * Find a saved transaction by its VendorTxCode.
-     * Returns the TransactionAbstract object or null.
-     * TODO: or should it always return $this, with an exception if not found?
-     */
-
-    abstract public function find($VendorTxCode);
-
-    /**
      * Make a new VendorTxCode.
      * To be give the code some context, we start it with a timestamp then add
      * on a number based on milliseconds.
      * The VendorTxCode is limited to 40 characters.
      * This is 17 + 13 = 30 characters.
+     * Override this method if you want a different format.
      */
 
     public function makeVendorTxCode()
