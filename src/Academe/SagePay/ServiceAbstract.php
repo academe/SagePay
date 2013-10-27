@@ -180,7 +180,7 @@ class ServiceAbstract extends Model\XmlAbstract
      protected $sagepay_platform = 'test';
 
     /**
-     * The input characterset.
+     * The input characterset, i.e. the characterset used by the application.
      * SagePay works only with ISO-8859-1, so conversion may be necessary.
      */
 
@@ -188,32 +188,17 @@ class ServiceAbstract extends Model\XmlAbstract
 
     /**
      * The models used to store the shipping and billing addresses.
+     * Unlike the XML models (e.g. BasketXML) these expand to multiple fields
+     * rather than serialise to a single field. However, maybe these could work
+     * the same for storage, but expand when sending to SagePay? It would make
+     * the address formats more flexible, but could make searching for transactions
+     * more difficult, on an RDBMS at least.
+     * At a minimum, these addresses probably belong on the transaction and not here
+     * on the serice controller.
      */
 
     protected $billing_address = null;
     protected $delivery_address = null;
-
-    /**
-     * The optional basket details object.
-     */
-
-    protected $basket = null;
-
-    /**
-     * The optional customer details object.
-     */
-
-    protected $customer = null;
-
-    /**
-     * The optional surcharges object.
-     */
-
-    protected $surcharge = null;
-
-    /**
-     * Set the model used to store, retrieve and update the transaction.
-     */
 
     public function setTransactionModel(Model\TransactionAbstract $tx_model)
     {
@@ -295,10 +280,10 @@ class ServiceAbstract extends Model\XmlAbstract
 
     public function setBasketModel(Model\BasketAbstract $basket)
     {
-        $this->basket = $basket;
+        $this->setField('BasketXML', $basket);
 
-        // Return the basket model so the caller can continue to set it up.
-        return $this->basket;
+        // Return the model so the caller can continue to set it up.
+        return $basket;
     }
 
     /**
@@ -307,10 +292,10 @@ class ServiceAbstract extends Model\XmlAbstract
 
     public function setCustomerModel(Model\CustomerAbstract $customer)
     {
-        $this->customer = $customer;
+        $this->setField('CustomerXML', $customer);
 
-        // Return the basket model so the caller can continue to set it up.
-        return $this->customer;
+        // Return the model so the caller can continue to set it up.
+        return $customer;
     }
 
     /**
@@ -319,10 +304,10 @@ class ServiceAbstract extends Model\XmlAbstract
 
     public function setSurchargeModel(Model\SurchargeAbstract $surcharge)
     {
-        $this->surcharge = $surcharge;
+        $this->setField('SurchargeXML', $surcharge);
 
         // Return the model so the caller can continue to set it up.
-        return $this->surcharge;
+        return $surcharge;
     }
 
     /**
@@ -557,7 +542,7 @@ class ServiceAbstract extends Model\XmlAbstract
 
         if (is_object($billing)) {
             foreach($billing->toArray() as $field_name => $field_value) {
-                $this->tx_model->setField('Billing' . $field_name, $field_value);
+                $this->setField('Billing' . $field_name, $field_value);
             }
         }
 
@@ -565,26 +550,8 @@ class ServiceAbstract extends Model\XmlAbstract
 
         if (is_object($delivery)) {
             foreach($delivery->toArray() as $field_name => $field_value) {
-                $this->tx_model->setField('Delivery' . $field_name, $field_value);
+                $this->setField('Delivery' . $field_name, $field_value);
             }
-        }
-
-        // Expand the basket to XML.
-
-        if (is_object($this->basket)) {
-            $this->tx_model->setField('BasketXML', $this->basket->toXml());
-        }
-
-        // Expand the customer to XML.
-
-        if (is_object($this->customer)) {
-            $this->tx_model->setField('CustomerXML', $this->customer->toXml());
-        }
-
-        // Expand the surcharge to XML.
-
-        if (is_object($this->surcharge)) {
-            $this->tx_model->setField('SurchargeXML', $this->surcharge->toXml());
         }
     }
 
@@ -741,7 +708,7 @@ class ServiceAbstract extends Model\XmlAbstract
     public function isPaymentSuccess()
     {
         $this->checkTxModel();
-        return $this->tx_model->isPaymentSuccess();
+        return $this->isPaymentSuccess();
     }
 }
 

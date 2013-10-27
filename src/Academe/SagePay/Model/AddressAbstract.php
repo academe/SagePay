@@ -51,8 +51,11 @@ abstract class AddressAbstract
     public function setField($name, $value)
     {
         // If the field name begins with "Billing" or "Delivery", then strip the prefix off.
-        if (substr($name, 0, 7) == 'Billing') $name = substr($name, 7);
-        if (substr($name, 0, 8) == 'Delivery') $name = substr($name, 8);
+        if (substr($name, 0, 7) == 'Billing') {
+            $name = substr($name, 7);
+        } elseif (substr($name, 0, 8) == 'Delivery') {
+            $name = substr($name, 8);
+        }
 
         // Do we need to raise an exception if the properlty does not exist?
         if (property_exists($this, $name)) {
@@ -81,6 +84,7 @@ abstract class AddressAbstract
 
     /**
      * Return properties as an array.
+     * Each property maps to a transaction field.
      */
 
     public function toArray()

@@ -68,17 +68,22 @@ class Shared extends ServiceAbstract
 
     protected function releaseAbortVoidCancel($TxType, $RelatedVendorTxCode = '', $VPSTxId = '', $SecurityKey = '', $TxAuthNo = 0, $Amount = 0)
     {
-        if ($TxType == 'RELEASE') {
-            $message_type = 'shared-release';
-        } elseif ($TxType == 'ABORT') {
-            $message_type = 'shared-abort';
-        } elseif ($TxType == 'VOID') {
-            $message_type = 'shared-void';
-        } elseif ($TxType == 'CANCEL') {
-            $message_type = 'shared-cancel';
-        } else {
-            // Not a valid transaction type.
-            throw new Exception\InvalidArgumentException("Invalid transaction type '{$TxType}'");
+        switch ($TxType) {
+            case 'RELEASE':
+                $message_type = 'shared-release';
+                break;
+            case 'ABORT':
+                $message_type = 'shared-abort';
+                break;
+            case 'VOID':
+                $message_type = 'shared-void';
+                break;
+            case 'CANCEL':
+                $message_type = 'shared-cancel';
+                break;
+            default:
+                // Not a valid transaction type.
+                throw new Exception\InvalidArgumentException("Invalid transaction type '{$TxType}'");
         }
 
         // Set the transaction type.

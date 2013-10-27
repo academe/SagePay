@@ -116,6 +116,20 @@ abstract class XmlAbstract
 
         return $fragment;
     }
+
+    /**
+     * Used to serialise the object into XML required by SagePay.
+     */
+    //abstract public function toXml();
+
+    /**
+     * Serialise the basket.
+     * The serialised form will be XML.
+     */
+    public function __toString()
+    {
+        return $this->toXml();
+    }
 }
 
 

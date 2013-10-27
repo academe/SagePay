@@ -160,7 +160,7 @@ abstract class TransactionAbstract
     public function transactionFields()
     {
         // We only want the fields that will be stored.
-        // Actually, we want all fields as we don't know what we will be using.
+        // Actually, we want all fields as we don't know what we will be using. (CHECKME: contradictory)
         $metadata = \Academe\SagePay\Metadata\Transaction::get('array', array('store' => true));
 
         $result = array();
