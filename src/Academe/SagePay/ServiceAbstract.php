@@ -6,11 +6,21 @@
 
 namespace Academe\SagePay;
 
+// These are namespaces.
 use Academe\SagePay\Metadata as Metadata;
 use Academe\SagePay\Exception as Exception;
 
-class ServiceAbstract extends Model\XmlAbstract
+// Helper is the helper class.
+use Academe\SagePay\Helper\Helper;
+
+class ServiceAbstract //extends Model\XmlAbstract
 {
+    /**
+     * The currency for the service.
+     */
+
+    protected $currency = null;
+
     /**
      * The model used to store, retrieve and update the transaction.
      * Note "tx" is "transaction" and not "transmission". Sorry for the duff name.
@@ -200,12 +210,34 @@ class ServiceAbstract extends Model\XmlAbstract
     protected $billing_address = null;
     protected $delivery_address = null;
 
+    /**
+     * Inject the transaction model.
+     */
+
     public function setTransactionModel(Model\TransactionAbstract $tx_model)
     {
         $this->tx_model = $tx_model;
 
         // Return the transactino model so the caller can continue to set it up.
         return $this->tx_model;
+    }
+
+    /**
+     * Set the currency for amount formatting.
+     * The three-character ISO4217 currency code is required.
+     */
+
+    public function setCurrency($currency)
+    {
+        $currency = strtoupper($currency);
+
+        if ( ! Metadata\Iso4217::checkCurrency($currency)) {
+            throw new Exception\InvalidArgumentException("Invalid currency code '{$currency}'");
+        }
+
+        $this->currency = $currency;
+
+        return $this;
     }
 
     /**
@@ -394,7 +426,7 @@ class ServiceAbstract extends Model\XmlAbstract
         // Some minimal validation.
         $currency = strtoupper($currency);
 
-        $this->setField('Amount', $this->formatAmount($amount));
+        $this->setField('Amount', Helper::formatAmount($amount, $this->currency));
         $this->setField('Currency', $currency);
 
         return $this;

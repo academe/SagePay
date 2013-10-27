@@ -20,51 +20,35 @@ abstract class XmlAbstract
     protected $currency = 'GBP';
 
     /**
-     * Set the currency for amount formatting.
-     * The three-character ISO4217 currency code is required.
+     * Check a currency code is valid ISO4217.
      */
-
-    public function setCurrency($currency)
+    public function checkCurrency($currency)
     {
         // Validate against the ISO4217 metadata and throw an exception if needed.
         // The card handler still may not accept this currency, but at least it will
         // be a valid currency code.
 
         $currency = strtoupper($currency);
-        $all_currencies = \Academe\SagePay\Metadata\Iso4217::get('array');
 
-        if ( ! isset($all_currencies[$currency])) {
+        if ( ! \Academe\SagePay\Metadata\Iso4217::checkCurrency($currency)) {
             throw new Exception\InvalidArgumentException("Invalid currency code '{$currency}'");
         }
+
+        return $currency;
+    }
+
+    /**
+     * Set the currency for amount formatting.
+     * The three-character ISO4217 currency code is required.
+     */
+
+    public function setCurrency($currency)
+    {
+        $currency = $this->checkCurrency($currency);
 
         $this->currency = $currency;
 
         return $this;
-    }
-
-    /**
-     * Format a monetory amount to the relavant number of decimal places as required by SagePay.
-     */
-
-    protected function formatAmount($amount, $currency = null)
-    {
-        // Use the currency, if passed in.
-        // TODO: we should validate the currency passed in, to make sure it is valid.
-        // Better still, the currency formatting can be pulled out to a helper class, as it is
-        // used in many places (all XML formatting models and the main transaction process.
-        $use_currency = (isset($currency) ? strtoupper($currency) : $this->currency);
-
-        // We need a numeric value, so make sure it is, even if it is a number in a string.
-        if ( ! is_numeric($amount)) $amount = 0;
-
-        // Get the minor unit of the currency - the number of digits after the decimal point.
-        // SagePay requires the amount to be padded out to the exact number of decimal places.
-
-        $minor_unit = \Academe\SagePay\Metadata\Iso4217::get()
-            ->{$use_currency}
-            ->minor;
-
-        return number_format($amount, $minor_unit, '.', '');
     }
 
     /**
@@ -119,8 +103,9 @@ abstract class XmlAbstract
 
     /**
      * Used to serialise the object into XML required by SagePay.
+     * TODO: enable this once this abstract is detached from ServiceAbstract.
      */
-    //abstract public function toXml();
+    abstract public function toXml();
 
     /**
      * Serialise the basket.

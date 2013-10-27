@@ -14,6 +14,9 @@
 
 namespace Academe\SagePay\Model;
 
+// Helper\Helper is the helper class.
+use Academe\SagePay\Helper\Helper;
+
 abstract class BasketAbstract extends XmlAbstract
 {
     /**
@@ -50,6 +53,8 @@ abstract class BasketAbstract extends XmlAbstract
     /**
      * Set delivery details.
      * All [currency] amounts will be formatted according to the currency.
+     * CHECKME: does this need to be done here, or can it be done on transforming
+     * to XML?
      */
 
     public function setDelivery($net, $tax = 0, $gross = null)
@@ -59,9 +64,9 @@ abstract class BasketAbstract extends XmlAbstract
         }
 
         $this->delivery = array(
-            'deliveryNetAmount' => $this->formatAmount($net),
-            'deliveryTaxAmount' => $this->formatAmount($tax),
-            'deliveryGrossAmount' => $this->formatAmount($gross),
+            'deliveryNetAmount' => Helper::formatAmount($net, $this->currency),
+            'deliveryTaxAmount' => Helper::formatAmount($tax, $this->currency),
+            'deliveryGrossAmount' => Helper::formatAmount($gross, $this->currency),
         );
 
         return $this;
@@ -106,7 +111,7 @@ abstract class BasketAbstract extends XmlAbstract
     }
 
     /**
-     * Set optional hotel fields.
+     * Set individual (mandatory and optional) hotel fields.
      */
 
     public function setHotelField($name, $value)
@@ -141,10 +146,10 @@ abstract class BasketAbstract extends XmlAbstract
         $this->lines[] =  array(
             'description' => $description,
             'quantity' => $quantity,
-            'unitNetAmount' => $this->formatAmount($unit_net),
-            'unitTaxAmount' => $this->formatAmount($unit_tax),
-            'unitGrossAmount' => $this->formatAmount($unit_gross),
-            'totalGrossAmount' => $this->formatAmount($line_gross),
+            'unitNetAmount' => Helper::formatAmount($unit_net, $this->currency),
+            'unitTaxAmount' => Helper::formatAmount($unit_tax, $this->currency),
+            'unitGrossAmount' => Helper::formatAmount($unit_gross, $this->currency),
+            'totalGrossAmount' => Helper::formatAmount($line_gross, $this->currency),
         );
 
         return $this;
@@ -178,7 +183,7 @@ abstract class BasketAbstract extends XmlAbstract
             }
 
             if (is_object($line)) {
-                // Get the array format rather than the XML format, so don't
+                // Get the array format rather than the XML format, so we don't
                 // double XML-encode the product line.
                 $structure[] = $line->toArray();
             }

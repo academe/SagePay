@@ -10,6 +10,9 @@
 
 namespace Academe\SagePay\Model;
 
+// Helper\Helper is the helper class.
+use Academe\SagePay\Helper\Helper;
+
 abstract class SurchargeAbstract extends XmlAbstract
 {
     /**
@@ -28,7 +31,7 @@ abstract class SurchargeAbstract extends XmlAbstract
     {
         $this->surcharges[]['surcharge'] = array(
             'paymentType' => strtoupper($payment_type),
-            'percentage' => $this->formatAmount($percentage),
+            'percentage' => Helper::formatAmount($percentage, $this->currency),
         );
 
         return $this;
@@ -43,7 +46,7 @@ abstract class SurchargeAbstract extends XmlAbstract
     {
         $this->surcharges[]['surcharge'] = array(
             'paymentType' => strtoupper($payment_type),
-            'fixed' => $this->formatAmount($fixed),
+            'fixed' => Helper::formatAmount($fixed, $this->currency),
         );
 
         return $this;

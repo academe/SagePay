@@ -6,6 +6,9 @@
 
 namespace Academe\SagePay\Model;
 
+// Helper\Helper is the helper class.
+use Academe\SagePay\Helper\Helper;
+
 abstract class ProductLineAbstract extends XmlAbstract
 {
     /**
@@ -21,7 +24,6 @@ abstract class ProductLineAbstract extends XmlAbstract
 
     /**
      * Optional properties.
-     * Structure is idicated by underscores.
      */
 
     protected $productSku = null;
@@ -64,10 +66,10 @@ abstract class ProductLineAbstract extends XmlAbstract
 
         $this->description = $description;
         $this->quantity = $quantity;
-        $this->unitNetAmount = $this->formatAmount($unit_net);
-        $this->unitTaxAmount = $this->formatAmount($unit_tax);
-        $this->unitGrossAmount = $this->formatAmount($unit_gross);
-        $this->totalGrossAmount = $this->formatAmount($line_gross);
+        $this->unitNetAmount = Helper::formatAmount($unit_net, $this->currency);
+        $this->unitTaxAmount = Helper::formatAmount($unit_tax, $this->currency);
+        $this->unitGrossAmount = Helper::formatAmount($unit_gross, $this->currency);
+        $this->totalGrossAmount = Helper::formatAmount($line_gross, $this->currency);
 
         return $this;
     }
@@ -172,10 +174,10 @@ abstract class ProductLineAbstract extends XmlAbstract
         if (isset($this->productSku)) $structure['productSku'] = $this->productSku;
         if (isset($this->productCode)) $structure['productCode'] = $this->productCode;
         $structure['quantity'] = $this->quantity;
-        $structure['unitNetAmount'] = $this->formatAmount($this->unitNetAmount);
-        $structure['unitTaxAmount'] = $this->formatAmount($this->unitTaxAmount);
-        $structure['unitGrossAmount'] = $this->formatAmount($this->unitGrossAmount);
-        $structure['totalGrossAmount'] = $this->formatAmount($this->totalGrossAmount);
+        $structure['unitNetAmount'] = Helper::formatAmount($this->unitNetAmount, $this->currency);
+        $structure['unitTaxAmount'] = Helper::formatAmount($this->unitTaxAmount, $this->currency);
+        $structure['unitGrossAmount'] = Helper::formatAmount($this->unitGrossAmount, $this->currency);
+        $structure['totalGrossAmount'] = Helper::formatAmount($this->totalGrossAmount, $this->currency);
 
         // Note: the SagePay documentation says that accented (i.e. extended ASCII)
         // characters are allowed in the recipient's name. This does, however, result
