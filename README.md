@@ -317,3 +317,4 @@ A shop selling a product at 10 USD (and only USD) will still accept payments fro
 In that case
 it will be the purchaser's card supplier that will calculate the amount to be paid in their local currency
 to ensure the shop receives exactly 10 USD.
+
