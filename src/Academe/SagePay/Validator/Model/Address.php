@@ -24,9 +24,9 @@ class Address extends \Academe\SagePay\Validator\ValidatorAbstract
 		if ($addr->getField('Country') != 'US' && v::notEmpty()->validate($addr->getField('State'))) {
 			$this->addError('State', $this->STATE_ONLY_FOR_US);
 		}
-		
+
 		// Country must be an ISO3166-1 Country Code
-		if (!in_array($addr->getField('Country'), Iso3166::get())) {
+		if (!array_key_exists($addr->getField('Country'), Iso3166::get())) {
 			$this->addError('Country', $this->COUNTRY_VALID_CODE);
 		}
 
