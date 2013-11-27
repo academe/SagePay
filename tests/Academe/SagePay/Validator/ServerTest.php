@@ -3,19 +3,33 @@
 require 'vendor/autoload.php';
 
 use Academe\SagePay;
+use Academe\SagePay\Metadata\Transaction as Transaction;
 
 class ServerValidatorTest extends PHPUnit_Framework_TestCase{
+	private $transactionData;
+	public function setUp(){
+		$this->transactionData = Transaction::get('array');
+	}
 	public function getBasicServer(){
 		$server = new Academe\SagePay\Server;
 		$storage = new Academe\SagePay\Model\TransactionPdo("sqlite:memory");
 
 		$server->setPlatform('test');
 		$server->setTransactionModel($storage);
+
+		// Start with valid details
+		$server->setMain('PAYMENT', 'vendorx', '99.99', 'GBP', 'Store purchase', 'http://example.com/mycallback.php');
+
 		return $server;
 	}
 	public function testRequiredFields(){
 		$validator = new Academe\SagePay\Validator\Server;
 		$server = $this->getBasicServer();
+		$server->setField('Vendor', '');
+		$server->setField('Description', '');
+		$server->setField('NotificationURL', '');
+		$server->setField('Amount', '');
+
 		// Check they return errors when we haven't filled them in
 		$errors = $validator->validate($server)->getErrors();
 		// TxType and Currency have defaults so we can't check whether it's not been set
@@ -50,7 +64,7 @@ class ServerValidatorTest extends PHPUnit_Framework_TestCase{
 		}
 		
 		// using setMain bypasses the check that setCurrency does, so check the validator does it too
-		$server->setField('Currency', 'nothing');
+		$server->setField('Currency', 'AAA');
 		$errors = $validator->validate($server)->getErrors();
 		$this->assertArrayHasKey('Currency', $errors);
 		$this->assertEquals($errors['Currency'], $validator->CURRENCY_INVALID);
@@ -60,7 +74,7 @@ class ServerValidatorTest extends PHPUnit_Framework_TestCase{
 		$validator = new Academe\SagePay\Validator\Server;
 		$server = $this->getBasicServer();
 
-		$server->setField('Amount', 'asd');
+		$server->setField('Amount', '1.1.1.1');
 		$errors = $validator->validate($server)->getErrors();
 		$this->assertArrayHasKey('Amount', $errors);
 		$this->assertEquals($errors['Amount'], $validator->AMOUNT_BAD_FORMAT);
@@ -92,7 +106,8 @@ class ServerValidatorTest extends PHPUnit_Framework_TestCase{
 		$server->setField('Description', str_pad('', 101, '_'));
 		$errors = $validator->validate($server)->getErrors();
 		$this->assertArrayHasKey('Description', $errors);
-		$this->assertEquals($errors['Description'], $validator->DESCRIPTION_TOO_LONG);
+		$correctError = sprintf($validator->BAD_RANGE, 'Description', $this->transactionData['Description']['min'], $this->transactionData['Description']['max']);
+		$this->assertStringStartsWith($errors['Description'], $correctError);
 
 		$server->setField('Description', str_pad('', 10, '_'));
 		$errors = $validator->validate($server)->getErrors();

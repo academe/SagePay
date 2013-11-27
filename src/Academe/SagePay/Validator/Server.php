@@ -4,51 +4,61 @@ namespace Academe\SagePay\Validator;
 use Respect\Validation\Validator as v;
 use Academe\SagePay\Exception as Exception;
 use Academe\SagePay\Metadata as Metadata;
+use Academe\SagePay\Metadata\Transaction as Transaction;
 
 class Server extends ValidatorAbstract
 {
-	public $TX_TYPE_EMPTY = "TxType must not be empty";
-	public $VENDOR_EMPTY = "Vendor must not be empty";
-	public $DESCRIPTION_EMPTY = "Description must not be empty";
-	public $NOTIFICATION_URL_EMPTY = "Notification URL must not be empty";
-	public $AMOUNT_EMPTY = "Amount must not be empty";
-	public $CURRENCY_EMPTY = "Currency must not be empty";
+
 	public $CURRENCY_INVALID = "Currency is not valid";
 	public $AMOUNT_BAD_FORMAT = "Amount must be in the UK currency format XXXX.XX";
 	public $AMOUNT_BAD_RANGE = "Amount must be between 0.01 and 100,000";
-	public $DESCRIPTION_TOO_LONG = "Description can only be 100 characters long";
 
 	public function validate($server)
 	{
 		$this->clearErrors();
-		if (!v::notEmpty()->validate($server->getField('TxType'))) {
-			$this->addError('TxType', $this->TX_TYPE_EMPTY);
-		}
-		if (!v::notEmpty()->validate($server->getField('Vendor'))) {
-			$this->addError('Vendor', $this->VENDOR_EMPTY);
-		}
-		if (!v::notEmpty()->validate($server->getField('Description'))) {
-			$this->addError('Description', $this->DESCRIPTION_EMPTY);
-		}
-		if (!v::notEmpty()->validate($server->getField('NotificationURL'))) {
-			$this->addError('NotificationURL', $this->NOTIFICATION_URL_EMPTY);
-		}
-		// NotEmpty will consider a string containing 0 to be empty. That's not what we want with Amount
-		if ($server->getField('Amount') != '0' && !v::string()->notEmpty()->validate($server->getField('Amount'))) {
-			$this->addError('Amount', $this->AMOUNT_EMPTY);
-		}
-		if (!v::notEmpty()->validate($server->getField('Currency'))) {
-			$this->addError('Currency', $this->CURRENCY_EMPTY);
+		$metaData = Transaction::get('array');
+
+		$fieldsToCheck = array('TxType', 'Vendor', 'Description', 'NotificationURL', 'Amount', 'Currency');
+		foreach ($fieldsToCheck as $field) {
+			$data = $metaData[$field];
+			$value = $server->getField($field);
+			// If it's required, check it's not empty
+			if ($data['required'] && !v::notEmpty()->validate($value)) {
+
+				// NotEmpty will consider a string containing 0 to be empty. That's not what we want with Amount
+				if ($field == 'Amount') {
+					if ($server->getField('Amount') != '0' && !v::string()->notEmpty()->validate($server->getField('Amount'))) {
+						$this->addError('Amount', sprintf($this->CANNOT_BE_EMPTY, 'Amount'));
+					}
+				} else {
+					$this->addError($field, sprintf($this->CANNOT_BE_EMPTY, $field));
+				}
+			}
+
+			if (isset($data['min'], $data['max'])) {
+				// Check the length of the field
+				if (!v::length($data['min'], $data['max'])->validate($value)) {
+					$this->addError($field, sprintf($this->BAD_RANGE, $field, $data['min'], $data['max']));
+				}
+			}
+
+			// Check the contents of the field
+			if(isset($data['chars'])) {
+				// We build two regexes, one for testing whether it matches and the other for
+				// filtering out the bad characters to show the user which are not valid.
+				$regex = $this->buildRegex($data['chars']);
+				if (!v::regex($regex)->validate($value)){
+					$cleanupRegex = $this->buildRegex($data['chars'], false);
+					$badChars = preg_replace($cleanupRegex, '', $value);
+					$this->addError($field, sprintf($this->BAD_CHARACTERS, $field, $badChars));
+				}
+			}
 		}
 
 		// Check the currency is a valid one
         if ( ! Metadata\Iso4217::checkCurrency($server->getField('Currency'))) {
             $this->addError('Currency', $this->CURRENCY_INVALID);
         }
-
-		if (!v::length(1, 100)->validate($server->getField('Description'))) {
-			$this->addError('Description', $this->DESCRIPTION_TOO_LONG);
-		}
 
         $this->validateAmount($server->getField('Amount'));
 
@@ -77,3 +87,4 @@ class Server extends ValidatorAbstract
         return $this;
 	}
 }
+
