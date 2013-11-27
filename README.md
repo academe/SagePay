@@ -150,7 +150,7 @@ Very roughly, registering a [payment] transaction request will look like this:
     // to migrate database structures during releases and upgrades.
         
     // Set the main mandatory details for the transaction.
-    // We have: payment type, vandor name, total amount, currency, note to display to user, callback URL.
+    // We have: payment type, vendor name, total amount, currency, note to display to user, callback URL.
     
     $server->setMain('PAYMENT', 'vendorx', '99.99', 'GBP', 'Store purchase', 'http://example.com/mycallback.php');
     
