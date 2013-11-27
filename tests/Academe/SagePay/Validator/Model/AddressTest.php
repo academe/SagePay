@@ -34,7 +34,7 @@ class AddressModelValidatorTest extends PHPUnit_Framework_TestCase{
 	public function testStateOnlyRequiredForUS(){
 		$addr = new Academe\SagePay\Model\Address;
 		$addr->setField('Country', 'GB');
-		$addr->setField('State', '12345');
+		$addr->setField('State', 'AA');
 
 		$validator = new Academe\SagePay\Validator\Model\Address;
 		$validator->validate($addr);
