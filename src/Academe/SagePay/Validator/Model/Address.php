@@ -17,13 +17,20 @@ class Address extends \Academe\SagePay\Validator\ValidatorAbstract
 
 	public function validate($addr)
 	{
-		// Perform some general validations
-		parent::validate($addr);
+		$this->clearErrors();
+		// Do our special validations first
 
+		// State should only be set for the US
+		if ($addr->getField('Country') != 'US' && v::notEmpty()->validate($addr->getField('State'))) {
+			$this->addError('State', $this->STATE_ONLY_FOR_US);
+		}
+		
 		// Country must be an ISO3166-1 Country Code
-		if (!array_key_exists($addr->getField('Country'), Iso3166::get())) {
+		if (!in_array($addr->getField('Country'), Iso3166::get())) {
 			$this->addError('Country', $this->COUNTRY_VALID_CODE);
 		}
-		return $this;
+
+		// Perform some general validations and return ourself
+		return parent::validate($addr);
 	}
 }

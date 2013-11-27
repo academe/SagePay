@@ -14,13 +14,10 @@ class Server extends ValidatorAbstract
 	public $AMOUNT_BAD_RANGE = "Amount must be between 0.01 and 100,000";
 
 	public $fieldsToCheck = array('TxType', 'Vendor', 'Description', 'NotificationURL', 'Amount', 'Currency');
-
 	public function validate($server)
 	{
 		$this->clearErrors();
 		$metaData = Transaction::get('array');
-		// Perform some general validations
-		parent::validate($server);
 
 		// Check the currency is a valid one
         if ( ! Metadata\Iso4217::checkCurrency($server->getField('Currency'))) {
@@ -29,7 +26,8 @@ class Server extends ValidatorAbstract
 
         $this->validateAmount($server->getField('Amount'));
 
-		return $this;
+		// Perform some general validations and return ourself
+		return parent::validate($server);
 	}
 
 	/**

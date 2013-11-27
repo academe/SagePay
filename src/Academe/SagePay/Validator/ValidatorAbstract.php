@@ -24,6 +24,10 @@ class ValidatorAbstract
 		return $this->errors;
 	}
 
+	public function hasError($field){
+		return (bool) isset($this->errors[$field]);
+	}
+
 	public function addError($field, $message)
 	{
 		// Only keep the first error per field, this is because latter
@@ -39,7 +43,6 @@ class ValidatorAbstract
 	}
 
 	public function validate($item){
-		$this->clearErrors();
 		$metaData = Transaction::get('array');
 
 		foreach ($this->fieldsToCheck as $field) {
@@ -51,6 +54,12 @@ class ValidatorAbstract
 			}
 			$value = $item->getField($field);
 
+			if ($this->hasError($field)) {
+				// We only store one error per field, so if we have already got an error for this
+				// field then don't waste time checking others. This also means that we can have
+				// more specific fields in the child objects which over-ride these completly.
+				continue;
+			}
 			// State is only used when the country is US, the validation rules stores assume country is US.
 			// so here we tweak them.
 			if ($field == 'State' && $item->getField('Country') != 'US') {
@@ -82,7 +91,11 @@ class ValidatorAbstract
 			$max = isset($data['max']) ? $data['max'] : null;
 			if ($min != null && $max != null) {
 				// Check the length of the field
-				if (!v::length($min, $max)->validate($value)) {
+				if ($field == 'State') {
+					print_r("\n\nMin: $field : $min, \n\n");
+					die;
+				}
+				if (!v::length($min, $max, true)->validate($value)) {
 					if ($min == $max) {
 						$this->addError($field, sprintf($this->BAD_LENGTH, $field, $min));
 					} else {

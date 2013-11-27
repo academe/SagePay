@@ -22,6 +22,7 @@ class ServerValidatorTest extends PHPUnit_Framework_TestCase{
 
 		return $server;
 	}
+	
 	public function testRequiredFields(){
 		$validator = new Academe\SagePay\Validator\Server;
 		$server = $this->getBasicServer();

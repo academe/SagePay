@@ -40,7 +40,7 @@ class AddressModelValidatorTest extends PHPUnit_Framework_TestCase{
 		$validator->validate($addr);
 
 		$errors = $validator->getErrors();
-
+		
 		$this->assertArrayHasKey('State', $errors);
 		$this->assertEquals($errors['State'], $validator->STATE_ONLY_FOR_US);
 	}
