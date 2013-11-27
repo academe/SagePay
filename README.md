@@ -180,6 +180,20 @@ Very roughly, registering a [payment] transaction request will look like this:
     $basket->addSimpleLine('Widget', 4.00, 3, 0.75, 3.75);
     $server->setBasketModel($basket);
     
+    // Generate a VendorTxCode. This is the primary key of the transaction, as seen from
+    // the vendor site, and must be sent to SagePay so it can be used in the notification
+    // callback to identify your transaction. The easiest way to do this is to save the
+    // transaction.
+    // See Issue #10 for some more notes.
+    
+    $server->save();
+    
+    // Alternatively, set the VendorTxCode in the transaction without saving it:
+    
+    $server->setField('VendorTxCode', $storage->makeVendorTxCode());
+    
+    // Hopefully both the above methods can be avoided completely once Issue #10 is fixed.
+    
     // Send the request to SagePay, get the response, The request and response will also
     // be saved in whatever storage you are using.
     
