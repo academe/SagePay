@@ -1,10 +1,10 @@
 <?php
 
-namespace Academe\SagePay\Validator;
+namespace Academe\SagePay\Validator\Model;
 use Respect\Validation\Validator as v;
 use Academe\SagePay\Metadata\Iso3166 as Iso3166;
 
-class Address extends ValidatorAbstract
+class Address extends \Academe\SagePay\Validator\ValidatorAbstract
 {
 	public $COUNTRY_VALID_CODE = "Country must be a valid country code";
 	public $FIRSTNAMES_EMPTY = "Firstnames cannot be empty";
