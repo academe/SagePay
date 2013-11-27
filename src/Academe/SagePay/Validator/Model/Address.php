@@ -19,6 +19,7 @@ class Address extends \Academe\SagePay\Validator\ValidatorAbstract
 	
 	public function validate($addr)
 	{
+		$this->clearErrors();
 		if (!v::notEmpty()->validate($addr->getField('Firstnames'))) {
 			$this->addError('Firstnames', $this->FIRSTNAMES_EMPTY);
 		}
@@ -50,6 +51,6 @@ class Address extends \Academe\SagePay\Validator\ValidatorAbstract
 		if (!in_array($addr->getField('Country'), Iso3166::get())) {
 			$this->addError('Country', $this->COUNTRY_VALID_CODE);
 		}
-
+		return $this;
 	}
 }

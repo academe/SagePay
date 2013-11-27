@@ -19,5 +19,12 @@ class ValidatorAbstract
 		}
 	}
 
-	public function validate($item){}
+	public function clearErrors()
+	{
+		$this->errors = array();
+	}
+
+	public function validate($item){
+		throw new \Exception("You must over-ride the Validate function in " . get_class($this));
+	}
 }
