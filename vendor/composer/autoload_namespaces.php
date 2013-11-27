@@ -7,5 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
+    'Respect\\Validation' => array($vendorDir . '/respect/validation/library'),
     'Academe\\SagePay' => array($baseDir . '/src'),
 );

@@ -428,5 +428,126 @@
             "testing",
             "xunit"
         ]
+    },
+    {
+        "name": "respect/validation",
+        "version": "0.4.4",
+        "version_normalized": "0.4.4.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Respect/Validation.git",
+            "reference": "ff3090d2d3bbc98561a125f3add89769e9d54a55"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Respect/Validation/zipball/ff3090d2d3bbc98561a125f3add89769e9d54a55",
+            "reference": "ff3090d2d3bbc98561a125f3add89769e9d54a55",
+            "shasum": ""
+        },
+        "time": "2012-04-24 23:52:45",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Respect\\Validation": "library/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD Style"
+        ],
+        "authors": [
+            {
+                "name": "Henrique Moody",
+                "email": "henriquemoody@gmail.com",
+                "homepage": "http://henriquemoody.com/"
+            },
+            {
+                "name": "Alexandre Gaigalas",
+                "email": "alexandre@gaigalas.net"
+            },
+            {
+                "name": "Augusto Pascutti",
+                "email": "contato@augustopascutti.com"
+            },
+            {
+                "name": "Alexandre (@alganet)",
+                "email": "alganet@alganet-laptop.(none)"
+            },
+            {
+                "name": "Alexandre Gaigalas",
+                "email": "alganet@alganet-workstation.(none)"
+            },
+            {
+                "name": "Carlos André Ferrari",
+                "email": "andre@andre.(none)"
+            },
+            {
+                "name": "Carlos André Ferrari",
+                "email": "caferrari@gmail.com",
+                "homepage": "http://ferrari.eti.br/"
+            },
+            {
+                "name": "Devin Torres",
+                "email": "devin@devintorres.com"
+            },
+            {
+                "name": "Emerson Carvalho",
+                "email": "emerson.broga@gmail.com"
+            },
+            {
+                "name": "Fábio da Silva Ribeiro",
+                "email": "fabiorphp@gmail.com"
+            },
+            {
+                "name": "Jair Henrique",
+                "email": "jair.henrique@gmail.com"
+            },
+            {
+                "name": "Jayson Reis",
+                "email": "jayson.reis@sabbre.com.br"
+            },
+            {
+                "name": "Jayson Reis",
+                "email": "santosdosreis@gmail.com"
+            },
+            {
+                "name": "Jean Pimentel",
+                "email": "jeanfap@gmail.com"
+            },
+            {
+                "name": "Kleber Hamada Sato",
+                "email": "kleberhs007@yahoo.com"
+            },
+            {
+                "name": "Leandro",
+                "email": "lleitep3@gmail.com"
+            },
+            {
+                "name": "Marcelo Araujo",
+                "email": "msaraujo@php.net"
+            },
+            {
+                "name": "Michael Klishin",
+                "email": "michaelklishin@me.com"
+            },
+            {
+                "name": "Morf",
+                "email": "i@morfi.ru"
+            },
+            {
+                "name": "Rogerio Prado de Jesus",
+                "email": "rogeriopradoj@gmail.com"
+            },
+            {
+                "name": "Torben Brodt",
+                "email": "t.brodt@gmail.com"
+            },
+            {
+                "name": "unknown",
+                "email": "kolyshkin@.sqlmaze.local"
+            }
+        ],
+        "description": "The most awesome validation engine ever created for PHP"
     }
 ]
