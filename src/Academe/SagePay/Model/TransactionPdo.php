@@ -103,7 +103,8 @@ class TransactionPdo extends TransactionAbstract
                     'SELECT COUNT(*) FROM ' . $this->transaction_table_name
                         . ' WHERE VendorTxCode = :vendortxcode'
                 );
-                $stmt->bindParam(':vendortxcode', $this->getField('VendorTxCode'), \PDO::PARAM_STR);
+                $vendorTxCode = $this->getField('VendorTxCode');
+                $stmt->bindParam(':vendortxcode', $vendorTxCode, \PDO::PARAM_STR);
 
                 $stmt->execute();
 
