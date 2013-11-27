@@ -31,10 +31,10 @@ class Address extends ValidatorAbstract
 		if (!v::notEmpty()->validate($addr->getField('City'))) {
 			$this->addError('City', $this->CITY_EMPTY);
 		}
-		if (!v::notEmpty()->validate($addr->getField('Postcode'))) {
+		if (!v::notEmpty()->validate($addr->getField('PostCode'))) {
 			// Postcode is required for all countries excpet those which don't have a postcode
 			if (!in_array($addr->getField('Country'), $this->countriesWhichDontHavePostcodes)) {
-				$this->addError('Postcode', $this->POSTCODE_EMPTY);
+				$this->addError('PostCode', $this->POSTCODE_EMPTY);
 			}
 		}
 		if (!v::notEmpty()->validate($addr->getField('Country'))) {
