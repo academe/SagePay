@@ -335,13 +335,19 @@ class TransactionPdo extends TransactionAbstract
 
             // Create the table.
 
-            $sql = 'CREATE TABLE IF NOT EXISTS ' . $this->transaction_table_name . " (\n";
+            $sql = 'CREATE TABLE IF NOT EXISTS `' . $this->transaction_table_name . "` (\n";
             $sql .= $this->createColumnsDdl();
-            $sql .= ', PRIMARY KEY pk_' . $this->transaction_table_name . ' (VendorTxCode) )';
+            if ($this->getDriver() == 'sqlite') {
+                $sql .= ', `pk_' . $this->transaction_table_name . '` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL'; 
+            } else {
+                $sql .= ', PRIMARY KEY `pk_' . $this->transaction_table_name . '` (`VendorTxCode`) '; 
+            }
+            $sql .= ')';
 
-
-            // TOOD: check the result.
             $success = $pdo->exec($sql);
+            if ($success === false) {
+                throw new Exception($pdo->errorInfo());
+            }
         }
         catch (\PDOException $e) {
             $this->pdo_error_message = $e->getMessage();
@@ -368,7 +374,7 @@ class TransactionPdo extends TransactionAbstract
         $columns = array();
 
         foreach($field_meta as $name => $field) {
-            $column = $name . ' ';
+            $column = '`'.$name . '` ';
 
             if (!isset($field->max)) continue;
 
@@ -381,7 +387,7 @@ class TransactionPdo extends TransactionAbstract
             // Now here is a nasty hack.
             // Columns that can accept UTF-8 data need to have their length multiplied by
             // four to (nearly) guarantee a full UTF-8 string can fit in. There are probably ways around
-            // this, but the documentation is (and always has been) veru confused, mixing up the
+            // this, but the documentation is (and always has been) very confused, mixing up the
             // storage of charactersets, the searching of charactersets and the automatic
             // conversion between the two. This is nasty, nasty, but should work everywhere.
             if (
@@ -450,6 +456,13 @@ class TransactionPdo extends TransactionAbstract
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
         return $pdo;
+    }
+    
+    /**
+     * Returns the PDO driver name, e.g mysql or sqlite
+     */
+    protected function getDriver() {
+        return $this->getConnection()->getAttribute(\PDO::ATTR_DRIVER_NAME);
     }
 }
 
