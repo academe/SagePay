@@ -190,7 +190,7 @@ Very roughly, registering a [payment] transaction request will look like this:
     
     // Alternatively, set the VendorTxCode in the transaction without saving it:
     
-    $server->setField('VendorTxCode', $storage->makeVendorTxCode());
+    $server->setField('VendorTxCode', $server->getTransactionModel()->makeVendorTxCode());
     
     // Hopefully both the above methods can be avoided completely once Issue #10 is fixed.
     
