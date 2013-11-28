@@ -84,6 +84,9 @@ class Server extends Shared
             // If the option is set, save the failed registration to the transaction to storage.
             // The failures are logged by SagePay anyway, and you probably don't want to clog up
             // storage with the failures, unless you have a specific reason to monitor this.
+            // With the Issue #10 fix this is moot now, as the transaction is saved before
+            // posting to SagePay regardless of the result. I'll probably remove this option and
+            // just leave the cleaning out of failed transactions as an administratitive job.
             if ($this->save_failed_registrations) {
                 $this->save();
             }
