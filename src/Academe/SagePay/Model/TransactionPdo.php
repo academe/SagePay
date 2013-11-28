@@ -39,7 +39,7 @@ class TransactionPdo extends TransactionAbstract
      * The name of the table used to store the transactions.
      */
 
-    public $transaction_table_name = 'sagepay_transactions';
+    protected $transaction_table_name = 'sagepay_transactions';
 
     /**
      * Details of any PDO error messages.
@@ -65,7 +65,7 @@ class TransactionPdo extends TransactionAbstract
     }
 
     /**
-     * Set the database credentials.
+     * Set the database table name.
      */
 
     public function setTablename($tablename)
@@ -74,7 +74,16 @@ class TransactionPdo extends TransactionAbstract
     }
 
     /**
-     * Save the transaction record to storage.
+     * Get the database table name.
+     */
+
+    public function getTablename($tablename)
+    {
+        return $this->transaction_table_name;
+    }
+
+    /**
+     * Save the transaction record to the database.
      */
 
     public function save()
@@ -381,9 +390,10 @@ class TransactionPdo extends TransactionAbstract
             // Now here is a nasty hack.
             // Columns that can accept UTF-8 data need to have their length multiplied by
             // four to (nearly) guarantee a full UTF-8 string can fit in. There are probably ways around
-            // this, but the documentation is (and always has been) veru confused, mixing up the
+            // this, but the documentation is (and always has been) very confused, mixing up the
             // storage of charactersets, the searching of charactersets and the automatic
-            // conversion between the two. This is nasty, nasty, but should work everywhere.
+            // conversion between the two. This is nasty, nasty, but should work most places
+            // in practice.
             if (
                 (isset($field->chars) && in_array('^', $field->chars))
                 || $field->type == 'rfc532n'
@@ -435,7 +445,7 @@ class TransactionPdo extends TransactionAbstract
 
     /**
      * Get a database connection.
-     * Not handled as a singleton, even though that would most like be how it is used.
+     * Not handled as a singleton, even though that would most likely be how it is used.
      * Just put your own singleton wrapper around this if you prefer that.
      * TODO: what the hell, let's make this a singleton. We need a connection to read
      * the transaction, then save it again, so there are two for each use at least.

@@ -10,7 +10,7 @@ namespace Academe\SagePay;
 use Academe\SagePay\Metadata as Metadata;
 use Academe\SagePay\Exception as Exception;
 
-// Helper is the helper class.
+// Pull in the helper class.
 use Academe\SagePay\Helper\Helper;
 
 class ServiceAbstract //extends Model\XmlAbstract

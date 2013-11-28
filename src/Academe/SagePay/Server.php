@@ -41,6 +41,10 @@ class Server extends Shared
             throw new Exception\InvalidArgumentException("Invalid transaction type for registration '{$tx_type}'");
         }
 
+        // Save the transaction before we send it. This also generates a VendorTxCode, if one
+        // has not already been created.
+        $this->save();
+
         // Construct the query string from data in the model.
         $query_string = $this->queryData(true, 'server-registration');
 
