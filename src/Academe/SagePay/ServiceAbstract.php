@@ -740,7 +740,7 @@ class ServiceAbstract //extends Model\XmlAbstract
     public function isPaymentSuccess()
     {
         $this->checkTxModel();
-        return $this->isPaymentSuccess();
+        return $this->tx_model->isPaymentSuccess();
     }
 }
 
