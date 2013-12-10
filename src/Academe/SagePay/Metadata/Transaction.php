@@ -559,6 +559,7 @@ class Transaction
                 "min": 10,
                 "max": 10,
                 "source": ["server-registration-response", "shared-release", "shared-abort", "shared-void", "shared-cancel"],
+                "tamper": true,
                 "store": true
             },
             "TxAuthNo": {
@@ -667,6 +668,7 @@ class Transaction
                 "values": ["VISA", "MC", "MCDEBIT", "DELTA", "MAESTRO", "UKE", "AMEX", "DC", "JCB", "LASER", "PAYPAL", "EPS", "GIROPAY", "IDEAL", "SOFORT", "ELV"],
                 "min": 1,
                 "max": 15,
+                "tamper": true,
                 "source": ["server-notification"],
                 "store": true
              },
@@ -677,6 +679,7 @@ class Transaction
                 "min": 1,
                 "max": 4,
                 "source": ["server-notification"],
+                "tamper": true,
                 "store": true
              },
             "FraudResponse": {
@@ -735,6 +738,7 @@ class Transaction
                 "min": 38,
                 "max": 38,
                 "source": ["server-notification"],
+                "tamper": true,
                 "store": true,
                 "notes": "GUID format"
             },

@@ -242,13 +242,15 @@ class Server extends Shared
             $this->setField('Last4Digits', $post['Last4Digits']);
 
             // SagePay V3.00 fields.
-            $this->setField('VPSSignature', $post['VPSSignature']);
+            // No need to store, or attempt to store, the VPSSignature - it is a throw-away
+            // hash of the notification data, with local salt.
+            //$this->setField('VPSSignature', $this->arrayElement($post, 'VPSSignature'));
             $this->setField('FraudResponse', $post['FraudResponse']);
-            $this->setField('Surcharge', $post['Surcharge']);
+            $this->setField('Surcharge', $this->arrayElement($post, 'Surcharge'));
             $this->setField('BankAuthCode', $post['BankAuthCode']);
             $this->setField('DeclineCode', $post['DeclineCode']);
             $this->setField('ExpiryDate', $post['ExpiryDate']);
-            $this->setField('Token', $post['Token']);
+            $this->setField('Token', $this->arrayElement($post, 'Token'));
 
             // Save the transaction record to local storage.
             // We don't want to throw exceptions here; SagePay must get its response.
@@ -304,7 +306,16 @@ class Server extends Shared
     }
 
     /**
-     * Set the main details in one go.
+     * Read an element from an array, providing a default where an element is not set.
+     */
+
+    public function arrayElement($array, $key, $default = '')
+    {
+        return (array_key_exists($key, $array) ? $array[$key] : $default);
+    }
+
+    /**
+     * Set the main details for a transaction in one go.
      */
 
     public function setMain($tx_type, $vendor, $amount, $currency, $description, $url)
