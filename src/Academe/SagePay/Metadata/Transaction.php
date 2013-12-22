@@ -25,7 +25,7 @@ class Transaction
     /**
      * Allowable characters are:
      *  "A" Upper case ASCII letters A-Z
-     *  "a" Upper case ASCII letters a-z
+     *  "a" Lower case ASCII letters a-z
      *  "9" Digits 0-9
      *  "^" Extended ASCII letters
      *  " " Space

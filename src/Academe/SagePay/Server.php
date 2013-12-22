@@ -47,7 +47,7 @@ class Server extends Shared
 
         // Construct the query string from data in the model.
         $query_string = $this->queryData(true, 'server-registration');
-
+        
         // Get the URL, which is derived from the method, platform and the service.
         $sagepay_url = $this->getUrl();
 
