@@ -26,6 +26,8 @@ class TransactionPdo extends TransactionAbstract
     protected $pdo_username = '';
     protected $pdo_password = '';
 
+    protected $pdo;
+
     /**
      * Reserved for future use.
      */
@@ -462,13 +464,15 @@ class TransactionPdo extends TransactionAbstract
 
     protected function getConnection()
     {
-        // Connect to the database.
-        $pdo = new \PDO($this->pdo_connect, $this->pdo_username, $this->pdo_password);
+        if (!isset($this->pdo)) {
+            // Connect to the database.
+            $pdo = new \PDO($this->pdo_connect, $this->pdo_username, $this->pdo_password);
 
-        // Capture all errors.
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-
-        return $pdo;
+            // Capture all errors.
+            $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $this->pdo = $pdo;
+        }
+        return $this->pdo;
     }
 
     /**

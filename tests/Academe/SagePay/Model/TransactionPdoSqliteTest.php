@@ -13,19 +13,13 @@ class TransactionPdoSqliteTest extends PHPUnit_Framework_TestCase{
     protected $storage;
 
     protected function setUp(){
-        // SQLite does not apepar to be working with an in-memory database
-        // so we'll use a temporary file.
-        $this->dbFileName = tempnam('.', 'sqlitetest');
+        $this->dbFileName = ':memory:';
         
         $this->storage = new Academe\SagePay\Model\TransactionPdo();
         $this->storage->setDatabase('sqlite:'.$this->dbFileName, null, null);
 
         $this->server = new Academe\SagePay\Server();
         $this->server->setTransactionModel($this->storage);
-    }
-
-    protected function tearDown(){
-        unlink($this->dbFileName);
     }
 
     public function testCreateTable(){
