@@ -83,7 +83,7 @@ class TransactionPdo extends TransactionAbstract
     }
 
     /**
-     * Save the transaction record to the database.
+     * Save the transaction record to storage.
      */
 
     public function save()
@@ -112,7 +112,10 @@ class TransactionPdo extends TransactionAbstract
                     'SELECT COUNT(*) FROM ' . $this->transaction_table_name
                         . ' WHERE VendorTxCode = :vendortxcode'
                 );
-                $stmt->bindParam(':vendortxcode', $this->getField('VendorTxCode'), \PDO::PARAM_STR);
+                // VendorTxCode is passed by reference, and we can only do this with
+                // variables (not function return values)
+                $vendorTxCode = $this->getField('VendorTxCode');
+                $stmt->bindParam(':vendortxcode', $vendorTxCode, \PDO::PARAM_STR);
 
                 $stmt->execute();
 
@@ -344,13 +347,19 @@ class TransactionPdo extends TransactionAbstract
 
             // Create the table.
 
-            $sql = 'CREATE TABLE IF NOT EXISTS ' . $this->transaction_table_name . " (\n";
+            $sql = 'CREATE TABLE IF NOT EXISTS `' . $this->transaction_table_name . "` (\n";
             $sql .= $this->createColumnsDdl();
-            $sql .= ', PRIMARY KEY pk_' . $this->transaction_table_name . ' (VendorTxCode) )';
+            if ($this->getDriver() == 'sqlite') {
+                $sql .= ', `pk_' . $this->transaction_table_name . '` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL'; 
+            } else {
+                $sql .= ', PRIMARY KEY `pk_' . $this->transaction_table_name . '` (`VendorTxCode`) '; 
+            }
+            $sql .= ')';
 
-
-            // TOOD: check the result.
             $success = $pdo->exec($sql);
+            if ($success === false) {
+                throw new Exception($pdo->errorInfo());
+            }
         }
         catch (\PDOException $e) {
             $this->pdo_error_message = $e->getMessage();
@@ -377,7 +386,7 @@ class TransactionPdo extends TransactionAbstract
         $columns = array();
 
         foreach($field_meta as $name => $field) {
-            $column = $name . ' ';
+            $column = '`'.$name . '` ';
 
             if (!isset($field->max)) continue;
 
@@ -460,6 +469,13 @@ class TransactionPdo extends TransactionAbstract
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
         return $pdo;
+    }
+
+    /**
+     * Returns the PDO driver name, e.g mysql or sqlite
+     */
+    protected function getDriver() {
+        return $this->getConnection()->getAttribute(\PDO::ATTR_DRIVER_NAME);
     }
 }
 
