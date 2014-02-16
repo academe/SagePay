@@ -196,6 +196,13 @@ Very roughly, registering a [payment] transaction request will look like this:
     
     // Hopefully both the above methods can be avoided completely once Issue #10 is fixed.
     
+    // Optionally run some validations
+    $serverValidator = new \Academe\SagePay\Validator\Server;
+    $errors = $serverValidator->validate($server)->getErrors();
+    if (count($errors) > 0) {
+        // Show the user the errors, and let them fix them
+    }
+
     // Send the request to SagePay, get the response, The request and response will also
     // be saved in whatever storage you are using.
     
@@ -303,6 +310,55 @@ page that the user is sent to.
 
 You can make use of the `CustomerData` field in the transaction for linking the payment to a resource in
 the application to be actioned.
+
+## Validation ##
+Several validation classes are provided, they are completly decoupled from the core classes meaning you
+can choose to use them or use your own. The Server will not catch many invalid data types and stop you
+from sending them to SagePay. SagePay will return errors (in the form of thrown exceptions), the idea of
+these validation classes is to handle these in an easier fashion.
+
+Available classes include:
+* Academe\SagePay\Validator\Server
+* Academe\SagePay\Validator\Model\Address
+
+Usage is simple
+```
+$server = new \Academe\SagePay\Server;
+$serverValidator = new \Academe\SagePay\Validator\Server;
+$serverValidator->validate($server);
+$errors = $serverValidator->getErrors();
+```
+
+`$serverValidator->getErrors()` returns an assosiative array with the field name as the key, and a
+human-readable error message as the value.
+
+You can reuse a validator, but you may want to call `clearErrors()`.
+
+You may customise the errors messages for each instance of a validator individually:
+
+```
+$validator->CANNOT_BE_EMPTY = "Kindly fill in this field`;
+```
+
+The current/default messages for all validators are:
+```
+public $CANNOT_BE_EMPTY = "%s cannot be empty";
+public $BAD_RANGE = "%s must be between %d and %d characters";
+public $BAD_LENGTH = "%s must be exactly %d characters";
+public $BAD_CHARACTERS = "%s cannot contain the following characters %s";
+```
+The ServerValidator has:
+```
+public $CURRENCY_INVALID = "Currency is not valid";
+public $AMOUNT_BAD_FORMAT = "Amount must be in the UK currency format XXXX.XX";
+public $AMOUNT_BAD_RANGE = "Amount must be between 0.01 and 100,000";
+```
+The AddressValidator has:
+```
+public $STATE_ONLY_FOR_US = "State is only valid for the US";
+public $COUNTRY_VALID_CODE = "Country must be a valid country code";
+```
+
 
 ## A Note About Currencies ##
 
