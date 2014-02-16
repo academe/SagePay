@@ -48,7 +48,8 @@ ultimately be supported by the library.
 
 ## Installation ##
 
-The core library does not depend on any other composer libraries at present. If you wish to contribute you will need to set composer up for the unit tests, run `composer install` to do this.
+The core library does not depend on any other composer libraries, you will need to run `composer install`
+if you wish to use the Validation methods or to run the unit tests.
 
 If using composer, you can install the library into your project this (in composer.json):
 
@@ -346,4 +347,5 @@ You can then add that directory to your PATH, and you should be able to call `ph
 
 To run the tests run `phpunit.bat tests/`
 
-(If you are using [Console2](http://sourceforge.net/projects/console/), create a file called phpunit.bat which is on your path and fill it with: `php /c/Users/<username>/AppData/Roaming/Composer/vendor/phpunit/phpunit/phpunit.php $*`)
+(If you are using [Console2](http://sourceforge.net/projects/console/), create a file called phpunit.bat which is
+on your path and fill it with: `php /c/Users/<username>/AppData/Roaming/Composer/vendor/phpunit/phpunit/phpunit.php $*`)
