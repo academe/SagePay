@@ -48,8 +48,9 @@ ultimately be supported by the library.
 
 ## Installation ##
 
-This library does not depend on any other composer libraries at present. If using composer, it
-can be installed like this (in composer.json):
+The core library does not depend on any other composer libraries at present. If you wish to contribute you will need to set composer up for the unit tests, run `composer install` to do this.
+
+If using composer, you can install the library into your project this (in composer.json):
 
     {
         "repositories": [
@@ -331,3 +332,18 @@ A shop selling a product at 10 USD (and only USD) will still accept payments fro
 In that case
 it will be the purchaser's card supplier that will calculate the amount to be paid in their local currency
 to ensure the shop receives exactly 10 USD.
+
+## Contributing
+### Running Tests
+In order to run the unit tests you will need to be able to call PHPUnit from your terminal. This can be done on windows by:
+
+`composer install global phpunit/phpunit:x`
+
+This will install the latest version of phpunit into:
+`C:\Users\<username>\AppData\Roaming\Composer\vendor\phpunit\phpunit`
+
+You can then add that directory to your PATH, and you should be able to call `phpunit.bat` from the command line.
+
+To run the tests run `phpunit.bat tests/`
+
+(If you are using [Console2](http://sourceforge.net/projects/console/), create a file called phpunit.bat which is on your path and fill it with: `php /c/Users/<username>/AppData/Roaming/Composer/vendor/phpunit/phpunit/phpunit.php $*`)
