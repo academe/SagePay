@@ -68,7 +68,7 @@ Or if working on a clone of this repository in in vendor/sagepay:
 
     {
         "autoload": {
-            "psr-0": "Academe\\SagePay": "vendor/sagepay/src"
+            "psr-0": { "Academe\\SagePay": "vendor/sagepay/src" }
         }
     }
 
