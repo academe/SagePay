@@ -349,6 +349,21 @@ class Iso3166
     }
 
     /**
+     * Return the [English] name of a country.
+     * This method could be extended to provide translations.
+     */
+
+    public static function getName($country_code)
+    {
+        if (isset(static::$countries[$country_code])) {
+            return static::$countries[$country_code];
+        }
+
+        // Country code was invalid.
+        return;
+    }
+
+    /**
      * Return a list of countries that use postcodes.
      */
 
