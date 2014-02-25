@@ -270,12 +270,116 @@ class Iso3166
     );
 
     /**
-     * Return the list.
+     * List of countries that do not use postcodes.
+     * List from http://en.wikipedia.org/wiki/List_of_postal_codes
+     */
+
+    protected static $no_postcodes = array(
+        'AO',
+        'AG',
+        'AW',
+        'BS',
+        'BZ',
+        'BJ',
+        'BQ',
+        'BW',
+        'BF',
+        'BI',
+        'CM',
+        'CF',
+        'KM',
+        'CG',
+        'CD',
+        'CK',
+        'CW',
+        'DJ',
+        'DM',
+        'TL',
+        'GQ',
+        'ER',
+        'FJ',
+        'TF',
+        'GM',
+        'GH',
+        'GD',
+        'GN',
+        'GY',
+        'HK',
+        'IE',
+        'KI',
+        'KP',
+        'MO',
+        'MW',
+        'ML',
+        'MR',
+        'MU',
+        'MS',
+        'NR',
+        'NU',
+        'QA',
+        'KN',
+        'LC',
+        'ST',
+        'SC',
+        'SX',
+        'SL',
+        'SB',
+        'SO',
+        'SR',
+        'SY',
+        'TZ',
+        'TG',
+        'TK',
+        'TO',
+        'TV',
+        'UG',
+        'AE',
+        'VU',
+        'YE',
+        'ZW',
+    );
+
+    /**
+     * Return the full list of countries.
      */
 
     public static function get()
     {
         return static::$countries;
+    }
+
+    /**
+     * Return a list of countries that use postcodes.
+     */
+
+    public static function countriesWithPostcodes()
+    {
+        return array_diff_key(static::$countries, array_flip(static::$no_postcodes));
+    }
+
+    /**
+     * Return a list of countries that do not use postcodes.
+     */
+
+    public static function countriesWithoutPostcodes()
+    {
+        return array_intersect_key(static::$countries, array_flip(static::$no_postcodes));
+    }
+
+    /**
+     * Return true if the country uses postcodes, false if it does not.
+     */
+
+    public static function postcodesUsed($country_code)
+    {
+        if ( ! isset(static::$countries[$country_code])) {
+            // Country code not recognised.
+            return;
+        }
+
+        // Return the negation of "in the no-postcode" list.
+        // "It wasn't not in there..."
+        return ! isset(static::$no_postcodes[$country_code]);
     }
 }
 
