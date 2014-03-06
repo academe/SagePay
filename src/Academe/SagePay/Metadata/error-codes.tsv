@@ -81,7 +81,7 @@ Code	Type	Message
 2142		or element either not found, or present more than once.
 2173		The user must have access to the specified . Either provide the user with access to the chosen or select another which the user has access to.
 2180		You cannot delete your own user.
-2188		is too restrictive. Only C class subnet masks are allowed for blocking.
+2188		<mask> is too restrictive. Only C class subnet masks are allowed for blocking.
 2193		3D Secure rule not added. Overlaps with an existing rule.
 2194		AVSCV2 rule not added. Overlaps with an existing rule.
 2197		The primary admin user cannot be deleted.
