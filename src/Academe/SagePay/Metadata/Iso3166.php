@@ -10,7 +10,7 @@ namespace Academe\SagePay\Metadata;
 class Iso3166
 {
     /**
-     * Country code list.
+     * Country code list, in arbitrary order.
      * Names are UTF-8 English.
      */
 
@@ -342,6 +342,7 @@ class Iso3166
 
     /**
      * Return the full list of countries.
+     * @return array Countries as 'iso-code' => 'english-name' elements
      */
 
     public static function get()
@@ -352,6 +353,8 @@ class Iso3166
     /**
      * Return the [English] name of a country.
      * This method could be extended to provide translations.
+     * @param string $country_code ISO3166-2 two-character code.
+     * @return string The English name of the country in UTF-8 encoding. Null if the country code invalid
      */
 
     public static function getName($country_code)
@@ -366,6 +369,7 @@ class Iso3166
 
     /**
      * Return a list of countries that use postcodes.
+     * @return array Countries as 'iso-code' => 'english-name' elements
      */
 
     public static function countriesWithPostcodes()
@@ -375,6 +379,7 @@ class Iso3166
 
     /**
      * Return a list of countries that do not use postcodes.
+     * @return array Countries as 'iso-code' => 'english-name' elements
      */
 
     public static function countriesWithoutPostcodes()
@@ -384,6 +389,8 @@ class Iso3166
 
     /**
      * Return true if the country uses postcodes, false if it does not.
+     * @param string $country_code ISO3166-2 two-character code.
+     * @return bool True if the country uses postodes, false if not. Null if country code invalid.
      */
 
     public static function postcodesUsed($country_code)
