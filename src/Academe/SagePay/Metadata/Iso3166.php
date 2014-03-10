@@ -11,6 +11,7 @@ class Iso3166
 {
     /**
      * Country code list.
+     * Names are UTF-8 English.
      */
 
     protected static $countries = array(
