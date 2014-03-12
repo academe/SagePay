@@ -51,16 +51,16 @@ Code	Type	Message	Explanation	Solution
 504		Gateway Timeout : The upstream server failed to send a request in the time allowed by the server.		
 505		HTTP Version Not Supported : The server does not support or is not allowing the HTTP protocol version specified in the request.		
 1115		element is only required for a Streamline merchant number.		
-2000	NOTAUTHED	The Authorisation was Declined by the bank.		
-2001	REJECTED	The Authorisation was Rejected by the vendor rule-base.		
-2002	NOTAUTHED	The Authorisation timed out.		
-2003	ERROR	An ERROR has occurred on the Sage Pay System.		
-2004	OK	The Release was Successful.		
-2005	OK	The Void was Successful.		
-2006	OK	The Abort was Successful.		
-2007	OK	"Please redirect your customer to the ACSURL, passing the MD"		
-2008	NOTAUTHED	The Transaction timed-out.		
-2009	NOTAUTHED	The network connection to the bank is currently unavailable.		
+2000	NOTAUTHED	The Authorisation was Declined by the bank.	"The Authorisation attempt was Declined by the cardholder's card-issuing bank. This could be due to several reasons such as funds not being available, spending limit may have been reached or bank account has been closed."	We also return to you the 2 digit Decline Code from the bank. To determine what the code means you will need to contact your merchant bank as they are bank specific.
+2001	REJECTED	The Authorisation was Rejected by the vendor rule-base.	You will receive this error message when a transaction has been rejected due to either your AVS/CV2 rulebase or the customer has had three failed attempts to correctly enter their card details. The latter rulebase is set up as default on all Sage Pay accounts.	"The transaction would has failed due to the fraud rulebase which you have set up onto your account. The only way to prevent this from happening, would be to remove or relax your current rulebase, however this would apply to all your transactions."
+2002	NOTAUTHED	The Authorisation timed out.	The authorisation process took longer than expected and therefore the Sage Pay system had timed out the transactions.  This could be caused by several reasons such as authorisation communication and high volumes of transactions being authorised.	
+2003	ERROR	An ERROR has occurred on the Sage Pay System.	You will receive this error message for usually one or two reasons - if your Terminal ID's have not been set up correctly with your merchant bank or if we are experiencing intermittent authorisation issues where we have not been able to contact your merchant bank when requesting authorisation. This will be due to the transaction timing out and will result in transactions not being authorised and being registered as failed payments.	"If you receive this error message and are experiencing this on all your transactions, please contact our customer services team who will need to contact your merchant acquirer to ensure that everything has been set up correctly. If this error message has only appeared on one transaction, then please retry the transaction again.  If this does not resolve the issue, then please email the vendorTxCode along with your vendor name to our customer services team to investigate further."
+2004	OK	The Release was Successful.	The deferred transaction has been successully released and will be sent for settlement.	
+2005	OK	The Void was Successful.	The request to VOID a transaction was Successful.	Your transaction has been successfully Voided and will not be sent for settlement at the end of the day.  No further action needed.
+2006	OK	The Abort was Successful.	The request to ABORT a deferred transaction was successful.	Your deferred transaction was Aborted successfully.  The payment will now appear as a failed transaction.  No further action required. Please note that this only applies to Deferred transactions.
+2007	OK	"Please redirect your customer to the ACSURL, passing the MD"	"If you receive this system message, it means you have successfully registered a transactions using the Direct integration method.  As you have 3D secure enabled on your account, our system has provided you with the relevant data (ACSURL, MD, PaReq) to obtain 3D authentication."	"You will need to ensure that you redirect your customer to the ACSURL which was provided to you, and also submit the MD and PaReq to ensure you are able to obtain 3D authentication."
+2008	NOTAUTHED	The Transaction timed-out.	The authorisation response was taking longer than expected and has therefore timed-out as a security measure.	Please check our system monitor page to ensure there are no current issues and that our servers are processing transactions as normal. The link is: http://www.sagepay.com/system_monitor.asp. If the monitor page is showing everything normal please contact Sage Pay directly.  You may wish to (or advise your shopper) to try the transaction again at a later time.
+2009	NOTAUTHED	The network connection to the bank is currently unavailable.	"Unfortunately, we are unable to authorise your transactions as the network connection to the bank is currently unavailable."	"If you receive this system message, we would suggest that you refer to our system monitor page (http://www.sagepay.com/system_monitor.asp) for more information. If the monitor page indicates that there are no issues, please contact us for more information."
 2010	OK	The Authentication was Successful.		
 2011	OK	The Transaction has been Registered.		
 2012	OK	The Cancel was Successful.		
@@ -110,7 +110,7 @@ Code	Type	Message	Explanation	Solution
 3012	INVALID	The RelatedVendorTxCode format invalid.		
 3013	MALFORMED	The Description is missing.		
 3014	INVALID	The TxType or PaymentType is invalid.		
-3015	INVALID	The BillingAddress value is too long.		
+3015	INVALID	The BillingAddress value is too long.	The BillingAddress field which you have provided is longer than what is allowed.  This field can contain up to 200 characters.	You will need to check your code to ensure that you server doesn't send more than 200 characters each time.
 3016	INVALID	The BillingPostCode value is too long.		
 3017	INVALID	The RelatedTxAuthNo format is invalid.		
 3018	INVALID	"The GiftAid flag is invalid. If a value is supplied, should contain either 0 or 1."		
@@ -121,9 +121,9 @@ Code	Type	Message	Explanation	Solution
 3023	INVALID	The Contact Fax is too long.		
 3024	INVALID	The ContactNumber is too long.		
 3025	INVALID	The DeliveryPostCode is too long.		
-3026	INVALID	The DeliveryAddress is too long.		
+3026	INVALID	The DeliveryAddress is too long.	"The DeliveryAddress field, if provided, can only contain a maximum of up to 200 characters.  If you are providing a value which has more that 200 characters then you will receive this system message."	You will need to ensure that your code is not sending more than 200 characters within this field and that no invalid characters are being sent.
 3027	INVALID	The BillingPostCode is too long.		
-3028	INVALID	The BillingAddress is too long.		
+3028	INVALID	The BillingAddress is too long.	"The BillingAddress field, if provided, can only contain a maximum of up to 200 characters.  If you are providing a value which has more that 200 characters then you will receive this system message."	You will need to ensure that your code is not sending more than 200 characters within this field and that no invalid characters are being sent.
 3029	MALFORMED	The FailureURL is missing.		
 3030	MALFORMED	The SuccessURL is missing.		
 3031	MALFORMED	The Amount value is required.		
@@ -192,7 +192,7 @@ Code	Type	Message	Explanation	Solution
 3094		The DeliveryPostcode is required.		
 3095		The VPSProtocol value is invalid.		
 3096		The VPSProtocol value is required.		
-3097		The VPSProtocol value is outside the valid range. Should be between 2.00 and 2.22.		
+3097		The VPSProtocol value is outside the valid range. Should be between 2.00 and 2.22.		There is a problem with the details that have been supplied. Please check and retry.
 3098		The VPSProtocol value is not supported by the system in use.		
 3099	INVALID	The AccountType is not setup on this account.		
 3100	INVALID	The AccountType value is invalid.		
