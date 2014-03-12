@@ -11,3 +11,12 @@ today.
 Slowly we built up the list with merges. This is THE most complete list of SagePay error
 codes that I know of. It does not record reasons and solutions for each message yet. That
 is available for some messages, so it may be worth pulling them in too.
+
+Please note that explanations and suggestions solutions in error-codes.tsv can be found
+on the SagePay error codes tool here:
+
+https://www.sagepay.co.uk/support/error-codes
+
+The error-codes text in this library is for convenience only (e.g. for logging), was written
+by SagePay and no claim of copyright is made by me or Academe Computing Ltd.
+
