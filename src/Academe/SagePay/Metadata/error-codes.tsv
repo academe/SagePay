@@ -155,104 +155,104 @@ Code	Type	Message	Explanation	Solution
 3057	INVALID	The CV2 format is invalid.		
 3058	INVALID	The CardHolder field is required.		
 3059	INVALID	The CardHolder value is too long.		
-3060	INVALID	The GiftAid format is invalid.		
-3061	INVALID	The AuthCode format invalid.		
-3062	INVALID	"The CardNumber field should only contain numbers. No spaces, hyphens or other characters or separators."		
-3063		The 3DStatus value is too long.		
-3064		The ECI format is invalid.		
-3065		The XID format is invalid.		
-3066		The CAVV format is invalid.		
-3067		The ClientIPAddress is too long.		
-3068	INVALID	The PaymentSystem invalid.		
-3069	INVALID	The PaymentSystem is not supported on the account.		
-3070		The RelatedVPSTxId is required.		
-3071		The RelatedVPSTxId format is invalid.		
-3072		The TxAuthNo field is missing.		
-3073		The TxAuthNo format is invalid.		
-3074		The SecurityKey is missing.		
-3075		The SecurityKey format is invalid.		
-3076		The NotificationURL is required.		
+3060	INVALID	The GiftAid format is invalid.	"The GiftAid field can only contain 1 (Allow Gift Aid) or 0 (Do not Allow it). If you are passing any other characters, or spaces, you will receive this error."	You will need to ensure that your code is passing either a value of 1 (Allow Gift Aid) or 0 (Do not Allow it) within this field. Any other values or characters will not be allowed and will result in this error message.
+3061	INVALID	The AuthCode format invalid.	"This system message is only generated if you are attempting a Manual transaction where you are sending the Auth code to us within My Sage Pay.  The AuthCode field supplied in a Manual transaction registration can only contain 15 characters or less. It is normally a number, but can contain characters depending on the acquiring bank."	Please ensure you send exactly what was provided to you by your bank during your Code 10 check.
+3062	INVALID	"The CardNumber field should only contain numbers. No spaces, hyphens or other characters or separators."	You will receive this system message when the card number details have been entered incorrectly.	You will need to ensure that you are sending numerics only within this field with no spaces between any of the numbers.  You will need to send the long card number only which is situated on the front of the customers card.
+3063		The 3DStatus value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3064		The ECI format is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3065		The XID format is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3066		The CAVV format is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3067		The ClientIPAddress is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3068	INVALID	The PaymentSystem invalid.	"This system message will be generated when you don't send a valid value within the CardType field in your transaction registration POST. It would only be generated if you have integrated using the Direct method as this field indicates the type of card (Visa, Mastercard etc.) whose number you've supplied in the CardNumber field."	"You will need to check to ensure that  the correct value is being submitted.  Accepted values for this field are: VISA (Visa Credit), MC (MasterCard credit), DELTA (Visa debit), UKE (Visa Electron), SOLO, MAESTRO (you can still send SWITCH for older cards), AMEX (American Express), DC (Diner's Club) and JCB (Japan Credit Bureau cards)."
+3069	INVALID	The PaymentSystem is not supported on the account.	"The card type you sent in the CardType field is not active on your account. Accepted values for this field are: VISA (Visa Credit), MC (MasterCard credit), DELTA (Visa debit), UKE (Visa Electron), MAESTRO (you can still send SWITCH for older cards), AMEX (American Express), DC (Diner's Club) and JCB (Japan Credit Bureau cards). You must have a valid merchant number set up on your Sage Pay account, that support each card type you pass."	"Please check with our support team if you are uncertain which cards your account has been set up with.  If you are wishing to add another card type to your account, please check with your acquiring bank first before notifying Sage Pay to ensure that your merchant number has been set up to accept this new card type.  If you are wishing to accept American Express, JCB or Diner cards, it is likely that you will need to contact these merchant acquirers directly to obtain a new merchant number."
+3070		The RelatedVPSTxId is required.		There is a problem with the details that have been supplied. Please check and retry.
+3071		The RelatedVPSTxId format is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3072		The TxAuthNo field is missing.		There is a problem with the details that have been supplied. Please check and retry.
+3073		The TxAuthNo format is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3074		The SecurityKey is missing.		There is a problem with the details that have been supplied. Please check and retry.
+3075		The SecurityKey format is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3076		The NotificationURL is required.		There is a problem with the details that have been supplied. Please check and retry.
 3077		The CustomerName is required.		
-3078	INVALID	The CustomerEMail format is invalid.		
-3079		"The ClientIPAddress format is invalid. Should not include leading zero's, and only include values in the range of 0 to 255."		
-3080	INVALID	The VendorTxCode value is too long.		
-3081		The RelatedVendorTxCode value is too long.		
-3082	INVALID	The Description value is too long.		
-3083		The RelatedTxAuthNo value is too long.		
-3084	INVALID	The FailureURL value is too long.		
-3085	INVALID	The FailureURL format is invalid.		
-3086	INVALID	The SuccessURL value is too long.		
-3087	INVALID	The SuccessURL format is invalid.		
-3088	INVALID	The VendorEMail format is invalid.		
-3089	MALFORMED	The BillingAddress is required.		
-3090		The BillingPostCode is required.		
-3091		The BillingAddress and BillingPostCode are required.		
-3092		The DeliveryAddress and DeliveryPostcode are required.		
-3093		The DeliveryAddress is required.		
-3094		The DeliveryPostcode is required.		
-3095		The VPSProtocol value is invalid.		
-3096		The VPSProtocol value is required.		
+3078	INVALID	The CustomerEMail format is invalid.	"The CustomerEMail field, if supplied, must contain a valid e-mail address which is less than 255 characters long. Check the content of the field you passed to ensure the e-mail address is valid."	You will need to check your code to ensure that your server is sending a valid e-mail address which does not contain more than 255 characters in length.  You will also need to check the content of this field to ensure that it is valid.
+3079		"The ClientIPAddress format is invalid. Should not include leading zero's, and only include values in the range of 0 to 255."		There is a problem with the details that have been supplied. Please check and retry.
+3080	INVALID	The VendorTxCode value is too long.	"The VendorTxCode should contain your unique reference identifier for your transaction. It should be less than 40 characters long, contain only letters and numbers with no spaces or special characters (except for hyphen(-), underscore (_) or full stop (.))"	Please check your code to ensure that you are providing a unique identifier that does not contain more than the maximum number of characters and that there are no unacceptable characters being provided.
+3081		The RelatedVendorTxCode value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3082	INVALID	The Description value is too long.	The Description field can contain up to 100 characters. Your code should send only the first 100 characters if your description is longer than this.	You will need to check your code to ensure that your server does not send more than 100 characters within this field.
+3083		The RelatedTxAuthNo value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3084	INVALID	The FailureURL value is too long.	The FailureURL field must contain a Fully Qualified Domain Name and page reference pointing to the externally visible page on your site which your customers can be returned to if a transaction fails.  This URL must be http:// or https:// and be less than 255 characters long.  Any URL's which are longer will generate this system message.	You will need to ensure that your crypt string contains a Fully Qualified Domain name and page which will allow us to return the customer back to a visible Failure Page on your site once the transaction has been registered as unsuccessful. This URL must be http:// or https:// and be no more than 255 characters in length. Please ensure that you only use a fully qualified URL.
+3085	INVALID	The FailureURL format is invalid.	The FailureURL field must contain a Fully Qualified Domain Name and page reference pointing to the externally visible page on your site which your customers can be returned to if a transaction fails.  This URL must be http:// or https:// and be less than 255 characters long.  You must  check your code to ensure that you only use a fully qualified URL.	You will need to ensure that your crypt string contains a Fully Qualified Domain name and page which will allow us to return the customer back to a visible Failure Page on your site once the transaction has been registered as unsuccessful. This URL must be http:// or https:// and be no more than 255 characters in length. Please ensure that you only ever use a fully qualified URL.
+3086	INVALID	The SuccessURL value is too long.	The SuccessURL field must contain a Fully Qualified Domain Name and page reference pointing to the externally visible page on your site which your customers can be returned to if a transaction succeeds.  This URL must be http:// or https:// and be less than 255 characters long.	You will need to ensure that your crypt string contains a Fully Qualified Domain name and page which will allow us to return the customer back to a visible Success Page on your site once the transaction has been successful. This URL must be http:// or https:// and be no more than 255 characters in length. Please ensure that you only use a fully qualified URL.
+3087	INVALID	The SuccessURL format is invalid.	The SuccessURL field must contain a Fully Qualified Domain Name and page reference pointing to the externally visible page on your site which your customers can be returned to if a transaction succeeds.  This URL must be http:// or https:// and be less than 255 characters long.  Check your code to ensure that you only use a fully qualified URL.	You will need to ensure that your crypt string contains a Fully Qualified Domain name and page which will allow us to return the customer back to a visible Success Page on your site once the transaction has been successful. This URL must be http:// or https:// and be no more than 255 characters in length. Please ensure that you only ever use a fully qualified URL.
+3088	INVALID	The VendorEMail format is invalid.	"The VendorEMail field, if supplied when posting your transaction registration, must contain a valid e-mail address which is less than 255 characters in length.  You will need to check the content of the VendorEMail field to ensure that the e-mail address is valid."	You will need to check your code to ensure that you are posting a valid e-mail address which is less than 255 characters in length. You will have to check the content of this field ensuring that no invalid characters are also contained.
+3089	MALFORMED	The BillingAddress is required.	"If you have AVS checking turned on within your Sage Pay account, or have provided a BillingPostCode, you must also provide a BillingAddress field.  You will need to ensure that your code is sending the customer's cardholder address to where the card is registered in the BillingAddress field."	You will need to check your code to ensure that you are providing us with a Billing Address field confirming the customer's cardholder address to where the card is registered.  This will be required if you have AVS turned on within your Sage Pay account.
+3090		The BillingPostCode is required.		There is a problem with the details that have been supplied. Please check and retry.
+3091		The BillingAddress and BillingPostCode are required.		There is a problem with the details that have been supplied. Please check and retry.
+3092		The DeliveryAddress and DeliveryPostcode are required.		There is a problem with the details that have been supplied. Please check and retry.
+3093		The DeliveryAddress is required.		There is a problem with the details that have been supplied. Please check and retry.
+3094		The DeliveryPostcode is required.		There is a problem with the details that have been supplied. Please check and retry.
+3095		The VPSProtocol value is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3096		The VPSProtocol value is required.		There is a problem with the details that have been supplied. Please check and retry.
 3097		The VPSProtocol value is outside the valid range. Should be between 2.00 and 2.22.		There is a problem with the details that have been supplied. Please check and retry.
-3098		The VPSProtocol value is not supported by the system in use.		
-3099	INVALID	The AccountType is not setup on this account.		
-3100	INVALID	The AccountType value is invalid.		
-3101		The PaymentSystem does not support direct refund.		
-3102	INVALID	The ReleaseAmount invalid.		
-3103		The UserName value is Too long.		
-3104		Account type selected requires 3D secure authentication to process Maestro or SOLO cards.		
-3105		Transaction is not allowed without 3D secure authentication.		
-3106		The PaymentSystem used for the original transaction does not support repeat transactions.		
-3107		The BillingSurname field is required.		
-3108		The BillingSurname value is too long.		
-3109		The BillingFirstnames field is required.		
-3110		The BillingFirstnames value is Too long.		
-3111		The BillingAddress1 field is required.		
-3112		The BillingAddress1 value is Too long.		
-3113		The BillingAddress2 value is Too long.		
-3114		The BillingCity field is required.		
-3115		The BillingCity value is Too long.		
-3117		The BillingCountry field is required.		
-3118		The DeliverySurname field is required.		
-3119		The DeliverySurname value is Too long.		
-3120		The DeliveryFirstnames field is required.		
-3121		The DeliveryFirstnames value is Too long.		
-3122		The DeliveryAddress1 field is required.		
-3123		The DeliveryAddress1 value is too long.		
-3124		The DeliveryAddress2 value is too long.		
-3125		The DeliveryAddress2 value is too long.		
-3126		The DeliveryCity value is too long.		
-3128		The DeliveryCountry field is required.		
-3129		The DeliveryCountry value is too long.		
-3130	INVALID	The BillingState value is too long.		
-3131		The BillingPhone value is too long.		
-3132		The DeliveryState value is too long.		
-3133		The DeliveryPhone value is too long.		
-3134		The ReferrerID value is too long.		
-3135		The PayPalCallbackURL field is required.		
-3136		The PayPalCallbackURL value is too long.		
-3137		The PayPalCallbackURL format is invalid.		
-3138	INVALID	The BillingState format is invalid.		
-3139		The DeliveryState format is invalid.		
-3140		The DeliveryCountry value is invalid.		
-3141		The BillingCountry value is invalid.		
-3142		The SendEMail value is invalid.		
-3143		The Billing information is required.		
-3144		The Delivery information is required.		
-3145	INVALID	The BillingCountry value is too long.		
-3146		The Profile value is invalid.		
-3147	MALFORMED	The BillingState field is required.		
-3148		The DeliveryState field is required.		
-3149		The Card Firstnames is required.		
-3150		The Card Firstnames value is too long.		
-3151		The Card Surname is required.		
-3152		The Card Surname value is too long.		
-3153		The Card AddressLine1 is required.		
-3154		The Card AddressLine1 value is too long.		
-3155		The Card AddressLine2 value is too long.		
-3156		The Card City field is required.		
-3157		The Card City value is too long.		
-3158		The Card Country field is required.		
-3159		The Card Country value is too long.		
+3098		The VPSProtocol value is not supported by the system in use.		There is a problem with the details that have been supplied. Please check and retry.
+3099	INVALID	The AccountType is not setup on this account.	"If you send an AccountType parameter with your POST, you must have an equivalent merchant account set up to handle that type of transaction. For example, if you send M, you must have a MOTO enabled Merchant Number registered with Sage Pay. You will receive this error if you send an AccountType that your Sage Pay account does not support."	"You will need to ensure that you have the equivalent merchant account set up with your acquiring bank in order to handle the type of transaction you are attempting to process. If you do not have the relevant merchant number on your account, we would recommend that you contact your merchant acquiring bank to set up. If you do have the merchant number on your account, then please contact our customer services team as there may be an issue with the set up of your Sage Pay account."
+3100	INVALID	The AccountType value is invalid.	"The AccountType field can only contain the following values: E for e-commerce, M for MOTO or C for Continuous Authority Any other values will generate this system message."	"You will need to check your code to confirm that you are posting one of the following three values only: E for e-commerce, M for MOTO or C for Continuous Authority.  Any other values that are passed will result in this error message."
+3101		The PaymentSystem does not support direct refund.		There is a problem with the details that have been supplied. Please check and retry.
+3102	INVALID	The ReleaseAmount invalid.	"The ReleaseAmount field must be a valid amount, formatted to the correct number of decimal places for the chosen currency, AND must be less than or equal to the amount of the original Deferred transaction that you are attempting to Release."	You must ensure that your code is sending a valid amount within this field formatted to the correct number of decimal places for the chosen currency.  The ReleaseAmount field must be less than or equal to the amount of the original Deferred transaction that you are attempting to Release.
+3103		The UserName value is Too long.		There is a problem with the details that have been supplied. Please check and retry.
+3104		Account type selected requires 3D secure authentication to process Maestro or SOLO cards.		There is a problem with the details that have been supplied. Please check and retry.
+3105		Transaction is not allowed without 3D secure authentication.		There is a problem with the details that have been supplied. Please check and retry.
+3106		The PaymentSystem used for the original transaction does not support repeat transactions.		There is a problem with the details that have been supplied. Please check and retry.
+3107		The BillingSurname field is required.		There is a problem with the details that have been supplied. Please check and retry.
+3108		The BillingSurname value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3109		The BillingFirstnames field is required.		There is a problem with the details that have been supplied. Please check and retry.
+3110		The BillingFirstnames value is Too long.		There is a problem with the details that have been supplied. Please check and retry.
+3111		The BillingAddress1 field is required.		There is a problem with the details that have been supplied. Please check and retry.
+3112		The BillingAddress1 value is Too long.		There is a problem with the details that have been supplied. Please check and retry.
+3113		The BillingAddress2 value is Too long.		There is a problem with the details that have been supplied. Please check and retry.
+3114		The BillingCity field is required.		There is a problem with the details that have been supplied. Please check and retry.
+3115		The BillingCity value is Too long.		There is a problem with the details that have been supplied. Please check and retry.
+3117		The BillingCountry field is required.		There is a problem with the details that have been supplied. Please check and retry.
+3118		The DeliverySurname field is required.		There is a problem with the details that have been supplied. Please check and retry.
+3119		The DeliverySurname value is Too long.		There is a problem with the details that have been supplied. Please check and retry.
+3120		The DeliveryFirstnames field is required.		There is a problem with the details that have been supplied. Please check and retry.
+3121		The DeliveryFirstnames value is Too long.		There is a problem with the details that have been supplied. Please check and retry.
+3122		The DeliveryAddress1 field is required.		There is a problem with the details that have been supplied. Please check and retry.
+3123		The DeliveryAddress1 value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3124		The DeliveryAddress2 value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3125		The DeliveryAddress2 value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3126		The DeliveryCity value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3128		The DeliveryCountry field is required.		There is a problem with the details that have been supplied. Please check and retry.
+3129		The DeliveryCountry value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3130	INVALID	The BillingState value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3131		The BillingPhone value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3132		The DeliveryState value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3133		The DeliveryPhone value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3134		The ReferrerID value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3135		The PayPalCallbackURL field is required.		There is a problem with the details that have been supplied. Please check and retry.
+3136		The PayPalCallbackURL value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3137		The PayPalCallbackURL format is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3138	INVALID	The BillingState format is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3139		The DeliveryState format is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3140		The DeliveryCountry value is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3141		The BillingCountry value is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3142		The SendEMail value is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3143		The Billing information is required.		There is a problem with the details that have been supplied. Please check and retry.
+3144		The Delivery information is required.		There is a problem with the details that have been supplied. Please check and retry.
+3145	INVALID	The BillingCountry value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3146		The Profile value is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3147	MALFORMED	The BillingState field is required.		There is a problem with the details that have been supplied. Please check and retry.
+3148		The DeliveryState field is required.		There is a problem with the details that have been supplied. Please check and retry.
+3149		The Card Firstnames is required.		There is a problem with the details that have been supplied. Please check and retry.
+3150		The Card Firstnames value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3151		The Card Surname is required.		There is a problem with the details that have been supplied. Please check and retry.
+3152		The Card Surname value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3153		The Card AddressLine1 is required.		There is a problem with the details that have been supplied. Please check and retry.
+3154		The Card AddressLine1 value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3155		The Card AddressLine2 value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3156		The Card City field is required.		There is a problem with the details that have been supplied. Please check and retry.
+3157		The Card City value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3158		The Card Country field is required.		There is a problem with the details that have been supplied. Please check and retry.
+3159		The Card Country value is too long.		There is a problem with the details that have been supplied. Please check and retry.
 3160		The Card Country value is invalid.		
 3161		The Card State value is too long.		
 3162		The Card State field is required.		
