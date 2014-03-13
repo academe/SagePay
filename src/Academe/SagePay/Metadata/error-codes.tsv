@@ -26,8 +26,8 @@ Code	Type	Message	Explanation	Solution
 205		A valid value is required.		
 211		value must be less than the value.		
 235		"More than 50,000 rows returned. Please refine the search."		
-400	BAD REQUEST	The syntax of the request was not understood by the server.		
-401		The request needs user authentication.		
+400	BAD REQUEST	The syntax of the request was not understood by the server.	The message POSTed to the Sage Pay system was of an invalid type. This only occurs if there are problems with your POSTing component.	
+401		The request needs user authentication.		This is a standard HTTP Error. Please check you code.
 402		Payment Required		
 403		The server has refused to fulfill the request.		
 404		The document/file requested by the client was not found.		
@@ -50,7 +50,7 @@ Code	Type	Message	Explanation	Solution
 503	SERVICE UNAVAILABLE	The request was unsuccessful to the server being down or overloaded.		This is a standard HTTP Error. Please check you code.
 504		Gateway Timeout : The upstream server failed to send a request in the time allowed by the server.		
 505		HTTP Version Not Supported : The server does not support or is not allowing the HTTP protocol version specified in the request.		
-1115		element is only required for a Streamline merchant number.		
+1115		<streamlinetnumber> element is only required for a Streamline merchant number.		There is a problem with the details that have been supplied. Please check and retry.
 2000	NOTAUTHED	The Authorisation was Declined by the bank.	"The Authorisation attempt was Declined by the cardholder's card-issuing bank. This could be due to several reasons such as funds not being available, spending limit may have been reached or bank account has been closed."	We also return to you the 2 digit Decline Code from the bank. To determine what the code means you will need to contact your merchant bank as they are bank specific.
 2001	REJECTED	The Authorisation was Rejected by the vendor rule-base.	You will receive this error message when a transaction has been rejected due to either your AVS/CV2 rulebase or the customer has had three failed attempts to correctly enter their card details. The latter rulebase is set up as default on all Sage Pay accounts.	"The transaction would has failed due to the fraud rulebase which you have set up onto your account. The only way to prevent this from happening, would be to remove or relax your current rulebase, however this would apply to all your transactions."
 2002	NOTAUTHED	The Authorisation timed out.	The authorisation process took longer than expected and therefore the Sage Pay system had timed out the transactions.  This could be caused by several reasons such as authorisation communication and high volumes of transactions being authorised.	
@@ -117,7 +117,7 @@ Code	Type	Message	Explanation	Solution
 2244		<endrow> cannot be equal to zero.		There is a problem with the details that have been supplied. Please check and retry.
 2245		Fraud screen detail does not exist for this transaction.		There is a problem with the details that have been supplied. Please check and retry.
 2254		The given vendorsurcharge cannot be found.		There is a problem with the details that have been supplied. Please check and retry.
-2255		This Surcharge already exists†(paymentsystem and currency combination).		There is a problem with the details that have been supplied. Please check and retry.
+2255		This Surcharge already exists·(paymentsystem and currency combination).		There is a problem with the details that have been supplied. Please check and retry.
 2256		The <paymentsystem> supplied is not available on any merchant accounts associated with this vendor account.		There is a problem with the details that have been supplied. Please check and retry.
 2257		The <currency> supplied is not available on any merchant accounts associated with this vendor account.		There is a problem with the details that have been supplied. Please check and retry.
 2258		"Either the currency requested is not available for this payment system, or the supplied combination of currency and paymentsystem is not available for this vendor account."		There is a problem with the details that have been supplied. Please check and retry.
@@ -165,10 +165,10 @@ Code	Type	Message	Explanation	Solution
 3028	INVALID	The BillingAddress is too long.	"The BillingAddress field, if provided, can only contain a maximum of up to 200 characters.  If you are providing a value which has more that 200 characters then you will receive this system message."	You will need to ensure that your code is not sending more than 200 characters within this field and that no invalid characters are being sent.
 3029	MALFORMED	The FailureURL is missing.	When using the Form solution you will need to provide us with a Failure URL field containing a Fully Qualified Domain Name pointing to the externally visible page on your site to which customers are returned if a transaction fails. The Failure URL value will need to be provided within your crypt string when posting your transaction registration.	Please check to ensure that a Failure URL is being provided with each transaction as this is a required field. A transaction is unable to be registered without this information.
 3030	MALFORMED	The SuccessURL is missing.	When using the Form solution you will need to provide us with a Success URL field containing a Fully Qualified Domain Name pointing to the externally visible page on your site to which customers are returned if a transaction completes. The Success URL value will need to be provided within your crypt string when posting your transaction registration.	Please check to ensure that a Success URL is being provided with each transaction as this is a required field. A transaction is unable to be registered without this information.
-3031	MALFORMED	The Amount value is required.	"Your transaction registration POST must contain an Amount field specifying the total value of the transaction that needs to be authorised.  The Amount field should only contain numbers, with no separator characters and formatted to the correct number of decimal places for the specified currency.  For example if your currency is GBP, the Amount field value can be sent as 123.45, 4567.89, 0.36, 12.30 but not as 123.456, 4,567.89, .36 or 12.3."	Please check the data you are posting through to Sage Pay and ensure that the Amount field is being passed.·For more information please refer to the protocol guides.
+3031	MALFORMED	The Amount value is required.	"Your transaction registration POST must contain an Amount field specifying the total value of the transaction that needs to be authorised.  The Amount field should only contain numbers, with no separator characters and formatted to the correct number of decimal places for the specified currency.  For example if your currency is GBP, the Amount field value can be sent as 123.45, 4567.89, 0.36, 12.30 but not as 123.456, 4,567.89, .36 or 12.3."	Please check the data you are posting through to Sage Pay and ensure that the Amount field is being passed.ﬂFor more information please refer to the protocol guides.
 3032	INVALID	The Amount format is invalid.	"The Amount field value can only contain numbers with no separator characters and this should be formatted to the correct number of decimal places for the specified currency.  For example if your currency is GBP, the Amount field value can be sent as 123.45, 4567.89, 0.36, 12.30 but not as 123.456, 4,567.89, .36 or 12.3."	The amount field you are passing through is invalid.  This field is numerical only and can only support values from 0.01 to 100000.00.  Please ensure you are only passing values within this range and not including any separator characters other than the decimal point.
 3033	MALFORMED	The RelatedSecurityKey is required.	"You need to ensure that you always send a value within the RelatedSecurityKey field when sending an automated REFUND, REPEAT or AUTHORISE request to Sage Pay from your sever.  You should be sending the SecurityKey from the original transaction within this field and this can be retrieved from your database and this value should contain 10 alphanumeric characters."	"You will need to check your code to verify the SecurityKey from the original transaction to which you are attempting to send your REFUND, REPEAT or AUTHORISE request to.  The SecurityKey value should contain 10 alphanumeric characters and you must always pass this value within the RelatedSecurityKey field when posting your transaction registration over to Sage Pay."
-3034	MALFORMED	The Vendor or VendorName value is required.	"The Vendor field should contain the vendor name supplied by Sage Pay, or selected by you when completing your online application form.  It will only ever be able to contain a maximum of 16 characters consisting of numbers and letters with no spaces or unusual characters.  You will need to check your code to ensure that you have supplied this value in the Vendor field."	Please check to ensure that a Vendor name is being provided with each transaction as this is a required field.· A transaction is unable to be registered without this information.
+3034	MALFORMED	The Vendor or VendorName value is required.	"The Vendor field should contain the vendor name supplied by Sage Pay, or selected by you when completing your online application form.  It will only ever be able to contain a maximum of 16 characters consisting of numbers and letters with no spaces or unusual characters.  You will need to check your code to ensure that you have supplied this value in the Vendor field."	Please check to ensure that a Vendor name is being provided with each transaction as this is a required field.ﬂ A transaction is unable to be registered without this information.
 3035	INVALID	The VendorTxCode format is invalid.	"The VendorTxCode should contain your unique transaction reference identifying each separate transaction registration. If any unacceptable characters are passed or the value is longer than it should be, you will receive this system message."	"It should contain no more than 40 characters consisting of letters and numbers only with no spaces or special characters.  The only exceptions that can be provided as characters along with letters and numbers are hyphens(-), underscores (_) or full stops(.).  You must always check your code to ensure that you are providing a valid identifier within the VendorTxCode field for all transactions."
 3036	INVALID	The Description format is invalid.	Your original transaction registration should always contain a description field which should contain a brief description of the transaction being performed. This can be used to describe the goods being purchased or the nature of the transaction.	This field should only contain alphanumeric characters and must be 100 characters or less
 3037	INVALID	The NotificationURL is too long.	The Notification URL will only ever be required when using the Server solution and will allow Sage Pay to communicate with your server.  Your Notification URL must contain a fully qualified domain name (beginning with http:// or https://) and be less than 255 characters in length.	Please check your code to ensure that your Notification URL does not contain more than the maximum number of characters.
@@ -184,8 +184,8 @@ Code	Type	Message	Explanation	Solution
 3047	INVALID	Invalid VPSTxId format.	"You have not provided us with the correct value within the VPSTxId field.  The VPSTxId value uniquely identifies a transaction to the Sage Pay system and if this value has not been submitted in full or this has been sent incorrectly formatted, you will be provided with this error message when the Sage Pay system attempts to validate it."	You will need to check your code to ensure you are capturing the correct value being returned from Sage Pay and also that the VPSTxId you are submitting back to Sage Pay is correct.
 3048	INVALID	The CardNumber length is invalid.	This system message is only generated if you have integrated using the Direct method where you are collecting the card details to send across to Sage Pay.  If you have received this system message it it likely that you have not provided us with a valid card number within the CardNumber field.	You will only ever be required to provide us with the large numbers situated on the front of the customer's card and you will need to ensure that there are no spaces or hyphens being used as separator characters when providing us with this value.
 3049	INVALID	The StartDate format is invalid.	"This system message would only be generated if you have integrated using the Direct method where you are colleting the customers card details to send across to Sage Pay.  If you have received this system message, it is likely that you are incorrectly supplied the Start date."	"The card StartDate value should always be presented in a MMYY format (a two-digit month followed by a two-digit year) and this should never include any separators such as a forward slash (/) or a hyphen (-).  The MM and YY values should also be valid month and year numerics, for example the MM values should only ever be between 00 and 12 and the YY values should only ever be between 00 and 99.  If a card StartDate value of 1509 was passed this would generate this error code."
-3050	INVALID	The ExpiryDate format is invalid.	"This system message would only be generated if you have integrated using the Direct method where you are colleting the customers card details to send across to Sage Pay.· If you have received this system message, it is likely that you are incorrectly supplied the Expiry date."	"The card ExpiryDate value should always be presented in a MMYY format (a two-digit month followed by a two-digit year) and this should never include any separators such as a forward slash (/) or a hyphen (-).  The MM and YY values should also be valid month and year numerics, for example the MM values should only ever be between 00 and 12 and the YY values should only ever be between 00 and 99.  If a card ExpiryDate value of 1509 was passed this would generate this error code."
-3051	MALFORMED	The CardNumber field is required.	When sending your transaction registration POST to Sage Pay using the Direct solution you will always need to send a card number as you will be hosting your own payment page.· You will receive this error message if we are not provided with the CardNumber field when you have POSTed your transaction registration.	This is a mandatory field an you will need to ensure that you are proviinge us with the large numbers situated on the front of the customer's card and you will need to ensure that there are no spaces or hyphens being used as separator characters when providing us with this value.
+3050	INVALID	The ExpiryDate format is invalid.	"This system message would only be generated if you have integrated using the Direct method where you are colleting the customers card details to send across to Sage Pay.ﬂ If you have received this system message, it is likely that you are incorrectly supplied the Expiry date."	"The card ExpiryDate value should always be presented in a MMYY format (a two-digit month followed by a two-digit year) and this should never include any separators such as a forward slash (/) or a hyphen (-).  The MM and YY values should also be valid month and year numerics, for example the MM values should only ever be between 00 and 12 and the YY values should only ever be between 00 and 99.  If a card ExpiryDate value of 1509 was passed this would generate this error code."
+3051	MALFORMED	The CardNumber field is required.	When sending your transaction registration POST to Sage Pay using the Direct solution you will always need to send a card number as you will be hosting your own payment page.ﬂ You will receive this error message if we are not provided with the CardNumber field when you have POSTed your transaction registration.	This is a mandatory field an you will need to ensure that you are proviinge us with the large numbers situated on the front of the customer's card and you will need to ensure that there are no spaces or hyphens being used as separator characters when providing us with this value.
 3052	MALFORMED	The ExpiryDate field is required.	You will receive this error message if you did not send an ExpiryDate field containing this value in your transaction registration POST.	"The card ExpiryDate value should always be presented in a MMYY format (a two-digit month followed by a two-digit year) and this should never include any separators such as a forward slash (/) or a hyphen (-).  The MM and YY values should also be valid month and year numerics, for example the MM values should only ever be between 00 and 12 and the YY values should only ever be between 00 and 99.  If a card ExpiryDate value of 1509 was passed this would generate this error code."
 3053	INVALID	The IssueNumber format is invalid.	This system message would only be generated if you are using the Direct integration method and the issue number field which you are submitting to us is incorrect.	"All issue numbers must be entered exactly as they appear on the card, without spaces (either 1 or 2 digits)."
 3054	INVALID	The CardType length is invalid.	This system message is only generated if you are using the Direct integration method and the card type field you are submitting to us is the incorrect length.	"The card type field contain a value which specifies the card that is being sent to us.  You will need to check your code to ensure that the field is sending the correct code. Please ensure that you are posting this field with each transaction and that you use the correct value.  Accepted values for the CardType field are: VISA (Visa Credit), MC (Mastercard Debit and Credit), DELTA (Visa Debit), UKE (Visa Electron), SOLO, MAESTRO (Solo and Maestro), AMEX (American Express), DC (Diner's Club), JCB (Japan Credit Bureau cards) and LASER (Laser cards). To check the you are sending the correct card type, please see the following FAQ: www.sagepay.com/help/faq/how_can_i_test_the_different_card_types"
@@ -195,7 +195,7 @@ Code	Type	Message	Explanation	Solution
 3058	INVALID	The CardHolder field is required.	You must send the card holder's name in the CardHolder field of your transaction registration POST otherwise you will receive this system message.	You must ensure that you are sending the name of the cardholder only within this field and that no numerics or invalid characters are being posted.
 3059	INVALID	The CardHolder value is too long.	"The CardHolder field in the transaction registration POST can only contain up to 50 characters. If the card holder's name is longer than that, just send the first 50 characters in your POST."	You must ensure that you are sending no more than 50 characters within your transaction registration POST and if the cardholder's name is longer than this you will need to send the first 50 characters only.
 3060	INVALID	The GiftAid format is invalid.	"The GiftAid field can only contain 1 (Allow Gift Aid) or 0 (Do not Allow it). If you are passing any other characters, or spaces, you will receive this error."	You will need to ensure that your code is passing either a value of 1 (Allow Gift Aid) or 0 (Do not Allow it) within this field. Any other values or characters will not be allowed and will result in this error message.
-3061	INVALID	The AuthCode format invalid.	"This system message is only generated if you are attempting a Manual transaction where you are sending the Auth code to us within My Sage Pay.· The AuthCode field supplied in a Manual transaction registration can only contain 15 characters or less. It is normally a number, but can contain characters depending on the acquiring bank."	Please ensure you send exactly what was provided to you by your bank during your Code 10 check.
+3061	INVALID	The AuthCode format invalid.	"This system message is only generated if you are attempting a Manual transaction where you are sending the Auth code to us within My Sage Pay.ﬂ The AuthCode field supplied in a Manual transaction registration can only contain 15 characters or less. It is normally a number, but can contain characters depending on the acquiring bank."	Please ensure you send exactly what was provided to you by your bank during your Code 10 check.
 3062	INVALID	"The CardNumber field should only contain numbers. No spaces, hyphens or other characters or separators."	You will receive this system message when the card number details have been entered incorrectly.	You will need to ensure that you are sending numerics only within this field with no spaces between any of the numbers.  You will need to send the long card number only which is situated on the front of the customers card.
 3063		The 3DStatus value is too long.		There is a problem with the details that have been supplied. Please check and retry.
 3064		The ECI format is invalid.		There is a problem with the details that have been supplied. Please check and retry.
@@ -292,121 +292,121 @@ Code	Type	Message	Explanation	Solution
 3157		The Card City value is too long.		There is a problem with the details that have been supplied. Please check and retry.
 3158		The Card Country field is required.		There is a problem with the details that have been supplied. Please check and retry.
 3159		The Card Country value is too long.		There is a problem with the details that have been supplied. Please check and retry.
-3160		The Card Country value is invalid.		
-3161		The Card State value is too long.		
-3162		The Card State field is required.		
-3163		The Accept field is required.		
-3164		The Accept value is invalid.		
-3165		The paypal callback is invalid.		
-3166		The transaction can not be repeated. Original transaction was not a billing agreement.		
-3167		"The BillingAgreement flag is invalid. If a value is supplied, should contain either 0 or 1."		
-3168		The PhoneID value is required.		
-3169		The PhoneID value is too long.		
-3170		The PhoneID is not registered to any vendor account.		
-3171		The vendor account does not support direct refund.		
-3172		"The create token value is invalid, should be either 1 or 0."		
-3173		The Customer data is invalid.		
-3174		The Surcharge data is invalid.		
-3175		The Surcharge XML is too long.		
-3176		The Customer XML is too long.		
-3177		The Basket XML is too long.		
-3178		The Vendor Data is too long.		
-3179		The crypt string has been encoded incorrectly		
-3180		The account number is too long.		
-3181		The account number is invalid.		
-3182		The account number is missing.		
-3183		The bank code is too long.		
-3184		The bank code is invalid.		
-3185		The bank code is missing.		
-3186		Invalid PPRO response status.		
-3187		The website reference is too long.		
-3188		The surcharge xml contains a fixed value with the incorrect number of decimal points for the currency.		
-3189		The vendor data is invalid.		
-3190		The token value format is invalid.		
-3191		"The storetoken value is invalid, If a value is supplied, should contain either 0 or 1."		
-3192		Cannot find deferred transaction		
-3193		Cannot create a token from a token transaction.		
-3194		Must have only one basket field specified		
-3195		The line item amount details do not add up correctly.		
-4000	INVALID	The VendorName is invalid or the account is not active.		
-4001	INVALID	The VendorTxCode has been used before. All VendorTxCodes sshould be unique.		
-4002		An active transaction with this VendorTxCode has been found but the Amount is different.		
-4003		An active transaction with this VendorTxCode has been found but the Currency is different.		
-4004		An active transaction with this VendorTxCode has been found but the TxType is different.		
-4005		An active transaction with this VendorTxCode has been found but the some data fields are different.		
-4006	INVALID	The TxType requested is not supported on this account.		
-4007		The TxType requested is not active on this account.		
-4008		The Currency is not supported on this account.		
-4009		The Amount is outside the allowed range.		
-4010		The Amount including surcharge is outside the allowed range.		
-4019		Client IP address is restricted by the vendor.		
-4020	INVALID	Information received from an Invalid IP address.		
-4021		The Card Range not supported by the system.		
-4022		The Card Type selected does not match card number.		
-4023		The Card Issue Number length is invalid.		
-4024		The Card Issue Number is required.		
-4025	INVALID	The Card Issue Number is invalid.		
-4026		3D-Authentication failed. This vendor's rules require a successful 3D-Authentication.		
-4027		3D-Authentication failed. Cannot authorise this card.		
-4028		The RelatedVPSTxId cannot be found.		
-4029		The RelatedVendorTxCode does not match the original transaction.		
-4030		The RelatedTxAuthNo does not match the original transaction.		
-4031		The RelatedSecurityKey does not match the original transaction.		
-4032		The original transaction was carried out by a different Vendor.		
-4033	INVALID	The Currency does not match the original transaction.		
-4034	INVALID	The Transaction has already been Refunded.		
-4035	INVALID	This Refund would exceed the amount of the original transactaction.		
-4036	INVALID	The Transaction has already been Voided.		
-4037	INVALID	The Related transaction is not a DEFFERED payment.		
-4038	INVALID	The Transaction has already been Released.		
-4039		The Tranaction is not in a DEFERRED state.		
-4040	INVALID	The Transaction has been Aborted.		
-4041		The Transaction type does not support the requested operation.		
-4042	INVALID	The VendorTxCode has been used before for another transaction.		
-4043		The Vendor Rule Bases disallow this card range.		
-4044	INVALID	This Authorise would exceed 115% of the value of the original transaction.		
-4045	INVALID	The Related transaction is not an AUTHENTICATE.		
-4046	REJECTED	3D-Authentication required. Cannot authorise this card.		
-4047	INVALID	The vendor account is closed.		
-4048	INVALID	The Card Number length is invalid.		
-4049	INVALID	The ReleaseAmount larger the original amount.		
-4050		Refund can no be performed until original transaction is settled.		
-4051		TransactionType of the related transaction is not supported for this operation.		
-4052		Invalid system used for the related transaction.		
-4053		Transaction completed already.		
-4054		Transaction not in paypal registered state.		
-4055		"The amount value is invalid, this value must be no more than + or - 15% of the original value."		
-4056		The vendor does not match with the vendor who registered the token.		
-4057		There are no card details registered for the token.		
-4058		"The payment requires authentication, Token system does not support this."		
-4059		Cannot authorise this transaction.		
-5001	INVALID	The required service is not available or invalid.		
-5002	INVALID	Invalid request.		
-5003	ERROR	Internal server error.		
-5004	INVALID	The Transaction state is invalid.		
-5005	INVALID	The Vendor configuration is missing or invalid.		
-5007	INVALID	Invalid request. A required parameter is missing.		
-5008	ERROR	Missing Custom vendor template.		
-5009	INVALID	The Encryption password is missing.		
-5010	INVALID	The CardNumber is required.		
-5011	INVALID	The check digit invalid. Card failed the LUHN check. Check the card number and resubmit.		
-5012	MALFORMED	The CardHolder name is required.		
-5013	INVALID	The card has expired.		
-5014	MALFORMED	The card expiry date is required.		
-5015	INVALID	Card validation failure.		
-5016	INVALID	The StartDate is in the future. The card is not yet valid.		
-5017	MALFORMED	The Security Code is required.		
-5018	INVALID	The Security Code length is invalid.		
-5019	INVALID	The Security Code is not a number.		
-5020	MALFORMED	The Card Address is required.	You must enter the address to which the card being used is registered in the card address box provided on the payment page.	You will need to ensure that the address to which the card being used is registered is entered within the edit box on the payment page.· If no card address is provided you will be presented with this error message.
+3160		The Card Country value is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3161		The Card State value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3162		The Card State field is required.		There is a problem with the details that have been supplied. Please check and retry.
+3163		The Accept field is required.		There is a problem with the details that have been supplied. Please check and retry.
+3164		The Accept value is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3165		The paypal callback is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3166		The transaction can not be repeated. Original transaction was not a billing agreement.		There is a problem with the details that have been supplied. Please check and retry.
+3167		"The BillingAgreement flag is invalid. If a value is supplied, should contain either 0 or 1."		There is a problem with the details that have been supplied. Please check and retry.
+3168		The PhoneID value is required.		There is a problem with the details that have been supplied. Please check and retry.
+3169		The PhoneID value is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3170		The PhoneID is not registered to any vendor account.		There is a problem with the details that have been supplied. Please check and retry.
+3171		The vendor account does not support direct refund.		There is a problem with the details that have been supplied. Please check and retry.
+3172		"The create token value is invalid, should be either 1 or 0."		There is a problem with the details that have been supplied. Please check and retry.
+3173		The Customer data is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3174		The Surcharge data is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3175		The Surcharge XML is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3176		The Customer XML is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3177		The Basket XML is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3178		The Vendor Data is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3179		The crypt string has been encoded incorrectly		There is a problem with the details that have been supplied. Please check and retry.
+3180		The account number is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3181		The account number is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3182		The account number is missing.		There is a problem with the details that have been supplied. Please check and retry.
+3183		The bank code is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3184		The bank code is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3185		The bank code is missing.		There is a problem with the details that have been supplied. Please check and retry.
+3186		Invalid PPRO response status.		There is a problem with the details that have been supplied. Please check and retry.
+3187		The website reference is too long.		There is a problem with the details that have been supplied. Please check and retry.
+3188		The surcharge xml contains a fixed value with the incorrect number of decimal points for the currency.		There is a problem with the details that have been supplied. Please check and retry.
+3189		The vendor data is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3190		The token value format is invalid.		There is a problem with the details that have been supplied. Please check and retry.
+3191		"The storetoken value is invalid, If a value is supplied, should contain either 0 or 1."		There is a problem with the details that have been supplied. Please check and retry.
+3192		Cannot find deferred transaction		There is a problem with the details that have been supplied. Please check and retry.
+3193		Cannot create a token from a token transaction.		There is a problem with the details that have been supplied. Please check and retry.
+3194		Must have only one basket field specified		There is a problem with the details that have been supplied. Please check and retry.
+3195		The line item amount details do not add up correctly.		There is a problem with the details that have been supplied. Please check and retry.
+4000	INVALID	The VendorName is invalid or the account is not active.	The VendorName field should only ever contain the Vendor Name supplied by Sage Pay or selected by you during your application process.· The VendorName will be upto 16 characters or less and will only contain letters and numbers but no spaces or unusual characters.	You will need to check your code to ensure that you are providing the VPS Vendor Name supplied by Sage Pay during your application process.  Your Vendor Name must contain no more than 16 characters with no spaces or unsual characters.
+4001	INVALID	The VendorTxCode has been used before. All VendorTxCodes sshould be unique.	Every transaction registration that is sent over to the Sage Pay systems must have its own unique VendorTxCode.  If the VendorTxCode matches that of a previous transaction registration for a successful transaction against your account you will receive this error message.	You must check your code to ensure that you are posting a unique VendorTxCode for each new transaction.  If you are posting over a VendorTxCode that has been used for a previous transaction registration for a successful transaction against your account you will be presented with this error message.
+4002		An active transaction with this VendorTxCode has been found but the Amount is different.		There is a problem with the details that have been supplied. Please check and retry.
+4003		An active transaction with this VendorTxCode has been found but the Currency is different.		There is a problem with the details that have been supplied. Please check and retry.
+4004		An active transaction with this VendorTxCode has been found but the TxType is different.		There is a problem with the details that have been supplied. Please check and retry.
+4005		An active transaction with this VendorTxCode has been found but the some data fields are different.		There is a problem with the details that have been supplied. Please check and retry.
+4006	INVALID	The TxType requested is not supported on this account.	"The TxType field (also called PaymentType in very old protocols) should contain the type of transaction you wish to perform. Values such as PAYMENT, DEFERRED, REFUND etc. as outlined in our Protocols. If any other value is passed within this field, the Sage Pay system will not be able to identify how to process the transaction."	Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4007		The TxType requested is not active on this account.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4008		The Currency is not supported on this account.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4009		The Amount is outside the allowed range.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4010		The Amount including surcharge is outside the allowed range.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4019		Client IP address is restricted by the vendor.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4020	INVALID	Information received from an Invalid IP address.	"If you are using our Direct or Server integration methods, the Sage Pay system will only accept registration POSTs from servers whose IP Addresses have been registered with us. If we receive a POST from any other server, you will see this error message."	The IP address of each new server you POST from will need to be registered with Sage Pay.  This can be done within the My Sage Pay admin area under the Account administration section.
+4021		The Card Range not supported by the system.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4022		The Card Type selected does not match card number.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4023		The Card Issue Number length is invalid.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4024		The Card Issue Number is required.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4025	INVALID	The Card Issue Number is invalid.	e card issue number length must be one or two digits long and entered exactly as it is displayed on the customer's card.· If any other characters or digits are entered then this error message will be displayed.	You will need to ensure that the card issue number length is being passed as it is displayed exactly on the customer's card.  This will either be one or two digits long and if any additional characters or digits are entered you will be presented with this error message.
+4026		3D-Authentication failed. This vendor's rules require a successful 3D-Authentication.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4027		3D-Authentication failed. Cannot authorise this card.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4028		The RelatedVPSTxId cannot be found.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4029		The RelatedVendorTxCode does not match the original transaction.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4030		The RelatedTxAuthNo does not match the original transaction.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4031		The RelatedSecurityKey does not match the original transaction.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4032		The original transaction was carried out by a different Vendor.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4033	INVALID	The Currency does not match the original transaction.	You are only able to refund in the same currency as the original transaction. If you attempt to refund in another different currency to the original payment then you will receive this system message.· Please check your code to ensure you are only sending REFUND in a currency that matches the original payment.	"You will need to check your code to ensure that the currency type is the same as the original transaction.  When attempting to perform a REFUND, you can only refund in the same currency type as the original transaction."
+4034	INVALID	The Transaction has already been Refunded.	The transaction you are attempting to REFUND has already been fully refunded. You are therefore unable to perform any further refunds against the original transaction.	"Unfortunately, you will not be able to perform a REFUND against this transaction as it has been fully refunded already.  No further refunds can now be performed against the original transaction."
+4035	INVALID	This Refund would exceed the amount of the original transactaction.	"This system message will appear when the REFUND you are attempting, which in combination with all other REFUNDs againsts the original transaction, would exceed the value of that transaction so the REFUND cannot be permitted."	You will not be able to perform the REFUND that you are attempting as the total amount including all other REFUNDs performed against the original transaction exceed the total value of the original transaction.  The total value of all REFUNDs can never ever exceed the original transaction value amount.
+4036	INVALID	The Transaction has already been Voided.	If the transaction has already been VOIDed you will be presented with this error message as you are only able to VOID a transaction once.	"You will only be able to perform a VOID against a transaction once.  Unfortunately there is no way o reverse a voided transaction and if you need to take the payment again, you will need to put through a new payment transaction."
+4037	INVALID	The Related transaction is not a DEFFERED payment.	"If you are sending a RELEASE or ABORT POST to the Sage Pay system, but the related transaction you have specified is not a DEFERRED transaction, you will receive this system message. You can only RELEASE or ABORT a DEFERRED transaction."	You will not be able to perform a RELEASE or an ABORT against any other payment type other than a DEFERRED transaction.  The related transaction that you are attempting to send a RELEASE or ABORT POST to is not a DEFERRED transaction.  You will need to check to see that the original transaction you are attempting to RELEASE or ABORT is a DEFERRED transaction.
+4038	INVALID	The Transaction has already been Released.	The DEFERRED transaction you are attempting to RELEASE has already been released. You are only able to RELEASE a DEFERRED transaction once and any further attempts will result in this system message being displayed.	You will not be able to perform a RELEASE against a DEFERRED transaction that has already been released.
+4039		The Tranaction is not in a DEFERRED state.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4040	INVALID	The Transaction has been Aborted.	"The DEFERRED transaction you are attempting to RELEASE has already been ABORTed. If you are RELEASE a transaction after it has been ABORTed, you will receive this system message."	"You will not be able to perform a RELEASE against a DEFERRED transaction which has already been ABORTed.  Unfortunately, you are unable to reverse an aborted transaction and if you need to release the transaction, you will need to put through the transaction again."
+4041		The Transaction type does not support the requested operation.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4042	INVALID	The VendorTxCode has been used before for another transaction.	Every transaction you send to the Sage Pay Systems must have a unique VendorTxCode. You will receive this error if the VendorTxCode you have used for a new transaction registration matches that of a previously successful transaction against your account	You will need to check your code and ensure that your server/shopping cart is generating a unique VendorTxCode  for each new transaction.  If you are being presented with this error message it indicates that you are generating a VendorTxCode that matches that of a previously successful transaction against your account.
+4043		The Vendor Rule Bases disallow this card range.		Please ensure that you are sending the correct value in the TxType field.  More information on the different TxTypes can be found within the protocol document.
+4044	INVALID	This Authorise would exceed 115% of the value of the original transaction.	"You can only AUTHORISE an AUTHENTICATED transaction up to 115% of its value (with all previous AUTHORISEs against that transaction taken into account). The amount you are trying to AUTHORISE would exceed that value, so the authorisation is being denied."	You are attempting to perform an AUTHORISE request against an AUTHENTICATED transaction which will exceed the maximum value of 115% of its orginal value.  All previous AUTHORISE requests in total must not exceed the 115% value and any further AUTHORISE requests will be denied if they exceed the maximum limit.
+4045	INVALID	The Related transaction is not an AUTHENTICATE.	"You can only AUTHORISE an AUTHENTICATED transaction. If the related transaction you are trying to authorise is NOT an AUTHENTICATE transaction, you will receive this system message."	You will only be able to perform an AUTHORISE request against an AUTHENTICATED transaction and no other payment type.· The related transaction that you are trying to AUTHORISE is NOT and AUTHENTICATED transaction.· Please check the related transaction is a AUTHENTICATED transaction.
+4046	REJECTED	3D-Authentication required. Cannot authorise this card.	"The card scheme requires you to pass the 3D-Authentication process in order to proceed with your payment. If you receive this message, then you have failed to be authenticated through 3D-Secure and the card provider will not allow you to proceed with the transaction until you pass."	You have not passed the 3D-Authentication process which is required in order for this transaction to proceed with your payment.  This error message will be displayed when you have failed to be authenticated through 3D-Secure and the card provided will not allow you to proceed until this has been passed.
+4047	INVALID	The vendor account is closed.	You are attempting to POST a transaction to Sage Pay using a Vendor account that has been closed.	You will need to contact Sage Pay accounts as you are attempting to POST a transaction to Sage Pay using a Vendor account that has been closed.  If you believe this account should not be closed we will be able to investigate this issue further immediately.
+4048	INVALID	The Card Number length is invalid.	A valid card number has not been supplied in the Card Number field.	You will need to check to ensure that the card number length being provided is correct and that you are sending the full card number situated on the front of the card.  You must also ensure that there are no spaces within this card number.
+4049	INVALID	The ReleaseAmount larger the original amount.	"The ReleaseAmount field must be a valid amount, formatted to the correct number of decimal places for the chosen currency, AND must be less than or equal to the amount of the original Deferred transaction that you are attempting to Release."	You will need to ensure that you are passing a valid amount formatted to the correct number of decimal places for the chosen currency.  The ReleaseAmount value must also be less than or equal to the amount of the original Deferred transaction in which you are attempting to perform the Release.
+4050		Refund can no be performed until original transaction is settled.		There is a problem with the details that have been supplied. Please check and retry.
+4051		TransactionType of the related transaction is not supported for this operation.		There is a problem with the details that have been supplied. Please check and retry.
+4052		Invalid system used for the related transaction.		There is a problem with the details that have been supplied. Please check and retry.
+4053		Transaction completed already.		There is a problem with the details that have been supplied. Please check and retry.
+4054		Transaction not in paypal registered state.		There is a problem with the details that have been supplied. Please check and retry.
+4055		"The amount value is invalid, this value must be no more than + or - 15% of the original value."		There is a problem with the details that have been supplied. Please check and retry.
+4056		The vendor does not match with the vendor who registered the token.		There is a problem with the details that have been supplied. Please check and retry.
+4057		There are no card details registered for the token.		There is a problem with the details that have been supplied. Please check and retry.
+4058		"The payment requires authentication, Token system does not support this."		There is a problem with the details that have been supplied. Please check and retry.
+4059		Cannot authorise this transaction.		There is a problem with the details that have been supplied. Please check and retry.
+5001	INVALID	The required service is not available or invalid.	You are attempting to POST data to a Sage Pay Service that does not exist or is not currently available.	You will need to check the URL to which you are attempting to send your POST to.  The Sage Pay service that you are attempting to contact does not exist or is currently unavailable. You will need to contact Sage Pay support once you have confirmed the URL that you are attempting to contact.
+5002	INVALID	Invalid request.	You are attempting to POST data to a sage Pay Service that does not exist or is not currently available.	You will need to check the URL to which you are attempting to send your POST to.  The Sage Pay service that you are attempting to contact does not exist or is currently unavailable. You will need to contact Sage Pay support once you have confirmed the URL that you are attempting to contact.
+5003	ERROR	Internal server error.	"If you receive this message, a code related error has occurred on the Sage Pay systems. This could have been caused by the information posted to the Sage Pay server or by an issue with the Sage Pay server."	"Please reveiw the information your server is posting to the Sage Pay server.  If you are unable to identify the cause, please contact the Sage Pay support team if you are still being presented with this error message and we will look into this issue further."
+5004	INVALID	The Transaction state is invalid.	"This error occurs if the Sage Pay system attempts to do something to a transaction that is not in a state where such an action is acceptable. For example, it cannot archive an incomplete transaction into the reporting tables."	You will need to contact the Sage Pay support team to notify them how you generated this error message to enable them to look into the cause further and escalate to their live development team.  This error normally occurs when an action is not acceptable if the Sage Pay system attempts to do something to a transaction.
+5005	INVALID	The Vendor configuration is missing or invalid.	"If you receive this error, then the Vendor account has not been successfully set up on the Sage Pay servers."	You will need to contact the Sage Pay support team to inform them which Vendor account you were using when this error occurred.  This error message relates to the Vendor account not having been set up successfully on the Sage Pay servers.
+5007	INVALID	Invalid request. A required parameter is missing.	You are attempting to POST data to a Sage Pay Service that does not exist or is not currenctly available.	You will need to check the URL to which you are attempting to send your POST to.  The Sage Pay service that you are attempting to contact does not exist or is currently unavailable. You will need to contact Sage Pay support once you have confirmed the URL that you are attempting to contact.
+5008	ERROR	Missing Custom vendor template.	"You have selected to use Custom templates in your My Sage Pay admin area, but you do not have any custom templates uploaded. This will cause the payment pages not to appear and generate this error."	"You do not have any Custom templates uploaded onto your Sage Pay account and have selected to use the Custom templates option within your live My Sage Pay account.  By doing this it will cause the Sage Pay payment pages to not appear and this error message will be generated.  You will need to ensure that you have logged back into your My Sage Pay admin account and selected the Default templates in order for the Sage Pay payment pages to re-appear.  If you are wishing to use custom templates, you will need to download the relevant files, amend and send over to use to be uploaded."
+5009	INVALID	The Encryption password is missing.	"If you have not registered your Sage Pay account to use the Form integration method and attempt to send a transaction registration POST using this method of integration, you will receive this error."	When attempting to post a transaction registration using the Form integration method you will need to have had an encryption password generated by Sage Pay.  If you have not requested that you are wanting to use the Form solution and attempt to post a transaction registration you will be presented with this error message.  Please contact Sage Pay support who will be able to generate your Form encryption password to enable you to post Form transaction registrations.
+5010	INVALID	The CardNumber is required.	A credit or debit card number must be entered in the card number box provided on the payment screens.  The credit or debit card number entered must be that of the card type selected before proceeding to enter the credit or debit card number.	You will need to ensure that you have provided a debit or credit card number within the card number box provided on the payment screens.  The debit or credit card number entered must match that of the card type selected before you have been presented with the option of entering the debit or credit card details.
+5011	INVALID	The check digit invalid. Card failed the LUHN check. Check the card number and resubmit.	The card number that you have entered on the payment pages is not a valid card type.† You will need to ensure that you have entered the full card number correctly and only those numbers that appear on the front of the card and try again.	You will need to ensure that the card number that has been entered on the payment pages is a valid card type.  You will need to check that the full card number has been entered correctly and that this matches that of the large card numbers presented on the front of the customers card.
+5012	MALFORMED	The CardHolder name is required.	You will need to enter the name of the credit or debit card holder in the Card Holder box provided on the payment page.	You will need to ensure that you have entered the name of the credit or debit card holder within the edit box that has been provided on the payment page.  If no value is entered here you will be presented with this error message.
+5013	INVALID	The card has expired.	"The expiry date of the card that you have entered on the payment pages is in the past.  You will need to check your card, and if it has expired, you will need to destroy the card and use a different card type for the transaction."	You will need to check your code to ensure that the expiry date of the card that you have entered on the payment pages is not in the past or has expired. If the card has expired it will need to be destroyed and a different card type will need to be used ensuring that the expiry date has not passed.
+5014	MALFORMED	The card expiry date is required.	The expiry date of the credit or debit card must be entered in the expiry date box provided on the payment screens in order to continue with the transaction.	You must ensure that you are entering the expiry date of the card within the correct format in the expiry date box section provided on the payment screens.  This will need to be provided in order for the transaction to be able to continue.
+5015	INVALID	Card validation failure.	The card number that you have entered cannot be validated and/or identified by the Sage Pay systems.  You will need to use a different card if you wish to proceed with the transaction.	"You will need to ensure that you are entering the correct card number as situated on the front of the customer's card.  If this card number can still not be validated by the Sage Pay system you will need to use a different card type in order to proceed with the transaction.  You will also be able to contact Sage Pay support and provide them with the card type, card-issuing bank and the first nine digits of the card.  Sage Pay will then be able to add this card type to their card bin range."
+5016	INVALID	The StartDate is in the future. The card is not yet valid.	"The start date that you have selected is later than the current date.  If this is correct, then the card is not yet valid and must not be used and you will need to use your previous card if this was a replacement card issued by your bank.  If you had entered the start date incorrectly please enter the correct date and try again."	"You will need to ensure that the start date selected is not later than the current date.  By selecting a card start date that is later it will mean that the card is not yet valid and must not be used.  You will need to use the previous card if this was a replacement card issued by your card-issuing bank. Alternatively, if you had entered the start date incorrectly please re-enter the correct start date and start again."
+5017	MALFORMED	The Security Code is required.	"You will need to enter the CV2 or card security code on the payment pages in order to continue.  If no security code (CV2/CVV) has been provided, you will receive this system message."	You will need to check your code to ensure that the CV2 value provided consists of either three or four digits only depending on the card type selected.  The CV2 value can be found of the back of the signature strip for most card types and will consist of three digits whereas an American Express card type will consist of four digits and this will be situated on the front of the card.
+5018	INVALID	The Security Code length is invalid.	The CV2 code that has been entered is invalid and must consist of either three or four digits depending on the card type selected.	You will need to check your code to ensure that the CV2 value provided consists of either three or four digits only depending on the card type selected.  The CV2 value can be found of the back of the signature strip for most card types and will consist of three digits whereas an American Express card type will consist of four digits and this will be situated on the front of the card.
+5019	INVALID	The Security Code is not a number.	You have entered an incorrect value for the card security code which is invalid. Any values provided which is not numeric will generate this system message.	You will need to check your code to ensure  that you are entering numeric values only and that no letters are being passed over.  As detailed above the card security code will consist of either three or four digits only depending on the card type selected.
+5020	MALFORMED	The Card Address is required.	You must enter the address to which the card being used is registered in the card address box provided on the payment page.	You will need to ensure that the address to which the card being used is registered is entered within the edit box on the payment page.ﬂ If no card address is provided you will be presented with this error message.
 5021	INVALID	The Card Address is too long.	"You will not be able to enter more than 200 characters in the card address box on the payment pages.  If the address is longer than 200 characters, you will receive this system message."	You will need to check your code to ensure that you have not entered more than 200 characters within this field on the payment pages.  If the card address consists of more than 200 characters please just entered the first 200 characters in order to continue.
-5022	MALFORMED	The Post Code value is required.	You must enter the post code to which the card being used is registered in the post code box provided on the payment page in order to continue.	You must ensure that a post code value has been entered within the edit box that has been provided on the payment page.· The post code value must be that to where the card being used is registered in order for the transaction to continue.
+5022	MALFORMED	The Post Code value is required.	You must enter the post code to which the card being used is registered in the post code box provided on the payment page in order to continue.	You must ensure that a post code value has been entered within the edit box that has been provided on the payment page.ﬂ The post code value must be that to where the card being used is registered in order for the transaction to continue.
 5023	INVALID	The Post Code value is too long.	You will only be able to enter up to 10 characters in the card post code box on the payment pages.  If your post code is longer than 10 characters then please just enter the first 10 characters in order to continue.	You will need to check your code to ensure that your server is not sending more than 10 characters within this field.
-5024	INVALID	The CardHolder value is too long.	You will only be able to enter up to 50 characters in the card holder name box on the payment pages.· Any value longer than this will generate this system message.	You will need to check your code to ensure that your server is not sending more than 50 characters within this field.
+5024	INVALID	The CardHolder value is too long.	You will only be able to enter up to 50 characters in the card holder name box on the payment pages.ﬂ Any value longer than this will generate this system message.	You will need to check your code to ensure that your server is not sending more than 50 characters within this field.
 5025	NOTAUTHED	The number of authorisation attempts exceeds the limit.	"You will only be able to perform three attempts in order to gain a successful authorisation.  If you have not been able to obtain a successful authorisation after the third attempt, the Sage Pay system will cancel your transaction and present you with this error message."	You will be presented with this error message if you have had three failed attempts to gain a successful authorisation for this transaction.  The Sage Pay system will cancel your transaction as default and present you with this error message after the third failed attempt.
 5026	INVALID	The Card Number is not numeric.	The CardNumber field provided does not contain a valid card number and may contain characters other than numbers such as letters.	"You will need to check your code to confirm that you are sending numbers only and only the large numbers presented on the front of the card with no separator characters (such as spaces or hyphens).  Also, check your code to ensure that you are only sending numeric values within this field and that no letters or invalid characters are contained. You will also need to send only the large card numbers that are being displayed on the front of the customers card within this field."
 5027	INVALID	The Card Start Date is invalid.	The CardStart date that has been entered is not a valid month and year combination.	"You will need to check your code to ensure that you are providing a valid month and year format with no spaces or separator characters, eg 0710 and not as 07/10 should be sent for an expiry date of July 2010.  Please also check your entry before retrying ensuring that the month is entered before the year and that it is entered exactly as it is presented on the card with no separator characters (such as spaces or hyphens)."
-5028	INVALID	The Card Expiry Date is invalid.	The CardExpiry date that has been entered is not a valid month and year combination.	"You will need to check your code to ensure that you are providing a valid month and year format with no spaces or separator characters, eg 0712 and not as 07/12 should be sent for an expiry date of July 2012.· Please also check your entry before retrying ensuring that the month is entered before the year and that it is entered exactly as it is presented on the card with no separator characters (such as spaces or hyphens)."
+5028	INVALID	The Card Expiry Date is invalid.	The CardExpiry date that has been entered is not a valid month and year combination.	"You will need to check your code to ensure that you are providing a valid month and year format with no spaces or separator characters, eg 0712 and not as 07/12 should be sent for an expiry date of July 2012.ﬂ Please also check your entry before retrying ensuring that the month is entered before the year and that it is entered exactly as it is presented on the card with no separator characters (such as spaces or hyphens)."
 5029		3D-Authentication failed. This vendor's rules require a successful 3D-Authentication.		You failed 3D-Authentication. Please try again
 5030	ERROR	"We could not process your message, please check your integration settings or contact the support team."	This error message is presented for transactions processed through the Form integration method only and occurs when the Encryption Password being used does not match the password that we have registered in our system.  This will not allow us to decode your transaction registration POST.	You will need to ensure that you are using the correct Form encryption password that has been registered to your test and live Sage Pay accounts.  If you are using your Simulator encryption password you will receive this error message when posting to the test or live servers.  You will also need to check your code to ensure that your test and live Form encryption passwords are case-sensitive and in the exact same format with no spaces before or after them.
 5031		PayPal returned errors		Please check the PayPal documentation
@@ -418,43 +418,43 @@ Code	Type	Message	Explanation	Solution
 5037		The Delivery Address contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
 5038		The Delivery Phone contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
 5039		The Delivery City contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
-5040		The Billing Surname contains invalid characters.		
-5041		The Billing Firstname contains invalid characters.		
-5042		The Billing Address1 contains invalid characters.		
-5043		The Billing Address2 contains invalid characters.		
-5044		The Billing City contains invalid characters.		
-5045		The Billing Phone contains invalid characters.		
-5046		The Delivery Surname contains invalid characters.		
-5047		The Delivery Firstname contains invalid characters.		
-5048		The Delivery Address1 contains invalid characters.		
-5049		The Delivery Address2 contains invalid characters.		
-5050		The Billing Address contains invalid characters.		
-5051	INVALID	The Contact Number contains invalid characters.		
-5052		The Customer Name contains invalid characters.		
-5053		The Email Message contains invalid characters.		
-5054		The Cardholder Name contains invalid characters.		
-5055		A Postcode field contains invalid characters.		
-5056		The Contact Fax contains invalid characters.		
-5057		The PayPal reference transaction failed.		
-5058		The PayPal billing agreement was not accepted or failed.		
-5068		The encryption method is not supported by this protocol version.		
-5069		Cannot refund mobile transactions for this acquirer. Please use the mobile device.		
-5070		Form transactions are disabled for this vendor in the test environment. Please contact support to re-enable this functionality.		
-5992		Unable complete transaction due to resubmission of authorisation request by client.		
-5993		The network connection to the bank is currently unavailable.		
-5994		"The Authorisation process failed, due to an internal server error."		
-5995		The AVS/CV2cks failed.		
-5996	NOTAUTHED	The Authorisation process timed-out. The bank did not respond within an acceptable time limit.		
-5997		A communication related error occured.		
-5998		Duplicate vendor notification attempt.		
-5999		The Session is invalid or has expired.		
-6000		Data Access Error.		
-10029		"The CardNumber field should only contain numbers. No spaces, hyphens or other characters or separators."		
-11000		There was an error processing this payment type		
-11001		The request was invalid		
-11002		The payment was aborted at the bank site		
-11003		The transaction timed out		
-11004		There was a local error		
-11005		There was error processing the payment at the bank site		
-11006		The transaction was declined		
-11007		The transaction was declined by the bank		
+5040		The Billing Surname contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
+5041		The Billing Firstname contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
+5042		The Billing Address1 contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
+5043		The Billing Address2 contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
+5044		The Billing City contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
+5045		The Billing Phone contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
+5046		The Delivery Surname contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
+5047		The Delivery Firstname contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
+5048		The Delivery Address1 contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
+5049		The Delivery Address2 contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
+5050		The Billing Address contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
+5051	INVALID	The Contact Number contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
+5052		The Customer Name contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
+5053		The Email Message contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
+5054		The Cardholder Name contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
+5055		A Postcode field contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
+5056		The Contact Fax contains invalid characters.		You will need to ensure that your code is not sending invalid characters.
+5057		The PayPal reference transaction failed.		Please check the PayPal documentation
+5058		The PayPal billing agreement was not accepted or failed.		Please check the PayPal documentation
+5068		The encryption method is not supported by this protocol version.		Please contact support
+5069		Cannot refund mobile transactions for this acquirer. Please use the mobile device.		Please use mobile device to refund transaction
+5070		Form transactions are disabled for this vendor in the test environment. Please contact support to re-enable this functionality.		Please contact support to re-enable this functionality.
+5992		Unable complete transaction due to resubmission of authorisation request by client.		Please try again later
+5993		The network connection to the bank is currently unavailable.		Please try again later
+5994		"The Authorisation process failed, due to an internal server error."		Please try again later
+5995		The AVS/CV2cks failed.		Please try again later
+5996	NOTAUTHED	The Authorisation process timed-out. The bank did not respond within an acceptable time limit.		Please try again later
+5997		A communication related error occured.		Please try again later
+5998		Duplicate vendor notification attempt.		Please try again later
+5999		The Session is invalid or has expired.		Please try again later
+6000		Data Access Error.		Please try again later
+10029		"The CardNumber field should only contain numbers. No spaces, hyphens or other characters or separators."		There is a problem with the details that have been entered for a European Payment Type. Please check and retry.
+11000		There was an error processing this payment type		There is a problem with the details that have been entered for a European Payment Type. Please check and retry
+11001		The request was invalid		There is a problem with the details that have been entered for a European Payment Type. Please check and retry.
+11002		The payment was aborted at the bank site		There is a problem with the details that have been entered for a European Payment Type. Please check and retry.
+11003		The transaction timed out		There is a problem with the details that have been entered for a European Payment Type. Please check and retry.
+11004		There was a local error		There is a problem with the details that have been entered for a European Payment Type. Please check and retry.
+11005		There was error processing the payment at the bank site		There is a problem with the details that have been entered for a European Payment Type. Please check and retry.
+11006		The transaction was declined		There is a problem with the details that have been entered for a European Payment Type. Please check and retry.
+11007		The transaction was declined by the bank		There is a problem with the details that have been entered for a European Payment Type. Please check and retry.
