@@ -26,8 +26,9 @@ additoonal column. They would probably support placeholders too.
 The "reason" and "solution" columns are slowly being added by Sagepay, but many are still
 missing, and so are shown as blanks here. Many of the missing messages could be used to
 fill in some of the gaps in the SagePay documentation, so I will keep my eye open for
-any additions. For example, error 3175 is raised when the XML basket string is too long.
+any additions. For example, error 3175 is raised when the surcharge XML string is too long.
 It does not say how long it can be, and the "reason" should be able to tell us it is
 800 characters (I assume 800 ISO8859-1 bytes) even if the documentation remains silent
-on that.
+on that. The application-side validation should be able to catch most of that stuff
+however, based on the limits set in the Transaction metadata.
 
