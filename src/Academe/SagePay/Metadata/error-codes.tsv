@@ -8,17 +8,17 @@ Code	Type	Message	Explanation	Solution
 2		Invalid command. XML root node should be vspaccess.		
 8		"The specified and combination is not valid, or the user may be locked out."		
 9		Error (retrieving/updating or inserting) data. Please email support@sagepay.com with this error.		
-10		Cannot validate the value.		
-11		You cannot execute the specified command without administrative privileges.		
-13		The command passed in the parameter was not recognised.		
-19		Error parsing the request XML. Check the format of your request message.		
-21		Cannot create the new user. Check that the user does not already exist.		
-38		The start date you have supplied is after the end date.		
-39		The end date is more than one month after the start date. You can only return reports at monthly intervals.		
-42		"You must supply one of the following nodes with this command, either OR ."		
-43		Unable to find the transaction for the or supplied.		
-44		The user does not have permission to view this transaction.		
-45		You cannot set the administrator password using vspaccess. Please contact support@sagepay.com if you need this reset.		
+10		Cannot validate the <signature> value.		There is a problem with the details that have been supplied. Please check and retry.
+11		You cannot execute the specified command without administrative privileges.		There is a problem with the details that have been supplied. Please check and retry.
+13		The command passed in the <command> parameter was not recognised.		There is a problem with the details that have been supplied. Please check and retry.
+19		Error parsing the request XML. Check the format of your request message.		There is a problem with the details that have been supplied. Please check and retry.
+21		Cannot create the new user. Check that the user does not already exist.		There is a problem with the details that have been supplied. Please check and retry.
+38		The start date you have supplied is after the end date.		There is a problem with the details that have been supplied. Please check and retry.
+39		The end date is more than one month after the start date. You can only return reports at monthly intervals.		There is a problem with the details that have been supplied. Please check and retry.
+42		"You must supply one of the following nodes with this command, either <vendortxcode> OR <vpstxid>."		There is a problem with the details that have been supplied. Please check and retry.
+43		Unable to find the transaction for the <vendortxcode> or <vpstxid> supplied.		There is a problem with the details that have been supplied. Please check and retry.
+44		The user does not have permission to view this transaction.		There is a problem with the details that have been supplied. Please check and retry.
+45		You cannot set the administrator password using vspaccess. Please contact support@sagepay.com if you need this reset.		There is a problem with the details that have been supplied. Please check and retry.
 77		A valid value is required.		
 78		A valid value is required.		
 99		Start Row and End Row range too large. The difference between the and value must be no greater than 50.		
@@ -94,7 +94,7 @@ Code	Type	Message	Explanation	Solution
 2219		Card Range ##### not added.		There is a problem with the details that have been supplied. Please check and retry.
 2220		Card Range ##### not deleted.		There is a problem with the details that have been supplied. Please check and retry.
 2221		TerminalId ##### not added.		There is a problem with the details that have been supplied. Please check and retry.
-2222		"cannot be before , please check."		There is a problem with the details that have been supplied. Please check and retry.
+2222		"<endrow> cannot be before <startrow>, please check."		There is a problem with the details that have been supplied. Please check and retry.
 2223		<username> and <vendorname> cannot be the same. Please provide different <username> value.		There is a problem with the details that have been supplied. Please check and retry.
 2224		There is no such username associated with your account.		There is a problem with the details that have been supplied. Please check and retry.
 2225		<startdate> cannot be after this month.		There is a problem with the details that have been supplied. Please check and retry.
@@ -112,7 +112,7 @@ Code	Type	Message	Explanation	Solution
 2237		Specified <merchantnumber> already exists.		There is a problem with the details that have been supplied. Please check and retry.
 2238		Unable to find the transaction for the <vpstxid> supplied.		There is a problem with the details that have been supplied. Please check and retry.
 2241		<reportingpassword> can not be less than 8 characters.		There is a problem with the details that have been supplied. Please check and retry.
-2242		Unable to find the transaction for the <t3mtxid> supplied.		There is a problem with the details that have been supplied. Please check and retry.
+2242		Unable to find the transaction for the <vpstxid> supplied.		There is a problem with the details that have been supplied. Please check and retry.
 2243		<endrow> cannot be more than 50 if <startrow> is not provided.		There is a problem with the details that have been supplied. Please check and retry.
 2244		<endrow> cannot be equal to zero.		There is a problem with the details that have been supplied. Please check and retry.
 2245		Fraud screen detail does not exist for this transaction.		There is a problem with the details that have been supplied. Please check and retry.
@@ -132,10 +132,13 @@ Code	Type	Message	Explanation	Solution
 3000		##### element present more than once.		There is a problem with the details that have been supplied. Please check and retry.
 3001		##### element not found.		There is a problem with the details that have been supplied. Please check and retry.
 3002	INVALID	The VPSTxId is invalid.	"This system message is generated when you have not supplied the correct value in the VPSTxId field. It is likely that you received this message when you were attempting to perform a related action to an original transaction (such as a REPEAT, RELEASE, VOID, REFUND etc.) as the VPSTxId, which uniquely identifies a transaction to the Sage Pay system, is generated by us and returned back to you."	"To correct this issue, you will need to check your code to ensure you are submitting the correct value. Also check to see if you have submitted the full VPSTxId, including the hyphens and curly brackets."
+3002b		A valid ##### value is required.		There is a problem with the details that have been supplied. Please check and retry.
 3003	INVALID	The Currency is invalid.	"Currency fields should contain 3-letter ISO 4217 codes e.g. GBP for UK Sterling, USD for U.S Dollars. If you submit a value which is not in line with the ISO 4217 codes or is not set up on your account, you will get this system message"	"Please check you code to ensure the Currency field of your POST contains a valid currency code, you may need to contact our customer services team to check which currencies are set up on your Sage Pay account."
 3003b		"A valid ##### value is required, this should be either ##### or #####."		There is a problem with the details that have been supplied. Please check and retry.
 3004	INVALID	The Amount is invalid	This system message is generated if the amount field contains any other characters than numerics or is not correctly formatted to the correct number of decimal places for the specified currency.	"You will need to make sure that you are sending the correct values for example: 123.45 4567.89 0.34 12.30 but not the values 123.456 4,567.89 .34 12.3 Check your code to ensure you are formatting the Amount field correctly"
+3004b		You must provide at least one ##### element within ##### node.		There is a problem with the details that have been supplied. Please check and retry.
 3005	INVALID	The Amount is outside the mininum and maximum limits.	"The Sage Pay system has a maximum and minimum acceptable transaction value which are 100,000GBP and 0.01GBP respectively, with approximate equivalents in other currencies. Unfortunately, we are unable to process transaction values outside of these ranges.  You will receive this system message if you are passing an amount that is outside of the supported range."	You will need to ensure that the Amount field value which you are submitting is between 0.01 to 100000.00 or equivalent for other currencies
+3005b		XML does not match the protocol. ##### tag either not required for this command or XML structure is incorrect.		There is a problem with the details that have been supplied. Please check and retry.
 3006	INVALID	The fractional part of the Amount is invalid for the specified currency.	"If you have sent an Amount field with an invalid number of digits after the decimal place. e.g. 123.456 instead of 123.46, then you will receive this system message. You may also get this if you send fractional values to currencies that do not have minor units (like Japanese Yen, JPY, which only accepts whole number amounts)"	The Amount you are passing has more digits after than the decimal point than is allowed. Please look into the content of the field and ensure you only pass values to the allowed number of decimal places for that currency.
 3006b		##### must be a numeric value.		There is a problem with the details that have been supplied. Please check and retry.
 3007	INVALID	The RelatedSecurityKey format invalid.	"The RelatedSecurityKey is a unique security value for each transaction and would have been sent back to your server in the status response of the original transaction. If you have received this system message, it is likely that you are attempting to send an automated REFUND, REPEAT or AUTHORISE request against the original transaction from your server (i.e you are performing any of the above outside of the My Sage Pay admin area) and the RelatedSecurityKey does not match with what we have in the database for this transaction."	You will need to check that you are sending the correct SecurityKey of the original transaction in this field. This value is 10 alphanumeric characters long and should be retrieved from your database.
@@ -145,6 +148,7 @@ Code	Type	Message	Explanation	Solution
 3009	MALFORMED	The VendorTxCode is missing.	A VendorTxCode has not been provided within your transaction registration. The VendorTxCode is a required field which is generated by you as a unique identifier for the transaction.	"You will need to check your code to ensure that you are sending this value or that the data is in the correct field. If you are using our Form integration method, you may also sometimes receive this message if your Encryption Password is incorrect, so we would suggest you check this information as well."
 3009b		##### is an invalid date format. Please use format dd/MM/yyyy HH:mm:ss.		There is a problem with the details that have been supplied. Please check and retry.
 3010	INVALID	The RelatedVPSTxId is invalid.	"The VPSTxId uniquely identifies the original transaction which you are attempting to REFUND, REPEAT or AUTHORISE through the Sage Pay system. If you are attempting to perform these functions automatically (i.e you are performing any of the above outside of the My Sage Pay admin area) then you will need to submit the VPSTxId of the original transaction in a field called RelatedVPSTxId. If you have not supplied the correct value in the RelatedVPSTxId field, have not submitted it in full or it is incorrectly formatted then you will receive this system message when our systems try to validate the post."	You will need to check your code to ensure you are submitting the correct VPSTxId relating to the original transaction.  This value would have been sent back to you in the status response of the original transaction from Sage Pay. Your system should be storing this information and be retrieving it from your database when performing the above actions.
+3010b		Duplicate Key		There is a problem with the details that have been supplied. Please check and retry.
 3011	INVALID	The NotificationURL format is invalid.	The NotificationURL which you have provided is not recognised by the Sage Pay servers and therefore we cannot send you all the transaction completion information.	The NotificationURL field must contain a Fully Qualified Domain Name pointing to the externally visible page on your site. You will need to review your code and change the URL to only use a fully qualified URL which must be http:// or https:// and be accessible.
 3012	INVALID	The RelatedVendorTxCode format invalid.	"The RelatedVendorTxCode should contain the VendorTxCode of the original transaction against which you trying to REFUND, REPEAT or AUTHORISE. If this value is incorrect or invalid, then our system will be unable to identify the original transaction."	"You will need to check your code to ensure you are retrieving the correct VendorTxCode from your database and sending it through in the RelatedVendorTxCode field. It should be less than 40 characters long, contain only letters and numbers and match the value passed in the original transaction."
 3013	MALFORMED	The Description is missing.	"Your transaction registration must contain a Description field which contains a brief (100 characters or less) description of the transaction being performed. This provides a description of the goods purchased is displayed on the payment page as the customer enters their card details, and within the My Sage Pay admin area."	This is a required value within the Protocol and you will need to check your code to ensure that you are sending this information for each transaction you register with Sage Pay.
