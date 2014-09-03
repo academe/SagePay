@@ -24,6 +24,7 @@ class Iso4217
           'alpha' => 'AED',
           'minor' => 2,
           'name' => 'UAE Dirham',
+          'symbol' => '',
         ),
         'AFN' => 
         array (
@@ -31,6 +32,7 @@ class Iso4217
           'alpha' => 'AFN',
           'minor' => 2,
           'name' => 'Afghani',
+          'symbol' => '؋',
         ),
         'ALL' => 
         array (
@@ -38,6 +40,7 @@ class Iso4217
           'alpha' => 'ALL',
           'minor' => 2,
           'name' => 'Lek',
+          'symbol' => 'Lek',
         ),
         'AMD' => 
         array (
@@ -45,6 +48,7 @@ class Iso4217
           'alpha' => 'AMD',
           'minor' => 2,
           'name' => 'Armenian Dram',
+          'symbol' => '',
         ),
         'ANG' => 
         array (
@@ -52,6 +56,7 @@ class Iso4217
           'alpha' => 'ANG',
           'minor' => 2,
           'name' => 'Netherlands Antillean Guilder',
+          'symbol' => 'ƒ',
         ),
         'AOA' => 
         array (
@@ -59,6 +64,7 @@ class Iso4217
           'alpha' => 'AOA',
           'minor' => 2,
           'name' => 'Kwanza',
+          'symbol' => '',
         ),
         'ARS' => 
         array (
@@ -66,6 +72,7 @@ class Iso4217
           'alpha' => 'ARS',
           'minor' => 2,
           'name' => 'Argentine Peso',
+          'symbol' => '$',
         ),
         'AUD' => 
         array (
@@ -73,6 +80,7 @@ class Iso4217
           'alpha' => 'AUD',
           'minor' => 2,
           'name' => 'Australian Dollar',
+          'symbol' => '$',
         ),
         'AWG' => 
         array (
@@ -80,6 +88,7 @@ class Iso4217
           'alpha' => 'AWG',
           'minor' => 2,
           'name' => 'Aruban Florin',
+          'symbol' => 'ƒ',
         ),
         'AZN' => 
         array (
@@ -87,6 +96,7 @@ class Iso4217
           'alpha' => 'AZN',
           'minor' => 2,
           'name' => 'Azerbaijanian Manat',
+          'symbol' => 'ман',
         ),
         'BAM' => 
         array (
@@ -94,6 +104,7 @@ class Iso4217
           'alpha' => 'BAM',
           'minor' => 2,
           'name' => 'Convertible Mark',
+          'symbol' => 'KM',
         ),
         'BBD' => 
         array (
@@ -101,6 +112,7 @@ class Iso4217
           'alpha' => 'BBD',
           'minor' => 2,
           'name' => 'Barbados Dollar',
+          'symbol' => '$',
         ),
         'BDT' => 
         array (
@@ -108,6 +120,7 @@ class Iso4217
           'alpha' => 'BDT',
           'minor' => 2,
           'name' => 'Taka',
+          'symbol' => '',
         ),
         'BGN' => 
         array (
@@ -115,6 +128,7 @@ class Iso4217
           'alpha' => 'BGN',
           'minor' => 2,
           'name' => 'Bulgarian Lev',
+          'symbol' => 'лв',
         ),
         'BHD' => 
         array (
@@ -122,6 +136,7 @@ class Iso4217
           'alpha' => 'BHD',
           'minor' => 3,
           'name' => 'Bahraini Dinar',
+          'symbol' => '',
         ),
         'BIF' => 
         array (
@@ -129,6 +144,7 @@ class Iso4217
           'alpha' => 'BIF',
           'minor' => 0,
           'name' => 'Burundi Franc',
+          'symbol' => '',
         ),
         'BMD' => 
         array (
@@ -136,6 +152,7 @@ class Iso4217
           'alpha' => 'BMD',
           'minor' => 2,
           'name' => 'Bermudian Dollar',
+          'symbol' => '$',
         ),
         'BND' => 
         array (
@@ -143,6 +160,7 @@ class Iso4217
           'alpha' => 'BND',
           'minor' => 2,
           'name' => 'Brunei Dollar',
+          'symbol' => '$',
         ),
         'BOB' => 
         array (
@@ -150,6 +168,7 @@ class Iso4217
           'alpha' => 'BOB',
           'minor' => 2,
           'name' => 'Boliviano',
+          'symbol' => '$b',
         ),
         'BOV' => 
         array (
@@ -157,6 +176,7 @@ class Iso4217
           'alpha' => 'BOV',
           'minor' => 2,
           'name' => 'Mvdol',
+          'symbol' => '',
         ),
         'BRL' => 
         array (
@@ -164,6 +184,7 @@ class Iso4217
           'alpha' => 'BRL',
           'minor' => 2,
           'name' => 'Brazilian Real',
+          'symbol' => 'R$',
         ),
         'BSD' => 
         array (
@@ -171,6 +192,7 @@ class Iso4217
           'alpha' => 'BSD',
           'minor' => 2,
           'name' => 'Bahamian Dollar',
+          'symbol' => '$',
         ),
         'BTN' => 
         array (
@@ -178,6 +200,7 @@ class Iso4217
           'alpha' => 'BTN',
           'minor' => 2,
           'name' => 'Ngultrum',
+          'symbol' => '',
         ),
         'BWP' => 
         array (
@@ -185,6 +208,7 @@ class Iso4217
           'alpha' => 'BWP',
           'minor' => 2,
           'name' => 'Pula',
+          'symbol' => 'P',
         ),
         'BYR' => 
         array (
@@ -192,6 +216,7 @@ class Iso4217
           'alpha' => 'BYR',
           'minor' => 0,
           'name' => 'Belarussian Ruble',
+          'symbol' => 'p.',
         ),
         'BZD' => 
         array (
@@ -199,6 +224,7 @@ class Iso4217
           'alpha' => 'BZD',
           'minor' => 2,
           'name' => 'Belize Dollar',
+          'symbol' => 'BZ$',
         ),
         'CAD' => 
         array (
@@ -206,6 +232,7 @@ class Iso4217
           'alpha' => 'CAD',
           'minor' => 2,
           'name' => 'Canadian Dollar',
+          'symbol' => '$',
         ),
         'CDF' => 
         array (
@@ -213,6 +240,7 @@ class Iso4217
           'alpha' => 'CDF',
           'minor' => 2,
           'name' => 'Congolese Franc',
+          'symbol' => '',
         ),
         'CHE' => 
         array (
@@ -220,6 +248,7 @@ class Iso4217
           'alpha' => 'CHE',
           'minor' => 2,
           'name' => 'WIR Euro',
+          'symbol' => '',
         ),
         'CHF' => 
         array (
@@ -227,6 +256,7 @@ class Iso4217
           'alpha' => 'CHF',
           'minor' => 2,
           'name' => 'Swiss Franc',
+          'symbol' => 'CHF',
         ),
         'CHW' => 
         array (
@@ -234,6 +264,7 @@ class Iso4217
           'alpha' => 'CHW',
           'minor' => 2,
           'name' => 'WIR Franc',
+          'symbol' => '',
         ),
         'CLF' => 
         array (
@@ -241,6 +272,7 @@ class Iso4217
           'alpha' => 'CLF',
           'minor' => 0,
           'name' => 'Unidades de fomento',
+          'symbol' => '',
         ),
         'CLP' => 
         array (
@@ -248,6 +280,7 @@ class Iso4217
           'alpha' => 'CLP',
           'minor' => 0,
           'name' => 'Chilean Peso',
+          'symbol' => '$',
         ),
         'CNY' => 
         array (
@@ -255,6 +288,7 @@ class Iso4217
           'alpha' => 'CNY',
           'minor' => 2,
           'name' => 'Yuan Renminbi',
+          'symbol' => '¥',
         ),
         'COP' => 
         array (
@@ -262,6 +296,7 @@ class Iso4217
           'alpha' => 'COP',
           'minor' => 2,
           'name' => 'Colombian Peso',
+          'symbol' => '$',
         ),
         'COU' => 
         array (
@@ -269,6 +304,7 @@ class Iso4217
           'alpha' => 'COU',
           'minor' => 2,
           'name' => 'Unidad de Valor Real',
+          'symbol' => '',
         ),
         'CRC' => 
         array (
@@ -276,6 +312,7 @@ class Iso4217
           'alpha' => 'CRC',
           'minor' => 2,
           'name' => 'Costa Rican Colon',
+          'symbol' => '₡',
         ),
         'CUC' => 
         array (
@@ -283,6 +320,7 @@ class Iso4217
           'alpha' => 'CUC',
           'minor' => 2,
           'name' => 'Peso Convertible',
+          'symbol' => '',
         ),
         'CUP' => 
         array (
@@ -290,6 +328,7 @@ class Iso4217
           'alpha' => 'CUP',
           'minor' => 2,
           'name' => 'Cuban Peso',
+          'symbol' => '₱',
         ),
         'CVE' => 
         array (
@@ -297,6 +336,7 @@ class Iso4217
           'alpha' => 'CVE',
           'minor' => 2,
           'name' => 'Cape Verde Escudo',
+          'symbol' => '',
         ),
         'CZK' => 
         array (
@@ -304,6 +344,7 @@ class Iso4217
           'alpha' => 'CZK',
           'minor' => 2,
           'name' => 'Czech Koruna',
+          'symbol' => 'Kč',
         ),
         'DJF' => 
         array (
@@ -311,6 +352,7 @@ class Iso4217
           'alpha' => 'DJF',
           'minor' => 0,
           'name' => 'Djibouti Franc',
+          'symbol' => '',
         ),
         'DKK' => 
         array (
@@ -318,6 +360,7 @@ class Iso4217
           'alpha' => 'DKK',
           'minor' => 2,
           'name' => 'Danish Krone',
+          'symbol' => 'kr',
         ),
         'DOP' => 
         array (
@@ -325,6 +368,7 @@ class Iso4217
           'alpha' => 'DOP',
           'minor' => 2,
           'name' => 'Dominican Peso',
+          'symbol' => 'RD$',
         ),
         'DZD' => 
         array (
@@ -332,6 +376,7 @@ class Iso4217
           'alpha' => 'DZD',
           'minor' => 2,
           'name' => 'Algerian Dinar',
+          'symbol' => '',
         ),
         'EGP' => 
         array (
@@ -339,6 +384,7 @@ class Iso4217
           'alpha' => 'EGP',
           'minor' => 2,
           'name' => 'Egyptian Pound',
+          'symbol' => '£',
         ),
         'ERN' => 
         array (
@@ -346,6 +392,7 @@ class Iso4217
           'alpha' => 'ERN',
           'minor' => 2,
           'name' => 'Nakfa',
+          'symbol' => '',
         ),
         'ETB' => 
         array (
@@ -353,6 +400,7 @@ class Iso4217
           'alpha' => 'ETB',
           'minor' => 2,
           'name' => 'Ethiopian Birr',
+          'symbol' => '',
         ),
         'EUR' => 
         array (
@@ -360,6 +408,7 @@ class Iso4217
           'alpha' => 'EUR',
           'minor' => 2,
           'name' => 'Euro',
+          'symbol' => '€',
         ),
         'FJD' => 
         array (
@@ -367,6 +416,7 @@ class Iso4217
           'alpha' => 'FJD',
           'minor' => 2,
           'name' => 'Fiji Dollar',
+          'symbol' => '$',
         ),
         'FKP' => 
         array (
@@ -374,6 +424,7 @@ class Iso4217
           'alpha' => 'FKP',
           'minor' => 2,
           'name' => 'Falkland Islands Pound',
+          'symbol' => '£',
         ),
         'GBP' => 
         array (
@@ -381,6 +432,7 @@ class Iso4217
           'alpha' => 'GBP',
           'minor' => 2,
           'name' => 'Pound Sterling',
+          'symbol' => '£',
         ),
         'GEL' => 
         array (
@@ -388,6 +440,7 @@ class Iso4217
           'alpha' => 'GEL',
           'minor' => 2,
           'name' => 'Lari',
+          'symbol' => '',
         ),
         'GHS' => 
         array (
@@ -395,6 +448,7 @@ class Iso4217
           'alpha' => 'GHS',
           'minor' => 2,
           'name' => 'Ghana Cedi',
+          'symbol' => '¢',
         ),
         'GIP' => 
         array (
@@ -402,6 +456,7 @@ class Iso4217
           'alpha' => 'GIP',
           'minor' => 2,
           'name' => 'Gibraltar Pound',
+          'symbol' => '£',
         ),
         'GMD' => 
         array (
@@ -409,6 +464,7 @@ class Iso4217
           'alpha' => 'GMD',
           'minor' => 2,
           'name' => 'Dalasi',
+          'symbol' => '',
         ),
         'GNF' => 
         array (
@@ -416,6 +472,7 @@ class Iso4217
           'alpha' => 'GNF',
           'minor' => 0,
           'name' => 'Guinea Franc',
+          'symbol' => '',
         ),
         'GTQ' => 
         array (
@@ -423,6 +480,7 @@ class Iso4217
           'alpha' => 'GTQ',
           'minor' => 2,
           'name' => 'Quetzal',
+          'symbol' => 'Q',
         ),
         'GYD' => 
         array (
@@ -430,6 +488,7 @@ class Iso4217
           'alpha' => 'GYD',
           'minor' => 2,
           'name' => 'Guyana Dollar',
+          'symbol' => '$',
         ),
         'HKD' => 
         array (
@@ -437,6 +496,7 @@ class Iso4217
           'alpha' => 'HKD',
           'minor' => 2,
           'name' => 'Hong Kong Dollar',
+          'symbol' => '$',
         ),
         'HNL' => 
         array (
@@ -444,6 +504,7 @@ class Iso4217
           'alpha' => 'HNL',
           'minor' => 2,
           'name' => 'Lempira',
+          'symbol' => 'L',
         ),
         'HRK' => 
         array (
@@ -451,6 +512,7 @@ class Iso4217
           'alpha' => 'HRK',
           'minor' => 2,
           'name' => 'Croatian Kuna',
+          'symbol' => 'kn',
         ),
         'HTG' => 
         array (
@@ -458,6 +520,7 @@ class Iso4217
           'alpha' => 'HTG',
           'minor' => 2,
           'name' => 'Gourde',
+          'symbol' => '',
         ),
         'HUF' => 
         array (
@@ -465,6 +528,7 @@ class Iso4217
           'alpha' => 'HUF',
           'minor' => 2,
           'name' => 'Forint',
+          'symbol' => 'Ft',
         ),
         'IDR' => 
         array (
@@ -472,6 +536,7 @@ class Iso4217
           'alpha' => 'IDR',
           'minor' => 2,
           'name' => 'Rupiah',
+          'symbol' => 'Rp',
         ),
         'ILS' => 
         array (
@@ -479,6 +544,7 @@ class Iso4217
           'alpha' => 'ILS',
           'minor' => 2,
           'name' => 'New Israeli Sheqel',
+          'symbol' => '₪',
         ),
         'INR' => 
         array (
@@ -486,6 +552,7 @@ class Iso4217
           'alpha' => 'INR',
           'minor' => 2,
           'name' => 'Indian Rupee',
+          'symbol' => '₹',
         ),
         'IQD' => 
         array (
@@ -493,6 +560,7 @@ class Iso4217
           'alpha' => 'IQD',
           'minor' => 3,
           'name' => 'Iraqi Dinar',
+          'symbol' => '',
         ),
         'IRR' => 
         array (
@@ -500,6 +568,7 @@ class Iso4217
           'alpha' => 'IRR',
           'minor' => 2,
           'name' => 'Iranian Rial',
+          'symbol' => '﷼',
         ),
         'ISK' => 
         array (
@@ -507,6 +576,7 @@ class Iso4217
           'alpha' => 'ISK',
           'minor' => 0,
           'name' => 'Iceland Krona',
+          'symbol' => 'kr',
         ),
         'JMD' => 
         array (
@@ -514,6 +584,7 @@ class Iso4217
           'alpha' => 'JMD',
           'minor' => 2,
           'name' => 'Jamaican Dollar',
+          'symbol' => 'J$',
         ),
         'JOD' => 
         array (
@@ -521,6 +592,7 @@ class Iso4217
           'alpha' => 'JOD',
           'minor' => 3,
           'name' => 'Jordanian Dinar',
+          'symbol' => '',
         ),
         'JPY' => 
         array (
@@ -528,6 +600,7 @@ class Iso4217
           'alpha' => 'JPY',
           'minor' => 0,
           'name' => 'Yen',
+          'symbol' => '¥',
         ),
         'KES' => 
         array (
@@ -535,6 +608,7 @@ class Iso4217
           'alpha' => 'KES',
           'minor' => 2,
           'name' => 'Kenyan Shilling',
+          'symbol' => '',
         ),
         'KGS' => 
         array (
@@ -542,6 +616,7 @@ class Iso4217
           'alpha' => 'KGS',
           'minor' => 2,
           'name' => 'Som',
+          'symbol' => 'лв',
         ),
         'KHR' => 
         array (
@@ -549,6 +624,7 @@ class Iso4217
           'alpha' => 'KHR',
           'minor' => 2,
           'name' => 'Riel',
+          'symbol' => '៛',
         ),
         'KMF' => 
         array (
@@ -556,6 +632,7 @@ class Iso4217
           'alpha' => 'KMF',
           'minor' => 0,
           'name' => 'Comoro Franc',
+          'symbol' => '',
         ),
         'KPW' => 
         array (
@@ -563,6 +640,7 @@ class Iso4217
           'alpha' => 'KPW',
           'minor' => 2,
           'name' => 'North Korean Won',
+          'symbol' => '₩',
         ),
         'KRW' => 
         array (
@@ -570,6 +648,7 @@ class Iso4217
           'alpha' => 'KRW',
           'minor' => 0,
           'name' => 'Won',
+          'symbol' => '₩',
         ),
         'KWD' => 
         array (
@@ -577,6 +656,7 @@ class Iso4217
           'alpha' => 'KWD',
           'minor' => 3,
           'name' => 'Kuwaiti Dinar',
+          'symbol' => '',
         ),
         'KYD' => 
         array (
@@ -584,6 +664,7 @@ class Iso4217
           'alpha' => 'KYD',
           'minor' => 2,
           'name' => 'Cayman Islands Dollar',
+          'symbol' => '$',
         ),
         'KZT' => 
         array (
@@ -591,6 +672,7 @@ class Iso4217
           'alpha' => 'KZT',
           'minor' => 2,
           'name' => 'Tenge',
+          'symbol' => 'лв',
         ),
         'LAK' => 
         array (
@@ -598,6 +680,7 @@ class Iso4217
           'alpha' => 'LAK',
           'minor' => 2,
           'name' => 'Kip',
+          'symbol' => '₭',
         ),
         'LBP' => 
         array (
@@ -605,6 +688,7 @@ class Iso4217
           'alpha' => 'LBP',
           'minor' => 2,
           'name' => 'Lebanese Pound',
+          'symbol' => '£',
         ),
         'LKR' => 
         array (
@@ -612,6 +696,7 @@ class Iso4217
           'alpha' => 'LKR',
           'minor' => 2,
           'name' => 'Sri Lanka Rupee',
+          'symbol' => '₨',
         ),
         'LRD' => 
         array (
@@ -619,6 +704,7 @@ class Iso4217
           'alpha' => 'LRD',
           'minor' => 2,
           'name' => 'Liberian Dollar',
+          'symbol' => '$',
         ),
         'LSL' => 
         array (
@@ -626,6 +712,7 @@ class Iso4217
           'alpha' => 'LSL',
           'minor' => 2,
           'name' => 'Loti',
+          'symbol' => '',
         ),
         'LTL' => 
         array (
@@ -633,6 +720,7 @@ class Iso4217
           'alpha' => 'LTL',
           'minor' => 2,
           'name' => 'Lithuanian Litas',
+          'symbol' => 'Lt',
         ),
         'LVL' => 
         array (
@@ -640,6 +728,7 @@ class Iso4217
           'alpha' => 'LVL',
           'minor' => 2,
           'name' => 'Latvian Lats',
+          'symbol' => 'Ls',
         ),
         'LYD' => 
         array (
@@ -647,6 +736,7 @@ class Iso4217
           'alpha' => 'LYD',
           'minor' => 3,
           'name' => 'Libyan Dinar',
+          'symbol' => '',
         ),
         'MAD' => 
         array (
@@ -654,6 +744,7 @@ class Iso4217
           'alpha' => 'MAD',
           'minor' => 2,
           'name' => 'Moroccan Dirham',
+          'symbol' => '',
         ),
         'MDL' => 
         array (
@@ -661,6 +752,7 @@ class Iso4217
           'alpha' => 'MDL',
           'minor' => 2,
           'name' => 'Moldovan Leu',
+          'symbol' => '',
         ),
         'MGA' => 
         array (
@@ -668,6 +760,7 @@ class Iso4217
           'alpha' => 'MGA',
           'minor' => 2,
           'name' => 'Malagasy Ariary',
+          'symbol' => '',
         ),
         'MKD' => 
         array (
@@ -675,6 +768,7 @@ class Iso4217
           'alpha' => 'MKD',
           'minor' => 2,
           'name' => 'Denar',
+          'symbol' => 'ден',
         ),
         'MMK' => 
         array (
@@ -682,6 +776,7 @@ class Iso4217
           'alpha' => 'MMK',
           'minor' => 2,
           'name' => 'Kyat',
+          'symbol' => '',
         ),
         'MNT' => 
         array (
@@ -689,6 +784,7 @@ class Iso4217
           'alpha' => 'MNT',
           'minor' => 2,
           'name' => 'Tugrik',
+          'symbol' => '₮',
         ),
         'MOP' => 
         array (
@@ -696,6 +792,7 @@ class Iso4217
           'alpha' => 'MOP',
           'minor' => 2,
           'name' => 'Pataca',
+          'symbol' => '',
         ),
         'MRO' => 
         array (
@@ -703,6 +800,7 @@ class Iso4217
           'alpha' => 'MRO',
           'minor' => 2,
           'name' => 'Ouguiya',
+          'symbol' => '',
         ),
         'MUR' => 
         array (
@@ -710,6 +808,7 @@ class Iso4217
           'alpha' => 'MUR',
           'minor' => 2,
           'name' => 'Mauritius Rupee',
+          'symbol' => '₨',
         ),
         'MVR' => 
         array (
@@ -717,6 +816,7 @@ class Iso4217
           'alpha' => 'MVR',
           'minor' => 2,
           'name' => 'Rufiyaa',
+          'symbol' => '',
         ),
         'MWK' => 
         array (
@@ -724,6 +824,7 @@ class Iso4217
           'alpha' => 'MWK',
           'minor' => 2,
           'name' => 'Kwacha',
+          'symbol' => '',
         ),
         'MXN' => 
         array (
@@ -731,6 +832,7 @@ class Iso4217
           'alpha' => 'MXN',
           'minor' => 2,
           'name' => 'Mexican Peso',
+          'symbol' => '$',
         ),
         'MXV' => 
         array (
@@ -738,6 +840,7 @@ class Iso4217
           'alpha' => 'MXV',
           'minor' => 2,
           'name' => 'Mexican Unidad de Inversion (UDI)',
+          'symbol' => '',
         ),
         'MYR' => 
         array (
@@ -745,6 +848,7 @@ class Iso4217
           'alpha' => 'MYR',
           'minor' => 2,
           'name' => 'Malaysian Ringgit',
+          'symbol' => 'RM',
         ),
         'MZN' => 
         array (
@@ -752,6 +856,7 @@ class Iso4217
           'alpha' => 'MZN',
           'minor' => 2,
           'name' => 'Mozambique Metical',
+          'symbol' => 'MT',
         ),
         'NAD' => 
         array (
@@ -759,6 +864,7 @@ class Iso4217
           'alpha' => 'NAD',
           'minor' => 2,
           'name' => 'Namibia Dollar',
+          'symbol' => '$',
         ),
         'NGN' => 
         array (
@@ -766,6 +872,7 @@ class Iso4217
           'alpha' => 'NGN',
           'minor' => 2,
           'name' => 'Naira',
+          'symbol' => '₦',
         ),
         'NIO' => 
         array (
@@ -773,6 +880,7 @@ class Iso4217
           'alpha' => 'NIO',
           'minor' => 2,
           'name' => 'Cordoba Oro',
+          'symbol' => 'C$',
         ),
         'NOK' => 
         array (
@@ -780,6 +888,7 @@ class Iso4217
           'alpha' => 'NOK',
           'minor' => 2,
           'name' => 'Norwegian Krone',
+          'symbol' => 'kr',
         ),
         'NPR' => 
         array (
@@ -787,6 +896,7 @@ class Iso4217
           'alpha' => 'NPR',
           'minor' => 2,
           'name' => 'Nepalese Rupee',
+          'symbol' => '₨',
         ),
         'NZD' => 
         array (
@@ -794,6 +904,7 @@ class Iso4217
           'alpha' => 'NZD',
           'minor' => 2,
           'name' => 'New Zealand Dollar',
+          'symbol' => '$',
         ),
         'OMR' => 
         array (
@@ -801,6 +912,7 @@ class Iso4217
           'alpha' => 'OMR',
           'minor' => 3,
           'name' => 'Rial Omani',
+          'symbol' => '﷼',
         ),
         'PAB' => 
         array (
@@ -808,6 +920,7 @@ class Iso4217
           'alpha' => 'PAB',
           'minor' => 2,
           'name' => 'Balboa',
+          'symbol' => 'B/.',
         ),
         'PEN' => 
         array (
@@ -815,6 +928,7 @@ class Iso4217
           'alpha' => 'PEN',
           'minor' => 2,
           'name' => 'Nuevo Sol',
+          'symbol' => 'S/.',
         ),
         'PGK' => 
         array (
@@ -822,6 +936,7 @@ class Iso4217
           'alpha' => 'PGK',
           'minor' => 2,
           'name' => 'Kina',
+          'symbol' => '',
         ),
         'PHP' => 
         array (
@@ -829,6 +944,7 @@ class Iso4217
           'alpha' => 'PHP',
           'minor' => 2,
           'name' => 'Philippine Peso',
+          'symbol' => '₱',
         ),
         'PKR' => 
         array (
@@ -836,6 +952,7 @@ class Iso4217
           'alpha' => 'PKR',
           'minor' => 2,
           'name' => 'Pakistan Rupee',
+          'symbol' => '₨',
         ),
         'PLN' => 
         array (
@@ -843,6 +960,7 @@ class Iso4217
           'alpha' => 'PLN',
           'minor' => 2,
           'name' => 'Zloty',
+          'symbol' => 'zł',
         ),
         'PYG' => 
         array (
@@ -850,6 +968,7 @@ class Iso4217
           'alpha' => 'PYG',
           'minor' => 0,
           'name' => 'Guarani',
+          'symbol' => 'Gs',
         ),
         'QAR' => 
         array (
@@ -857,6 +976,7 @@ class Iso4217
           'alpha' => 'QAR',
           'minor' => 2,
           'name' => 'Qatari Rial',
+          'symbol' => '﷼',
         ),
         'RON' => 
         array (
@@ -864,6 +984,7 @@ class Iso4217
           'alpha' => 'RON',
           'minor' => 2,
           'name' => 'New Romanian Leu',
+          'symbol' => 'lei',
         ),
         'RSD' => 
         array (
@@ -871,6 +992,7 @@ class Iso4217
           'alpha' => 'RSD',
           'minor' => 2,
           'name' => 'Serbian Dinar',
+          'symbol' => 'Дин.',
         ),
         'RUB' => 
         array (
@@ -878,6 +1000,7 @@ class Iso4217
           'alpha' => 'RUB',
           'minor' => 2,
           'name' => 'Russian Ruble',
+          'symbol' => 'руб',
         ),
         'RWF' => 
         array (
@@ -885,6 +1008,7 @@ class Iso4217
           'alpha' => 'RWF',
           'minor' => 0,
           'name' => 'Rwanda Franc',
+          'symbol' => '',
         ),
         'SAR' => 
         array (
@@ -892,6 +1016,7 @@ class Iso4217
           'alpha' => 'SAR',
           'minor' => 2,
           'name' => 'Saudi Riyal',
+          'symbol' => '﷼',
         ),
         'SBD' => 
         array (
@@ -899,6 +1024,7 @@ class Iso4217
           'alpha' => 'SBD',
           'minor' => 2,
           'name' => 'Solomon Islands Dollar',
+          'symbol' => '$',
         ),
         'SCR' => 
         array (
@@ -906,6 +1032,7 @@ class Iso4217
           'alpha' => 'SCR',
           'minor' => 2,
           'name' => 'Seychelles Rupee',
+          'symbol' => '₨',
         ),
         'SDG' => 
         array (
@@ -913,6 +1040,7 @@ class Iso4217
           'alpha' => 'SDG',
           'minor' => 2,
           'name' => 'Sudanese Pound',
+          'symbol' => '',
         ),
         'SEK' => 
         array (
@@ -920,6 +1048,7 @@ class Iso4217
           'alpha' => 'SEK',
           'minor' => 2,
           'name' => 'Swedish Krona',
+          'symbol' => 'kr',
         ),
         'SGD' => 
         array (
@@ -927,6 +1056,7 @@ class Iso4217
           'alpha' => 'SGD',
           'minor' => 2,
           'name' => 'Singapore Dollar',
+          'symbol' => '$',
         ),
         'SHP' => 
         array (
@@ -934,6 +1064,7 @@ class Iso4217
           'alpha' => 'SHP',
           'minor' => 2,
           'name' => 'Saint Helena Pound',
+          'symbol' => '£',
         ),
         'SLL' => 
         array (
@@ -941,6 +1072,7 @@ class Iso4217
           'alpha' => 'SLL',
           'minor' => 2,
           'name' => 'Leone',
+          'symbol' => '',
         ),
         'SOS' => 
         array (
@@ -948,6 +1080,7 @@ class Iso4217
           'alpha' => 'SOS',
           'minor' => 2,
           'name' => 'Somali Shilling',
+          'symbol' => 'S',
         ),
         'SRD' => 
         array (
@@ -955,6 +1088,7 @@ class Iso4217
           'alpha' => 'SRD',
           'minor' => 2,
           'name' => 'Surinam Dollar',
+          'symbol' => '$',
         ),
         'SSP' => 
         array (
@@ -962,6 +1096,7 @@ class Iso4217
           'alpha' => 'SSP',
           'minor' => 2,
           'name' => 'South Sudanese Pound',
+          'symbol' => '',
         ),
         'STD' => 
         array (
@@ -969,6 +1104,7 @@ class Iso4217
           'alpha' => 'STD',
           'minor' => 2,
           'name' => 'Dobra',
+          'symbol' => '',
         ),
         'SVC' => 
         array (
@@ -976,6 +1112,7 @@ class Iso4217
           'alpha' => 'SVC',
           'minor' => 2,
           'name' => 'El Salvador Colon',
+          'symbol' => '$',
         ),
         'SYP' => 
         array (
@@ -983,6 +1120,7 @@ class Iso4217
           'alpha' => 'SYP',
           'minor' => 2,
           'name' => 'Syrian Pound',
+          'symbol' => '£',
         ),
         'SZL' => 
         array (
@@ -990,6 +1128,7 @@ class Iso4217
           'alpha' => 'SZL',
           'minor' => 2,
           'name' => 'Lilangeni',
+          'symbol' => '',
         ),
         'THB' => 
         array (
@@ -997,6 +1136,7 @@ class Iso4217
           'alpha' => 'THB',
           'minor' => 2,
           'name' => 'Baht',
+          'symbol' => '฿',
         ),
         'TJS' => 
         array (
@@ -1004,6 +1144,7 @@ class Iso4217
           'alpha' => 'TJS',
           'minor' => 2,
           'name' => 'Somoni',
+          'symbol' => '',
         ),
         'TMT' => 
         array (
@@ -1011,6 +1152,7 @@ class Iso4217
           'alpha' => 'TMT',
           'minor' => 2,
           'name' => 'Turkmenistan New Manat',
+          'symbol' => '',
         ),
         'TND' => 
         array (
@@ -1018,6 +1160,7 @@ class Iso4217
           'alpha' => 'TND',
           'minor' => 3,
           'name' => 'Tunisian Dinar',
+          'symbol' => '',
         ),
         'TOP' => 
         array (
@@ -1025,6 +1168,7 @@ class Iso4217
           'alpha' => 'TOP',
           'minor' => 2,
           'name' => 'Pa’anga',
+          'symbol' => '',
         ),
         'TRY' => 
         array (
@@ -1032,6 +1176,7 @@ class Iso4217
           'alpha' => 'TRY',
           'minor' => 2,
           'name' => 'Turkish Lira',
+          'symbol' => '₤',
         ),
         'TTD' => 
         array (
@@ -1039,6 +1184,7 @@ class Iso4217
           'alpha' => 'TTD',
           'minor' => 2,
           'name' => 'Trinidad and Tobago Dollar',
+          'symbol' => 'TT$',
         ),
         'TWD' => 
         array (
@@ -1046,6 +1192,7 @@ class Iso4217
           'alpha' => 'TWD',
           'minor' => 2,
           'name' => 'New Taiwan Dollar',
+          'symbol' => 'NT$',
         ),
         'TZS' => 
         array (
@@ -1053,6 +1200,7 @@ class Iso4217
           'alpha' => 'TZS',
           'minor' => 2,
           'name' => 'Tanzanian Shilling',
+          'symbol' => '',
         ),
         'UAH' => 
         array (
@@ -1060,6 +1208,7 @@ class Iso4217
           'alpha' => 'UAH',
           'minor' => 2,
           'name' => 'Hryvnia',
+          'symbol' => '₴',
         ),
         'UGX' => 
         array (
@@ -1067,6 +1216,7 @@ class Iso4217
           'alpha' => 'UGX',
           'minor' => 0,
           'name' => 'Uganda Shilling',
+          'symbol' => '',
         ),
         'USD' => 
         array (
@@ -1074,6 +1224,7 @@ class Iso4217
           'alpha' => 'USD',
           'minor' => 2,
           'name' => 'US Dollar',
+          'symbol' => '$',
         ),
         'USN' => 
         array (
@@ -1081,6 +1232,7 @@ class Iso4217
           'alpha' => 'USN',
           'minor' => 2,
           'name' => 'US Dollar (Next day)',
+          'symbol' => '',
         ),
         'USS' => 
         array (
@@ -1088,6 +1240,7 @@ class Iso4217
           'alpha' => 'USS',
           'minor' => 2,
           'name' => 'US Dollar (Same day)',
+          'symbol' => '',
         ),
         'UYI' => 
         array (
@@ -1095,6 +1248,7 @@ class Iso4217
           'alpha' => 'UYI',
           'minor' => 0,
           'name' => 'Uruguay Peso en Unidades Indexadas (URUIURUI)',
+          'symbol' => '',
         ),
         'UYU' => 
         array (
@@ -1102,6 +1256,7 @@ class Iso4217
           'alpha' => 'UYU',
           'minor' => 2,
           'name' => 'Peso Uruguayo',
+          'symbol' => '$U',
         ),
         'UZS' => 
         array (
@@ -1109,6 +1264,7 @@ class Iso4217
           'alpha' => 'UZS',
           'minor' => 2,
           'name' => 'Uzbekistan Sum',
+          'symbol' => 'лв',
         ),
         'VEF' => 
         array (
@@ -1116,6 +1272,7 @@ class Iso4217
           'alpha' => 'VEF',
           'minor' => 2,
           'name' => 'Bolivar',
+          'symbol' => 'Bs',
         ),
         'VND' => 
         array (
@@ -1123,6 +1280,7 @@ class Iso4217
           'alpha' => 'VND',
           'minor' => 0,
           'name' => 'Dong',
+          'symbol' => '₫',
         ),
         'VUV' => 
         array (
@@ -1130,6 +1288,7 @@ class Iso4217
           'alpha' => 'VUV',
           'minor' => 0,
           'name' => 'Vatu',
+          'symbol' => '',
         ),
         'WST' => 
         array (
@@ -1137,6 +1296,7 @@ class Iso4217
           'alpha' => 'WST',
           'minor' => 2,
           'name' => 'Tala',
+          'symbol' => '',
         ),
         'XAF' => 
         array (
@@ -1144,6 +1304,7 @@ class Iso4217
           'alpha' => 'XAF',
           'minor' => 0,
           'name' => 'CFA Franc BEAC',
+          'symbol' => '',
         ),
         'XCD' => 
         array (
@@ -1151,6 +1312,7 @@ class Iso4217
           'alpha' => 'XCD',
           'minor' => 2,
           'name' => 'East Caribbean Dollar',
+          'symbol' => '$',
         ),
         'XOF' => 
         array (
@@ -1158,6 +1320,7 @@ class Iso4217
           'alpha' => 'XOF',
           'minor' => 0,
           'name' => 'CFA Franc BCEAO',
+          'symbol' => '',
         ),
         'XPF' => 
         array (
@@ -1165,6 +1328,7 @@ class Iso4217
           'alpha' => 'XPF',
           'minor' => 0,
           'name' => 'CFP Franc',
+          'symbol' => '',
         ),
         'YER' => 
         array (
@@ -1172,6 +1336,7 @@ class Iso4217
           'alpha' => 'YER',
           'minor' => 2,
           'name' => 'Yemeni Rial',
+          'symbol' => '﷼',
         ),
         'ZAR' => 
         array (
@@ -1179,6 +1344,7 @@ class Iso4217
           'alpha' => 'ZAR',
           'minor' => 2,
           'name' => 'Rand',
+          'symbol' => 'S',
         ),
         'ZMW' => 
         array (
@@ -1186,6 +1352,7 @@ class Iso4217
           'alpha' => 'ZMW',
           'minor' => 2,
           'name' => 'Zambian Kwacha',
+          'symbol' => '',
         ),
         'ZWL' => 
         array (
@@ -1193,6 +1360,7 @@ class Iso4217
           'alpha' => 'ZWL',
           'minor' => 2,
           'name' => 'Zimbabwe Dollar',
+          'symbol' => 'Z$',
         ),
     );
 
