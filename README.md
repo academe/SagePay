@@ -113,7 +113,10 @@ Very roughly, registering a [payment] transaction request will look like this:
     $server = new Academe\SagePay\Server();
     
     // Create a storage model object.
-    // A basic PDO storage is provided, but just extend Model\Transaction and use your own.
+    // A basic PDO storage is provided, but just extend Model\TransactionAbstract and use your own.
+    // For example, you may have an eloquent model for storing the transaction data, so that model
+    // would be injected into your extension of TransactionAbstract, which would be the interface
+    // between the model the SagePay package uses, and the storage model that eloquent provides.
     // Your framework may have active record model, or you may want to use WordPress post types, for example.
     // You can write your own transaction storage model, perhaps storing the transaction data in a custom
     // post type in WordPress, or a database model in your framework. This TransactionPdo model is just
