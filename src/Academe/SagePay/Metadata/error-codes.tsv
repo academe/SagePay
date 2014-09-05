@@ -3,7 +3,7 @@ Code	Type	Message	Explanation	Solution
 	NOTAUTHED	The Authorisation has been declined by the bank. You will need to try a different card type.		
 		Please select the card type you would like to use for the transaction.		
 	REJECTED	The Authorisation has been rejected by the Vendor due to insufficient authentication. Please try a different card.		
-	INVALID	Simulator cannot find your vendor name in its database. The simulator saw the Vendor Name '<vendor>'		
+	INVALID	Simulator cannot find your vendor name in its database. The simulator saw the Vendor Name '<vendorname>'		
 0	OK	The Authorisation was Successful.		
 1		The message received was not valid XML.		
 2		Invalid command. XML root node should be vspaccess.		
