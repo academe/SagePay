@@ -211,6 +211,13 @@ class ServiceAbstract //extends Model\XmlAbstract
     protected $delivery_address = null;
 
     /**
+     * Due to Sagepay's IP restrictions, it may be necessary for some people
+     * to set the interface curl communicates over if a server has more than one IP.
+     */
+
+    protected $interface = null;
+
+    /**
      * Inject the transaction model.
      */
 
@@ -664,6 +671,14 @@ class ServiceAbstract //extends Model\XmlAbstract
     }
 
     /**
+     * Set the interface CURL is to use
+     */
+    public function setInterface($interface)
+    {
+        return $this->interface = $interface;
+    }
+
+    /**
      * Send a POST message to SagePay and collect the result.
      * TODO: move to Transport namespace and a separate injected class.
      */
@@ -694,12 +709,16 @@ class ServiceAbstract //extends Model\XmlAbstract
         curl_setopt($curlSession, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 2);
 
+        if (!empty($this->interface)) {
+            curl_setopt($curlSession, CURLOPT_INTERFACE, $this->interface);
+        }
+
         // Send the request and store the result in an array.
         $rawresponse = trim(curl_exec($curlSession));
         $curl_info = curl_getinfo($curlSession);
 
         // Split response into name=value pairs
-        // The documentation states "CRLF" divides the lines. We will use the regex match \R to 
+        // The documentation states "CRLF" divides the lines. We will use the regex match \R to
         // catch any platform-specific version of line endings that the future may throw at us.
         $response = preg_split('/$\R?^/m', $rawresponse);
 
@@ -743,4 +762,3 @@ class ServiceAbstract //extends Model\XmlAbstract
         return $this->tx_model->isPaymentSuccess();
     }
 }
-
