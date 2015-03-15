@@ -296,17 +296,17 @@ abstract class TransactionAbstract
 
     /**
      * Make a new VendorTxCode.
-     * To be give the code some context, we start it with a timestamp then add
-     * on a number based on milliseconds.
-     * The VendorTxCode is limited to 40 characters.
-     * This is 17 + 13 = 30 characters.
+     * To be give the code some context, we start it with a timestamp before
+     * we add on a random hex string.
+     * The VendorTxCode is limited to 40 characters, so we use 12 bytes for the hex.
      * Override this method if you want a different format.
      */
 
     public function makeVendorTxCode()
     {
-        $VendorTxCode = uniqid(date('Ymd-His-'), false);
-        return $VendorTxCode;
+        $data = openssl_random_pseudo_bytes(12);
+
+        return vsprintf('%s-%s', Array(date('Ymd-His'), bin2hex($data)));
     }
 
     /**
@@ -327,4 +327,3 @@ abstract class TransactionAbstract
         );
     }
 }
-
