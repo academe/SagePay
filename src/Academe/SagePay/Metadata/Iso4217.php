@@ -1,5 +1,7 @@
 <?php
 
+namespace Academe\SagePay\Metadata;
+
 /**
  * List of ISO4217 currency codes.
  * See: http://en.wikipedia.org/wiki/ISO_4217
@@ -7,14 +9,10 @@
  * Not all will be supported by SagePay.
  */
 
-namespace Academe\SagePay\Metadata;
-
 class Iso4217
 {
     /**
      * Currency code list.
-     * TODO: store this data as a PHP array, then it is easier to manipulate
-     * without the need to convert. Or maybe convert once and cache.
      */
 
     public static $data = array (

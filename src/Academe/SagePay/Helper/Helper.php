@@ -1,13 +1,13 @@
 <?php
 
+namespace Academe\SagePay\Helper;
+
 /**
  * Base model abstract for models that generate XML as their main output.
  * TODO: split the currency stuff out to a separate abstract. Currency details
  * are needed by the main service classes, but it makes no sense having
  * ServieceAbstract inheriting the XML functions here.
  */
-
-namespace Academe\SagePay\Helper;
 
 use Academe\SagePay\Exception as Exception;
 

@@ -672,7 +672,7 @@ class Transaction
                 "chars": ["A", "a", "^", "9", " ", "+", "'", "/", "&", ":", ",", ".", "-", "n", "("],
                 "min": 1,
                 "max": 40,
-                "default": "academe",
+                "default": "3F7A4119-8671-464F-A091-9E59EB47B80C",
                 "source": [
                     "server-registration"
                 ],
