@@ -1,6 +1,5 @@
 {
     "name": "academe/sagepay",
-    "version": "1.9.1",
     "license": "MIT",
     "type": "library",
     "description": "A library to handle the back-end processing for the SagePay Server (protocol v3) service",
