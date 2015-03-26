@@ -1,6 +1,6 @@
 {
     "name": "academe/sagepay",
-    "version": "1.0.0-dev",
+    "version": "1.9.1",
     "license": "MIT",
     "type": "library",
     "description": "A library to handle the back-end processing for the SagePay Server (protocol v3) service",
@@ -10,6 +10,7 @@
         "payment",
         "sagepay"
     ],
+    "homepage": "https://github.com/academe/SagePay",
     "authors": [
         {
             "name": "Jason Judge",
