@@ -6,4 +6,5 @@ php:
   - hhvm
   - nightly
 install:
-   - composer require respect/validation
+   - composer install
+phpunit --bootstrap vendor/autoload.php vendor/academe/sagepay
