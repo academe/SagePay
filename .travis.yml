@@ -7,4 +7,5 @@ php:
   - nightly
 install:
    - composer install
-phpunit --bootstrap vendor/autoload.php vendor/academe/sagepay
+script:
+   - phpunit --bootstrap vendor/autoload.php vendor/academe/sagepay
