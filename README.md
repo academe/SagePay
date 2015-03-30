@@ -1,5 +1,9 @@
 # Client Library for SagePay Direct/Server - Protocol V3 #
 
+[![Build Status](https://travis-ci.org/academe/SagePay.png?branch=master)](https://travis-ci.org/academe/SagePay)
+[![Latest Stable Version](https://poser.pugx.org/academe/SagePay/version.png)](https://packagist.org/packages/academe/SagePay)
+[![Total Downloads](https://poser.pugx.org/academe/SagePay/d/total.png)](https://packagist.org/packages/academe/SagePay)
+
 Provides the functionality for Protocol 3 of the SagePay Server and SagePay Direct services. 
 It purposefully does not fully support all
 protocol v2 interface features (e.g. the non-XML basket, because the XML basket is a lot more flexible) but that could 
