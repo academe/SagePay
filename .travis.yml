@@ -8,4 +8,4 @@ php:
 install:
    - composer install
 script:
-   - phpunit endor/academe/sagepay
+   - phpunit vendor/academe/sagepay
