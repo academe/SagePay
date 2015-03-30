@@ -10,4 +10,4 @@ install:
 before_script:
 - composer install -n --dev --prefer-source
 script:
-   - vendor/bin/phpunit vendor/academe/sagepay
+   - phpunit vendor/academe/sagepay
