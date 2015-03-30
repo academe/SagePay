@@ -39,7 +39,7 @@ abstract class TransactionAbstract
      * Supplied in transaction registration.
      */
 
-    protected $ReferrerID = 'academe';
+    protected $ReferrerID = '3F7A4119-8671-464F-A091-9E59EB47B80C';
 
     /**
      * The ISO639-2 2-digit code the language to use.
