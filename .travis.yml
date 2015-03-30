@@ -7,5 +7,7 @@ php:
   - nightly
 install:
    - composer install
+before_script:
+- composer install -n --dev --prefer-source
 script:
-   - phpunit vendor/academe/sagepay
+   - vendor/bin/phpunit vendor/academe/sagepay
