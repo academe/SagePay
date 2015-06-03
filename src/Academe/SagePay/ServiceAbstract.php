@@ -110,6 +110,11 @@ class ServiceAbstract //extends Model\XmlAbstract
                 'test' => 'complete.vsp',
                 'live' => 'complete.vsp',
             ),
+            'TOKEN' => array(
+                'simulator' => null,
+                'test' => 'directtoken.vsp',
+                'live' => 'directtoken.vsp'
+            ),
         ),
         'server' => array(
             'PAYMENT' => array(
@@ -126,6 +131,11 @@ class ServiceAbstract //extends Model\XmlAbstract
                 'simulator' => null,
                 'test' => 'vspserver-register.vsp',
                 'live' => 'vspserver-register.vsp',
+            ),
+            'TOKEN' => array(
+                'simulator' => null,
+                'test' => 'token.vsp',
+                'live' => 'token.vsp'
             ),
         ),
         'shared' => array(

@@ -133,7 +133,9 @@ class Transaction
                     "shared-release",
                     "shared-abort",
                     "shared-void",
-                    "shared-cancel"
+                    "shared-cancel",
+                    "server-standalone-token",
+                    "direct-standalone-token"
                 ],
                 "tamper": true,
                 "store": true,
@@ -174,7 +176,9 @@ class Transaction
                     "shared-void",
                     "shared-void-response",
                     "shared-cancel",
-                    "shared-cancel-response"
+                    "shared-cancel-response",
+                    "server-standalone-token",
+                    "direct-standalone-token"
                 ],
                 "store": true
             },
@@ -196,7 +200,8 @@ class Transaction
                     "AUTHORISE",
                     "CANCEL",
                     "COMPLETE",
-                    "3DSECURE"
+                    "3DSECURE",
+                    "TOKEN"
                 ],
                 "min": 1,
                 "max": 15,
@@ -208,7 +213,9 @@ class Transaction
                     "shared-release",
                     "shared-abort",
                     "shared-void",
-                    "shared-cancel"
+                    "shared-cancel",
+                    "server-standalone-token",
+                    "direct-standalone-token"
                 ],
                 "store": true
             },
@@ -224,7 +231,9 @@ class Transaction
                     "shared-release",
                     "shared-abort",
                     "shared-void",
-                    "shared-cancel"
+                    "shared-cancel",
+                    "server-standalone-token",
+                    "direct-standalone-token"
                 ],
                 "tamper": true,
                 "store": true
@@ -263,7 +272,9 @@ class Transaction
                 "max": 3,
                 "source": [
                     "server-registration",
-                    "direct-registration"
+                    "direct-registration",
+                    "server-standalone-token",
+                    "direct-standalone-token"
                 ],
                 "default": "GBP",
                 "store": true
@@ -285,7 +296,8 @@ class Transaction
                 "max": 255,
                 "type": "rfc1738",
                 "source": [
-                    "server-registration"
+                    "server-registration",
+                    "server-standalone-token"
                 ],
                 "store": true
             },
@@ -584,7 +596,8 @@ class Transaction
                 "min": 3,
                 "max": 6,
                 "source": [
-                    "server-registration"
+                    "server-registration",
+                    "server-standalone-token"
                 ],
                 "store": false
             },
@@ -685,7 +698,8 @@ class Transaction
                 "min": 2,
                 "max": 2,
                 "source": [
-                    "server-registration"
+                    "server-registration",
+                    "server-standalone-token"
                 ],
                 "store": false
             },
@@ -872,12 +886,12 @@ class Transaction
                 "required": false,
                 "type": "enum",
                 "values": [
-                    "OK", 
-                    "NOTCHECKED", 
-                    "NOTAVAILABLE", 
-                    "NOTAUTHED", 
-                    "INCOMPLETE", 
-                    "ERROR", 
+                    "OK",
+                    "NOTCHECKED",
+                    "NOTAVAILABLE",
+                    "NOTAUTHED",
+                    "INCOMPLETE",
+                    "ERROR",
                     "ATTEMPTONLY"
                 ],
                 "min": 1,
@@ -1084,7 +1098,8 @@ class Transaction
                 "min": 1,
                 "max": 50,
                 "source": [
-                    "direct-registration"
+                    "direct-registration",
+                    "direct-standalone-token"
                 ],
                 "store": false
             },
@@ -1095,7 +1110,8 @@ class Transaction
                 "min": 1,
                 "max": 20,
                 "source": [
-                    "direct-registration"
+                    "direct-registration",
+                    "direct-standalone-token"
                 ],
                 "store": false
             },
@@ -1106,7 +1122,8 @@ class Transaction
                 "min": 4,
                 "max": 4,
                 "source": [
-                    "direct-registration"
+                    "direct-registration",
+                    "direct-standalone-token"
                 ],
                 "store": false
             },
@@ -1117,7 +1134,8 @@ class Transaction
                 "min": 3,
                 "max": 4,
                 "source": [
-                    "direct-registration"
+                    "direct-registration",
+                    "direct-standalone-token"
                 ],
                 "store": false
             },
@@ -1140,7 +1158,8 @@ class Transaction
                 "min": 2,
                 "max": 20,
                 "source": [
-                    "direct-registration"
+                    "direct-registration",
+                    "direct-standalone-token"
                 ],
                 "store": false
             },
@@ -1341,4 +1360,3 @@ ENDDATA;
         }
     }
 }
-

@@ -23,6 +23,12 @@ class Server extends Shared
     protected $method = 'server';
 
     /**
+     * The message type to be used
+     */
+
+    protected $message_type = 'server-registration';
+
+    /**
      * Send the registration to SagePay and save the reply.
      *
      * Note: at present this is a "server" (not "direct") registration request method only. This
@@ -36,7 +42,7 @@ class Server extends Shared
         // Check the transaction type.
 
         $tx_type = $this->getField('TxType');
-        if ($tx_type != 'PAYMENT' && $tx_type != 'DEFERRED' && $tx_type != 'AUTHENTICATE') {
+        if ($tx_type != 'PAYMENT' && $tx_type != 'DEFERRED' && $tx_type != 'AUTHENTICATE' && $tx_type != 'TOKEN') {
             // The transaction type is not valid for sending a registration.
             throw new Exception\InvalidArgumentException("Invalid transaction type for registration '{$tx_type}'");
         }
@@ -46,7 +52,7 @@ class Server extends Shared
         $this->save();
 
         // Construct the query string from data in the model.
-        $query_string = $this->queryData(true, 'server-registration');
+        $query_string = $this->queryData(true, $this->message_type);
 
         // Get the URL, which is derived from the method, platform and the service.
         $sagepay_url = $this->getUrl();
@@ -183,20 +189,20 @@ class Server extends Shared
 
             /*
                 From protocol V3 documentation:
-                VPSTxId + VendorTxCode + Status 
+                VPSTxId + VendorTxCode + Status
                 + TxAuthNo + VendorName (aka Vendor)
                 + AVSCV2 + SecurityKey (saved with the transaction registration)
                 + AddressResult + PostCodeResult + CV2Result
                 + GiftAid + 3DSecureStatus
                 + CAVV + AddressStatus + PayerStatus
-                + CardType + Last4Digits 
+                + CardType + Last4Digits
                 + DeclineCode + ExpiryDate
                 + FraudResponse + BankAuthCode
             */
 
             // Construct a concatenated POST string hash.
             // TODO: these can vbe constructed from the transaction metadata.
-            $strMessage = 
+            $strMessage =
                 // V2.23 protocol
                 $post['VPSTxId'] . $post['VendorTxCode'] . $post['Status']
                 . $post['TxAuthNo'] . $this->getField('Vendor')
@@ -327,5 +333,21 @@ class Server extends Shared
         $this->setField('NotificationURL', $url);
         return $this;
     }
-}
 
+    /**
+     * Set the token registration details
+     */
+
+    public function setStandaloneTokenFields($vendor, $currency, $url)
+    {
+        $this->message_type =  'server-standalone-token';
+
+        // Set the transaction type.
+        $this->setField('TxType', 'TOKEN');
+        $this->setField('Vendor', $vendor);
+        $this->setField('Currency', $currency);
+        $this->setField('NotificationURL', $url);
+        return $this;
+    }
+
+}
