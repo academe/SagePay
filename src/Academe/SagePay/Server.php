@@ -128,6 +128,12 @@ class Server extends Shared
         $StatusDetail = (isset($post['StatusDetail']) ? (string) $post['StatusDetail'] : '');
         $VendorTxCode = (isset($post['VendorTxCode']) ? (string) $post['VendorTxCode'] : '');
         $VPSTxId = (isset($post['VPSTxId']) ? (string) $post['VPSTxId'] : '');
+        // Deal with the quirk noted on page 29 of the token registration docs, i.e. that braces are
+        // not returned in the TOKEN notification post. Version 3.00 should have been a good
+        // opportunity for SagePay to fix quirks like this, but instead we need to deal with it here.
+        if (isset($post['TxType']) && $post['TxType'] == "TOKEN") {
+            $VPSTxId = '{' . $VPSTxId . '}';
+        }
         $VPSSignature = (isset($post['VPSSignature']) ? (string) $post['VPSSignature'] : '');
 
         // Assume this process will be successful.
@@ -201,20 +207,28 @@ class Server extends Shared
             */
 
             // Construct a concatenated POST string hash.
-            // TODO: these can vbe constructed from the transaction metadata.
-            $strMessage =
-                // V2.23 protocol
-                $post['VPSTxId'] . $post['VendorTxCode'] . $post['Status']
-                . $post['TxAuthNo'] . $this->getField('Vendor')
-                . $post['AVSCV2'] . $this->getField('SecurityKey')
-                . $post['AddressResult'] . $post['PostCodeResult'] . $post['CV2Result']
-                . $post['GiftAid'] . $post['3DSecureStatus']
-                . $post['CAVV'] . $post['AddressStatus'] . $post['PayerStatus']
-                . $post['CardType'] . $post['Last4Digits']
+            // TODO: these can be constructed from the transaction metadata.
+            if (isset($post['TxType']) && $post['TxType'] == "TOKEN") {
+                $strMessage =
+                    // Token protocol
+                    $post['VPSTxId'] . $post['VendorTxCode'] . $post['Status']
+                    . $this->getField('Vendor') . $post['Token']
+                    . $this->getField('SecurityKey');
+            } else {
+                $strMessage =
+                    // V2.23 protocol
+                    $post['VPSTxId'] . $post['VendorTxCode'] . $post['Status']
+                    . $post['TxAuthNo'] . $this->getField('Vendor')
+                    . $post['AVSCV2'] . $this->getField('SecurityKey')
+                    . $post['AddressResult'] . $post['PostCodeResult'] . $post['CV2Result']
+                    . $post['GiftAid'] . $post['3DSecureStatus']
+                    . $post['CAVV'] . $post['AddressStatus'] . $post['PayerStatus']
+                    . $post['CardType'] . $post['Last4Digits']
 
-                // New for V3 protocol.
-                . $post['DeclineCode'] . $post['ExpiryDate']
-                . $post['FraudResponse'] . $post['BankAuthCode'];
+                    // New for V3 protocol.
+                    . $post['DeclineCode'] . $post['ExpiryDate']
+                    . $post['FraudResponse'] . $post['BankAuthCode'];
+            }
 
             $MySignature = strtoupper(md5($strMessage));
 
@@ -265,11 +279,11 @@ class Server extends Shared
             }
             catch (Exception\RuntimeException $e) {
                 $retStatus = 'ERROR';
-                $retStatusDetail = 'Cannot save result to database';
+                $retStatusDetail = 'Cannot save result to database: ' . $e->getMessage();
             }
             catch (\RuntimeException $e) {
                 $retStatus = 'ERROR';
-                $retStatusDetail = 'Cannot save result to database';
+                $retStatusDetail = 'Cannot save result to database: ' . $e->getMessage();
             }
         }
 
