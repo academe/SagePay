@@ -312,6 +312,10 @@ class TransactionPdo extends TransactionAbstract
         $up_migrations[] = "ALTER TABLE $transaction_table ADD COLUMN RelatedSecurityKey"
             . " varchar(10) DEFAULT NULL";
 
+        // Pull Request #36 add ExpiryDate column.
+        $up_migrations[] = "ALTER TABLE $transaction_table ADD COLUMN ExpiryDate"
+            . " varchar(4) DEFAULT NULL AFTER `PayerStatus`";
+
         // Assume success.
         $final_result = true;
         $pdo_error_messages = array();
@@ -352,9 +356,9 @@ class TransactionPdo extends TransactionAbstract
             $sql = 'CREATE TABLE IF NOT EXISTS `' . $this->transaction_table_name . "` (\n";
             $sql .= $this->createColumnsDdl();
             if ($this->getDriver() == 'sqlite') {
-                $sql .= ', `pk_' . $this->transaction_table_name . '` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL'; 
+                $sql .= ', `pk_' . $this->transaction_table_name . '` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL';
             } else {
-                $sql .= ', PRIMARY KEY `pk_' . $this->transaction_table_name . '` (`VendorTxCode`) '; 
+                $sql .= ', PRIMARY KEY `pk_' . $this->transaction_table_name . '` (`VendorTxCode`) ';
             }
             $sql .= ')';
 
@@ -380,7 +384,7 @@ class TransactionPdo extends TransactionAbstract
     {
         // NOTE: the column lengths listed in the metadata are to support unicode (UTF-8) characters,
         // and not ASCII bytes.
-        // If the database is not set up with a unicode charset, then we need to add a percentage 
+        // If the database is not set up with a unicode charset, then we need to add a percentage
         // to the lengths of all columns.
 
         $field_meta = Metadata\Transaction::get('object', array('store' => true));
@@ -482,4 +486,3 @@ class TransactionPdo extends TransactionAbstract
         return $this->getConnection()->getAttribute(\PDO::ATTR_DRIVER_NAME);
     }
 }
-

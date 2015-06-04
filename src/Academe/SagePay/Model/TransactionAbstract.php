@@ -105,7 +105,6 @@ abstract class TransactionAbstract
 
     protected $CardHolder = null;
     protected $CardNumber = null;
-    protected $ExpiryDate = null;
     protected $CV2 = null;
     protected $CardType = null;
 

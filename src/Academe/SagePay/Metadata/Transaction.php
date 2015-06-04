@@ -1048,6 +1048,8 @@ class Transaction
                 "min": 4,
                 "max": 4,
                 "source": [
+                    "direct-registration",
+                    "direct-standalone-token",
                     "server-notification"
                 ],
                 "tamper": true,
@@ -1109,18 +1111,6 @@ class Transaction
                 "chars": ["9"],
                 "min": 1,
                 "max": 20,
-                "source": [
-                    "direct-registration",
-                    "direct-standalone-token"
-                ],
-                "store": false
-            },
-            "ExpiryDate": {
-                "required": false,
-                "type": "string",
-                "chars": ["9"],
-                "min": 4,
-                "max": 4,
                 "source": [
                     "direct-registration",
                     "direct-standalone-token"
