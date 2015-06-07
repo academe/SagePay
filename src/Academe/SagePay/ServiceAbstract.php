@@ -7,8 +7,8 @@
 namespace Academe\SagePay;
 
 // These are namespaces.
-use Academe\SagePay\Metadata as Metadata;
-use Academe\SagePay\Exception as Exception;
+use Academe\SagePay\Metadata;
+use Academe\SagePay\Exception;
 
 // Pull in the helper class.
 use Academe\SagePay\Helper\Helper;

@@ -128,10 +128,6 @@ class Shared extends ServiceAbstract
             $this->setField('ReleaseAmount', $this->getField('Amount'));
         }
 
-        // The fields that we will be dealing with.
-        // These fields are all mandatory, so we should validate that all are set (TODO).
-        //$fields = \Academe\SagePay\Metadata\Transaction::get('object', array('source' => $message_type));
-
         // Construct the query string from data in the model.
         $query_string = $this->queryData(true, $message_type);
 

@@ -9,8 +9,10 @@
 
 namespace Academe\SagePay;
 
-use Academe\SagePay\Metadata as Metadata;
-use Academe\SagePay\Exception as Exception;
+use RuntimeException;
+
+use Academe\SagePay\Metadata;
+use Academe\SagePay\Exception;
 
 class Server extends Shared
 {
@@ -60,7 +62,7 @@ class Server extends Shared
         // Post the request to SagePay
         $output = $this->postSagePay($sagepay_url, $query_string, $this->timeout);
 
-        // If successful, save the returned data to the model, save it, then return the model.
+        // If successful, put the returned data to the model, save it, then return the model.
         // TODO: include all extra fields that the V3 protocol introduces.
         // TODO: we may have a malformed return value (e.g. a HTTP error or dropped connection) so
         // that needs to be handled. i.e. there may not be a "Status" returned. This is partially
@@ -71,11 +73,14 @@ class Server extends Shared
             $this->setField('SecurityKey', $output['SecurityKey']);
 
             // Move the status as PENDING, to indicate we are waitng for a response from SagePay.
+            // Note: SagePay has now introduced a PENDING status in connection with PayPal and
+            // European payments. To support that, we can no longer use PENDING for our own
+            // purposes.
             $this->setField('Status', 'PENDING');
 
             $this->setField('StatusDetail', $output['StatusDetail']);
 
-            // Set the NextURL in the model. Itr won't get saved, but will be accessible to
+            // Set the NextURL in the model. It won't get saved, but will be accessible to
             // the calling function to action.
             $this->setField('NextURL', $output['NextURL']);
 
@@ -121,6 +126,7 @@ class Server extends Shared
     public function notification($post, $redirect_url)
     {
         // End of line characters.
+        // This is what SagePay expects as a line terminator.
         $eol = "\r\n";
 
         // Get the main details that identify the transaction.
@@ -128,6 +134,7 @@ class Server extends Shared
         $StatusDetail = (isset($post['StatusDetail']) ? (string) $post['StatusDetail'] : '');
         $VendorTxCode = (isset($post['VendorTxCode']) ? (string) $post['VendorTxCode'] : '');
         $VPSTxId = (isset($post['VPSTxId']) ? (string) $post['VPSTxId'] : '');
+
         // Deal with the quirk noted on page 29 of the token registration docs, i.e. that braces are
         // not returned in the TOKEN notification post. Version 3.00 should have been a good
         // opportunity for SagePay to fix quirks like this, but instead we need to deal with it here.
@@ -207,7 +214,7 @@ class Server extends Shared
             */
 
             // Construct a concatenated POST string hash.
-            // TODO: these can be constructed from the transaction metadata.
+            // These could be constructed from the transaction metadata.
             if (isset($post['TxType']) && $post['TxType'] == "TOKEN") {
                 $strMessage =
                     // Token protocol
@@ -216,7 +223,7 @@ class Server extends Shared
                     . $this->getField('SecurityKey');
             } else {
                 $strMessage =
-                    // V2.23 protocol
+                    // First V2.23 protocol fields
                     $post['VPSTxId'] . $post['VendorTxCode'] . $post['Status']
                     . $post['TxAuthNo'] . $this->getField('Vendor')
                     . $post['AVSCV2'] . $this->getField('SecurityKey')
@@ -225,7 +232,7 @@ class Server extends Shared
                     . $post['CAVV'] . $post['AddressStatus'] . $post['PayerStatus']
                     . $post['CardType'] . $post['Last4Digits']
 
-                    // New for V3 protocol.
+                    // Additional fields for V3 protocol.
                     . $post['DeclineCode'] . $post['ExpiryDate']
                     . $post['FraudResponse'] . $post['BankAuthCode'];
             }
@@ -245,7 +252,7 @@ class Server extends Shared
             // We don't want to be updating the local transaction in any other circumstance.
             // However, we might want to log the errors somewhere else.
 
-            // SagePay V2 fields.
+            // First SagePay V2 fields.
             $this->setField('Status', $Status);
             $this->setField('StatusDetail', $StatusDetail);
             $this->setField('TxAuthNo', $post['TxAuthNo']);
@@ -264,7 +271,6 @@ class Server extends Shared
             // SagePay V3.00 fields.
             // No need to store, or attempt to store, the VPSSignature - it is a throw-away
             // hash of the notification data, with local salt.
-            //$this->setField('VPSSignature', $this->arrayElement($post, 'VPSSignature'));
             $this->setField('FraudResponse', $post['FraudResponse']);
             $this->setField('Surcharge', $this->arrayElement($post, 'Surcharge'));
             $this->setField('BankAuthCode', $post['BankAuthCode']);
@@ -281,7 +287,7 @@ class Server extends Shared
                 $retStatus = 'ERROR';
                 $retStatusDetail = 'Cannot save result to database: ' . $e->getMessage();
             }
-            catch (\RuntimeException $e) {
+            catch (RuntimeException $e) {
                 $retStatus = 'ERROR';
                 $retStatusDetail = 'Cannot save result to database: ' . $e->getMessage();
             }
