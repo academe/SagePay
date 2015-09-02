@@ -19,4 +19,3 @@ class Direct extends Shared
 
     protected $method = 'direct';
 }
-
