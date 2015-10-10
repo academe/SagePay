@@ -1,4 +1,4 @@
-# Client Library for SagePay Direct/Server - Protocol V3 #
+# Client Library for SagePay Direct/Server - Protocol V3.00 #
 
 [![Build Status](https://travis-ci.org/academe/SagePay.png?branch=master)](https://travis-ci.org/academe/SagePay)
 [![Latest Stable Version](https://poser.pugx.org/academe/SagePay/version.png)](https://packagist.org/packages/academe/SagePay)
