@@ -51,6 +51,12 @@ abstract class BasketAbstract extends XmlAbstract
     protected $hotel = null;
 
     /**
+     * The list of discounts applied to the order..
+     */
+
+    protected $discounts = array();
+
+    /**
      * Set delivery details.
      * All [currency] amounts will be formatted according to the currency.
      * CHECKME: does this need to be done here, or can it be done on transforming
@@ -127,6 +133,26 @@ abstract class BasketAbstract extends XmlAbstract
     }
 
     /**
+     * Add a discount.
+     * Multiple discounts can be added.
+     */
+
+    public function addDiscount($fixed, $description = null)
+    {
+        // The fixed amount is mandatory.
+        $discount = array(
+            'fixed' => Helper::formatAmount($fixed, $this->currency),
+        );
+
+        // The description is optional.
+        if (isset($description)) {
+            $discount['description'] = $description;
+        }
+
+        $this->discounts[]['discount'] = $discount;
+    }
+
+    /**
      * Add a simple product line, with values similar to the old (non-XML) basket.
      * This adds a product line array to the lines array. The more complex lines with other details
      * will involve adding a line as an object. Simple lines and complex lines can be freely mixed.
@@ -165,11 +191,10 @@ abstract class BasketAbstract extends XmlAbstract
     }
 
     /**
-     * Return the basket as an XML string.
-     * There are no attributes in this XML, which makes things a little simpler.
+     * Convert the basket to an array.
      */
 
-    public function toXml()
+    public function toArray()
     {
         $structure = array();
 
@@ -203,7 +228,21 @@ abstract class BasketAbstract extends XmlAbstract
             $structure = array_merge($structure, array('hotel' => $this->hotel));
         }
 
-        return $this->xmlFragment(array('basket' => $structure));
+        if ( ! empty($this->discounts)) {
+            $structure = array_merge($structure, array('discounts' => $this->discounts));
+        }
+
+        return $structure;
+    }
+
+    /**
+     * Return the basket as an XML string.
+     * There are no attributes in this XML, which makes things a little simpler.
+     */
+
+    public function toXml()
+    {
+        return $this->xmlFragment(array('basket' => $this->toArray()));
     }
 }
 
