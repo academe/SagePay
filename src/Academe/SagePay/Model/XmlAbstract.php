@@ -74,6 +74,7 @@ abstract class XmlAbstract
             foreach($data as $key => $value) {
                 // Skip a level for numeric keys. They are just so we can have a list
                 // of itentical tags together on the same level.
+                // So [['key'=>'v1'], ['key'=>'v2']] will give is "<key>v1</key><key>v2</key>"
                 if (is_numeric($key)) {
                     $fragment .= $this->xmlFragment($value);
                 } else {

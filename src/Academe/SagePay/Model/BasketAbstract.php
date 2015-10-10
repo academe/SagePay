@@ -219,6 +219,11 @@ abstract class BasketAbstract extends XmlAbstract
             $structure = array_merge($structure, $this->delivery);
         }
 
+        // Optional discounts.
+        if ( ! empty($this->discounts)) {
+            $structure = array_merge($structure, array('discounts' => $this->discounts));
+        }
+
         // Shipping details.
         if (isset($this->shipping)) {
             $structure = array_merge($structure, $this->shipping);
@@ -226,10 +231,6 @@ abstract class BasketAbstract extends XmlAbstract
 
         if (isset($this->hotel)) {
             $structure = array_merge($structure, array('hotel' => $this->hotel));
-        }
-
-        if ( ! empty($this->discounts)) {
-            $structure = array_merge($structure, array('discounts' => $this->discounts));
         }
 
         return $structure;
