@@ -38,7 +38,7 @@ class Helper
     public static function formatAmount($amount, $currency)
     {
         // We need a numeric value for the amount, so make sure it is, even if it is a number in a string.
-        if ( ! is_numeric($amount)) $amount = 0;
+        //if ( ! is_numeric($amount)) $amount = 0;
 
         // Get the minor unit of the currency - the number of digits after the decimal point.
         // SagePay requires the amount to be padded out to the exact number of decimal places,
@@ -48,7 +48,21 @@ class Helper
         // If the minor unit is null, then the currency code is not valid.
         $minor_unit = \Academe\SagePay\Metadata\Iso4217::minorUnit($currency);
 
-        return (isset($minor_unit) ? number_format($amount, $minor_unit, '.', '') : null);
+        if ( ! isset($minor_unit)) {
+            throw new Exception\InvalidArgumentException("Invalid currency code '{$currency}'");
+        }
+
+        // Do a regex check, if a string.
+        if (is_string($amount)) {
+            if ( ! preg_match('/^[0-9][0-9,]*(\.[0-9]{0,' . $minor_unit . '})?$/', $amount)) {
+                throw new Exception\InvalidArgumentException("Invalid amount format '{$amount}'");
+            }
+
+            // Remove any comma thousands separators.
+            $amount = str_replace(',', '', $amount);
+        }
+
+        return (isset($minor_unit) ? number_format((float)$amount, $minor_unit, '.', '') : null);
     }
 }
 
