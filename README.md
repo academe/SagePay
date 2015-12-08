@@ -55,7 +55,11 @@ ultimately be supported by the library.
 The core library does not depend on any other composer libraries, you will need to run `composer install`
 if you wish to use the Validation methods or to run the unit tests.
 
-If using composer, you can install the library into your project this (in composer.json):
+The simplest method is to get the latest stable version from composer:
+
+`composer require academe/sagepay`
+
+If developing this library and using composer, you can install the library into your project using this in composer.json:
 
     {
         "repositories": [

@@ -16,6 +16,11 @@
             "email": "jason.judge@academe.co.uk",
             "homepage": "http://www.academe.co.uk/",
             "role": "Developer"
+        },
+        {
+            "name": "Other Contributors",
+            "homepage": "https://github.com/academe/SagePay/graphs/contributors",
+            "role": "Developer"
         }
     ],
     "require": {
@@ -28,6 +33,9 @@
     "autoload": {
         "psr-0": {
             "Academe\\SagePay": "src/"
+        },
+        "psr-4": {
+            "Academe\\SagePay": "src/Academe/SagePay/"
         }
     }
 }
