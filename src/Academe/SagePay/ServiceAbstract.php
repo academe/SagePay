@@ -13,7 +13,7 @@ use Academe\SagePay\Exception;
 // Pull in the helper class.
 use Academe\SagePay\Helper\Helper;
 
-class ServiceAbstract //extends Model\XmlAbstract
+class ServiceAbstract
 {
     /**
      * The currency for the service.

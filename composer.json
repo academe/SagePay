@@ -35,7 +35,7 @@
             "Academe\\SagePay": "src/"
         },
         "psr-4": {
-            "Academe\\SagePay": "src/Academe/SagePay/"
+            "Academe\\SagePay\\": "src/Academe/SagePay/"
         }
     }
 }
