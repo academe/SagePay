@@ -675,7 +675,8 @@ class Transaction
                 "min": 1,
                 "max": 200,
                 "source": [
-                    "server-registration"
+                    "server-registration",
+                    "direct-registration"
                 ],
                 "store": true
             },
@@ -687,7 +688,8 @@ class Transaction
                 "max": 40,
                 "default": "3F7A4119-8671-464F-A091-9E59EB47B80C",
                 "source": [
-                    "server-registration"
+                    "server-registration",
+                    "direct-registration"
                 ],
                 "store": false
             },
@@ -710,7 +712,8 @@ class Transaction
                 "min": 1,
                 "max": 100,
                 "source": [
-                    "server-registration"
+                    "server-registration",
+                    "direct-registration"
                 ],
                 "store": true
             },
