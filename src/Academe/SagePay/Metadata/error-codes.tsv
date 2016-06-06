@@ -290,10 +290,6 @@ Code	Type	Message	Explanation	Solution	Property
 3129		The DeliveryCountry value is too long.		There is a problem with the details that have been supplied. Please check and retry.	shippingDetails.shippingCountry
 3130	INVALID	The BillingState value is too long.		There is a problem with the details that have been supplied. Please check and retry.	billingAddress.state
 3131		The BillingPhone value is too long.		There is a problem with the details that have been supplied. Please check and retry.	customerPhone
-customerPhone
-customerPhone
-customerPhone
-customerPhone
 3132		The DeliveryState value is too long.		There is a problem with the details that have been supplied. Please check and retry.	shippingDetails.shippingState
 3133		The DeliveryPhone value is too long.		There is a problem with the details that have been supplied. Please check and retry.	
 3134		The ReferrerID value is too long.		There is a problem with the details that have been supplied. Please check and retry.	
@@ -303,7 +299,6 @@ customerPhone
 3138	INVALID	The BillingState format is invalid.		There is a problem with the details that have been supplied. Please check and retry.	billingAddress.state
 3139		The DeliveryState format is invalid.		There is a problem with the details that have been supplied. Please check and retry.	shippingDetails.shippingState
 3140		The DeliveryCountry value is invalid.		There is a problem with the details that have been supplied. Please check and retry.	shippingDetails.shippingCountry
-shippingDetails.shippingCountry
 3141		The BillingCountry value is invalid.		There is a problem with the details that have been supplied. Please check and retry.	billingAddress.country
 3142		The SendEMail value is invalid.		There is a problem with the details that have been supplied. Please check and retry.	
 3143		The Billing information is required.		There is a problem with the details that have been supplied. Please check and retry.	
@@ -454,8 +449,6 @@ shippingDetails.shippingCountry
 5042		The Billing Address1 contains invalid characters.		You will need to ensure that your code is not sending invalid characters.	billingAddress.address1
 5043		The Billing Address2 contains invalid characters.		You will need to ensure that your code is not sending invalid characters.	billingAddress.address2
 5044		The Billing City contains invalid characters.		You will need to ensure that your code is not sending invalid characters.	billingAddress.city
-billingAddress.city
-billingAddress.city
 5045		The Billing Phone contains invalid characters.		You will need to ensure that your code is not sending invalid characters.	customerPhone
 5046		The Delivery Surname contains invalid characters.		You will need to ensure that your code is not sending invalid characters.	shippingDetails.recipientLastName
 5047		The Delivery Firstname contains invalid characters.		You will need to ensure that your code is not sending invalid characters.	shippingDetails.recipientFirstName
