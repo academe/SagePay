@@ -72,6 +72,8 @@ Code	Type	Message	Explanation	Solution	Property
 1015	422	The request entity was empty			
 1016	422	This parameter requires an integer			
 1017	403	Operation not allowed for this transaction			
+1018	403	This refund amount will exceed the amount of the original transaction			
+1019	404	Transaction instructions not found			
 1115		<streamlinetnumber> element is only required for a Streamline merchant number.		There is a problem with the details that have been supplied. Please check and retry.	
 2000	NOTAUTHED	The Authorisation was Declined by the bank.	The Authorisation attempt was Declined by the cardholder's card-issuing bank. This could be due to several reasons such as funds not being available, spending limit may have been reached or bank account has been closed.	We also return to you the 2 digit Decline Code from the bank. To determine what the code means you will need to contact your merchant bank as they are bank specific.	
 2001	REJECTED	The Authorisation was Rejected by the vendor rule-base.	You will receive this error message when a transaction has been rejected due to either your AVS/CV2 rulebase or the customer has had three failed attempts to correctly enter their card details. The latter rulebase is set up as default on all Sage Pay accounts.	The transaction would has failed due to the fraud rulebase which you have set up onto your account. The only way to prevent this from happening, would be to remove or relax your current rulebase, however this would apply to all your transactions.	
