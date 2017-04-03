@@ -158,7 +158,7 @@ class Server extends Shared
             // Get the transaction record.
             // A transaction object should already have been injected to look this up.
 
-            if ( $retStatus == 'OK' && $this->getTransactionModel() === null) {
+            if ($retStatus == 'OK' && $this->getTransactionModel() === null) {
                 // Internal error.
                 $retStatus = 'INVALID';
                 $retStatusDetail = 'Internal error (missing transaction object)';
@@ -168,11 +168,24 @@ class Server extends Shared
             }
         }
 
+        $duplicate_notification = false;
+
         if ($this->getField('VendorTxCode') !== null) {
+            // If the stored status is not PENDING, then we *have* had a notification
+            // for it already.
+
             if ($this->getField('Status') != 'PENDING') {
-                // Already processed status.
-                $retStatus = 'INVALID';
-                $retStatusDetail = 'Transaction has already been processed';
+                // Issue #38 If this is a duplicate notification, then so long as the
+                // status is the same as the first time, we can return an "OK". However,
+                // we do not update the existing record in storage.
+
+                if ($this->getField('Status') != $Status) {
+                    // Already processed status, and a different status has been sent.
+                    $retStatus = 'INVALID';
+                    $retStatusDetail = 'Transaction has already been processed';
+                } else {
+                    $duplicate_notification = true;
+                }
             } elseif ($VPSTxId != $this->getField('VPSTxId')) {
                 // Mis-matching VPSTxId values.
                 $retStatus = 'INVALID';
@@ -185,9 +198,9 @@ class Server extends Shared
         }
 
         // With some of the major checks done, let's dig a little deeper into
-        // the transaction to see if it has been tampered with. The anit-tamper
+        // the transaction to see if it has been tampered with. The anti-tamper
         // checks allows us to used a non-secure connection for the .
-        if ($retStatus == 'OK') {
+        if ($retStatus == 'OK' && ! $duplicate_notification) {
             // Gather some additional parameters, making sure they are all set (defaulting to '').
             // Derive this list from the transaction metadata, with flag "tamper" set.
 
@@ -247,7 +260,7 @@ class Server extends Shared
         }
 
         // If still a success, then all tests have passed.
-        if ($retStatus == 'OK') {
+        if ($retStatus == 'OK' && ! $duplicate_notification) {
             // We found a PENDING transaction, so update it.
             // We don't want to be updating the local transaction in any other circumstance.
             // However, we might want to log the errors somewhere else.
@@ -280,7 +293,7 @@ class Server extends Shared
 
             // Save the transaction record to local storage.
             // We don't want to throw exceptions here; SagePay must get its response.
-            try{
+            try {
                 $this->save();
             }
             catch (Exception\RuntimeException $e) {
