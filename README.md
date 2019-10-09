@@ -384,7 +384,10 @@ to further restrict the list that the merchant account supports.
 
 There is no server or direct API that will list the supported currencies. The Reporting and Admin API does
 provide getCurrencies() to list the currencies that the vendor account supports. This library does not yet
-support the Reporting and Admin API, but it is something that is likely to be added. 
+support the Reporting and Admin API, but it is something that is likely to be added. Here is a library
+that talks to the Reporting and Admin API now:
+
+https://github.com/colinbm/sagepayadminapi-php
 
 By supporting a currency for payments, it means that payments can be taken in that currency. A shop will
 often be based in a single country and support just that local currency. If your shop supports multiple
